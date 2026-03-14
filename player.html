@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Player — PAPANATAS</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* estilos adicionales para la página de usuario (versión bonita y centrada) */
+    .player-wrap{ max-width:1000px; margin:28px auto; padding:18px; background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent); border-radius:12px; }
+    .player-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px }
+    .player-title{ font-size:24px; font-weight:900; margin:0 }
+    .player-stats { display:flex; gap:18px; margin-top:12px; flex-wrap:wrap; }
+    .player-stats .stat{ background:var(--card); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.02); min-width:160px; text-align:center }
+    .player-stats .value{ font-size:28px; font-weight:900; color:var(--white) }
+    .completed-list ul{ margin:0; padding-left:18px; margin-top:8px; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar present but users page uses toggle like others -->
+  <aside class="sidebar" role="navigation" aria-label="Main navigation">
+    <nav class="nav">
+      <a class="nav-link" href="index.html">Main list</a>
+      <a class="nav-link" href="packs.html">Packs</a>
+      <a class="nav-link" href="users.html">User stats</a>
+    </nav>
+  </aside>
+
+  <button id="sidebarToggle" title="Ocultar/mostrar menú">☰</button>
+
+  <div class="main-wrap">
+    <header class="site-header" style="background:transparent;border-bottom:none;padding:18px 8px">
+      <div class="header-inner">
+        <div class="header-left">
+          <a href="index.html" class="site-title" style="font-size:16px">PAPANATAS LEVELS LIST</a>
+        </div>
+        <div class="header-right"></div>
+      </div>
+    </header>
+
+    <main class="levels-container">
+      <div id="playerContent" class="player-wrap">Cargando...</div>
+    </main>
+  </div>
+
+  <script src="player.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>

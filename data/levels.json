@@ -48,6 +48,20 @@
     ]
   },
 
+{
+    "id": "lebi4",
+    "name": "LEBI 4",    
+    "creator": "Yoyi",
+    "gd_id": "112724933",
+    "duration": "0:08",
+    "objects": 457,
+    "tier": "Tough",
+    "difficulty": "harder",
+    "tags": ["Lebi","Chokepoints","Tiny","Straight Fly","Frame Perfect","Wave Control","Transition Heavy","Tight","Fast-Paced","Timings","Sightreadable","Rough Gameplay","End Heavy"],
+    "date_added": "2024-12-02",
+    "records": [
+    ]
+  },
     
     {
     "id": "lebi",

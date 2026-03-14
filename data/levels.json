@@ -16,18 +16,20 @@
   },
   
   
-    {
-    "id": "lebi3",
-    "name": "LEBI 3",    
-    "creator": "Yoyi",
-    "gd_id": "112682005",
-    "duration": "0:09",
-    "objects": 457,
+  {
+    "id": "lebiyoftcaremaster",
+    "name": "LeBiYo ftCa REMASTER",
+    "creator": "Lelike",
+    "gd_id": "134607519",
+    "duration": "0:25",
+    "objects": 5563,
     "tier": "Tough",
     "difficulty": "harder",
-    "tags": ["Lebi","Chokepoints","Tiny","Straight Fly","Frame Perfect","Spam Control","Timings","Precision","Transition Heavy","End Heavy","Tight"],
-    "date_added": "2024-12-01",
+    "tags": ["Lebiyo","Chokepoints","Timings","Short","Structured","Gameplay Sync","Spider Timing","End Heavy","Transition Heavy","Sightreadable","Consistency"],
+    "date_added": "2026-02-28",
     "records": [
+      {"holder":"Lelike","progress":"100%","date":"2026-02-28"},
+      {"holder":"Carlos","progress":"74%","date":"???"}
     ]
   },
 
@@ -40,7 +42,7 @@
     "objects": 457,
     "tier": "Tough",
     "difficulty": "harder",
-    "tags": ["Lebi","Chokepoints","Long","Consistency","Ship Control","Straight Fly","Nerve Control","Structured"],
+    "tags": ["Lebi","Chokepoints","Tiny","Straight Fly","Frame Perfect","Spam Control","Timings","Precision","Transition Heavy","End Heavy","Tight"],
     "date_added": "2024-12-01",
     "records": [
     ]

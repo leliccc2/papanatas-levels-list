@@ -1,5 +1,21 @@
 [
-    {
+    
+      {
+    "id": "lebi11",
+    "name": "LEBI 11",    
+    "creator": "Yoyi",
+    "gd_id": "114879059",
+    "duration": "0:??",
+    "objects": 1809,
+    "tier": "Insane",
+    "difficulty": "harder",
+    "tags": ["Lebi","Medium","Chokepoints","Consistency","End Heavy","Cube Timing","Long Sections","Precision","Ship Control","Nerve Control","Structured","Unforgiving","Slow Paced"],
+    "date_added": "2025-02-06",
+    "records": [
+    ]
+  },
+  
+  {
     "id": "lebiyo14",
     "name": "Lebiyo 14",
     "creator": "Justi",
@@ -213,7 +229,7 @@
     "objects": 1055,
     "tier": "Hard",
     "difficulty": "harder",
-    "tags": ["Lebiyo","Short","Balanced","Sightreadable","Skill based","Structured"],
+    "tags": ["Lebiyo","Short","Balanced","Sightreadable","Skill Based","Structured"],
     "date_added": "2026-02-16",
     "records": [
 
@@ -269,6 +285,21 @@
 
     ]
   },
+    {
+    "id": "lebi9",
+    "name": "LEBI 9",
+    "creator": "Yoyi",
+    "gd_id": "114552018",
+    "duration": "0:??",
+    "objects": 182,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Calm","Chokepoints","Cube Timing","Jumpy","Structured"],
+    "date_added": "2025-01-26",
+    "records": [
+    ]
+  },
+
 
     {
     "id": "lebiyo7",
@@ -303,6 +334,21 @@
     ]
   },
 
+      {
+    "id": "lebi10",
+    "name": "LEBI 10",
+    "creator": "Yoyi",
+    "gd_id": "114733870",
+    "duration": "0:??",
+    "objects": 408,
+    "tier": "Normal",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Calm","Structured","Balanced"],
+    "date_added": "2025-02-01",
+    "records": [
+    ]
+  },
+
   {
     "id": "lebiyo3",
     "name": "LeBiYo 3",
@@ -310,7 +356,7 @@
     "gd_id": "115204502",
     "duration": "0:14",
     "objects": 356,
-    "tier": "Normal",
+    "tier": "Easy",
     "difficulty": "harder",
     "tags": ["Lebiyo","Short","Calm","Dash Heavy","Balanced","Technical"],
     "date_added": "2025-02-16",

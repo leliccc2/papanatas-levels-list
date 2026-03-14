@@ -30,6 +30,21 @@
 
     ]
   },
+
+        {
+    "id": "lebi13",
+    "name": "LEBI 13",    
+    "creator": "Yoyi",
+    "gd_id": "115130221",
+    "duration": "0:27",
+    "objects": 1165,
+    "tier": "Insane",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Consistency","Click Pattern","End Heavy","Fake Difficulty","Frame Perfect","High CPS","Spam Control","Spider Timing"],
+    "date_added": "2025-02-14",
+    "records": [
+    ]
+  },
   
   
   {
@@ -156,6 +171,22 @@
 
     ]
   },
+        {
+    "id": "lebi5remastered",
+    "name": "LEBI 5 Remastered",
+    "creator": "Yoyi",
+    "gd_id": "115041760",
+    "duration": "0:25",
+    "objects": 711,
+    "tier": "Harder",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Chokepoints","Nerve Control","Ship Control","Sightreadable","Transition Heavy"],
+    "date_added": "2025-02-11",
+    "records": [
+      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
+      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
     {
     "id": "lebiyo6",
     "name": "LeBiYo 6",
@@ -169,6 +200,21 @@
     "date_added": "2025-08-18",
     "records": [
 
+    ]
+  },
+      {
+    "id": "lebi12",
+    "name": "LEBI 12",
+    "creator": "Yoyi",
+    "gd_id": "114906742",
+    "duration": "0:16",
+    "objects": 430,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Ball Timing","Structured","Calm"],
+    "date_added": "2025-02-07",
+    "records": [
+                  {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
 

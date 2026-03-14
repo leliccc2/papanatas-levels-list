@@ -171,6 +171,38 @@
 
     ]
   },
+      {
+    "id": "lebi16",
+    "name": "LEBI 16",
+    "creator": "Yoyi",
+    "gd_id": "115670570",
+    "duration": "0:24",
+    "objects": 1121,
+    "tier": "Harder",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Ship Control","Chokepoints","Precision","Skill Based","Balanced","Learny","Rough Gameplay","Sightreadable","Straight Fly","Tight"],
+    "date_added": "2025-03-02",
+    "records": [
+                  {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+    ]
+  },
+      {
+    "id": "leyo6",
+    "name": "LEYO 6",
+    "creator": "Billy",
+    "gd_id": "93301848",
+    "duration": "0:28",
+    "objects": 683,
+    "tier": "Harder",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Balanced","Learny","High CPS","Wave Control","Structured"],
+    "date_added": "2023-08-11",
+    "records": [
+      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
+      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
+
         {
     "id": "lebi5remastered",
     "name": "LEBI 5 Remastered",
@@ -202,21 +234,7 @@
 
     ]
   },
-    {
-    "id": "lebi16",
-    "name": "LEBI 16",
-    "creator": "Yoyi",
-    "gd_id": "115670570",
-    "duration": "0:24",
-    "objects": 1121,
-    "tier": "Harder",
-    "difficulty": "harder",
-    "tags": ["Lebi","Short","Ship Control","Chokepoints","Precision","Skill Based","Balanced","Learny","Rough Gameplay","Sightreadable","Straight Fly","Tight"],
-    "date_added": "2025-03-02",
-    "records": [
-                  {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
-    ]
-  },
+
 
     {
     "id": "lebi14",
@@ -231,6 +249,21 @@
     "date_added": "2025-02-16",
     "records": [
                   {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+    ]
+  },
+
+      {
+    "id": "leyo4",
+    "name": "LEYO 4",
+    "creator": "Billy",
+    "gd_id": "114726873",
+    "duration": "0:22",
+    "objects": 1148,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Jumpy","Rough Gameplay","Start Heavy","Nerve Control","Wave Control","Structured"],
+    "date_added": "2020-10-10",
+    "records": [
     ]
   },
       {
@@ -264,6 +297,20 @@
                   {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
+            {
+    "id": "leyo10",
+    "name": "LEYO 10",
+    "creator": "Billy",
+    "gd_id": "129961655",
+    "duration": "2:09",
+    "objects": 2992,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Leyo","XL","Consistency","Unforgiving"],
+    "date_added": "2020-10-10",
+    "records": [
+    ]
+  },
 
       {
     "id": "lebiyo8",
@@ -278,6 +325,23 @@
     "date_added": "2025-08-19",
     "records": [
 
+    ]
+  },
+
+      {
+    "id": "bombardeenrenfe",
+    "name": "Bombardeen Renfe",
+    "creator": "Billy",
+    "gd_id": "116107950",
+    "duration": "0:32",
+    "objects": 3189,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Bombardeen Renfe","Medium","Balanced","Calm","Chokepoints","Gameplay Sync","Wave Control","Structured","Sightreadable"],
+    "date_added": "2023-08-11",
+    "records": [
+      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
+      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
  
@@ -330,6 +394,21 @@
     ]
   },
 
+        {
+    "id": "leyo5",
+    "name": "LEYO 5",
+    "creator": "Billy",
+    "gd_id": "115039364",
+    "duration": "0:24",
+    "objects": 1118,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Ship Control","Structured","Balanced"],
+    "date_added": "2020-10-10",
+    "records": [
+    ]
+  },
+
     {
     "id": "lebi2",
     "name": "LEBI 2",
@@ -342,6 +421,39 @@
     "tags": ["Lebi","Chokepoints","Short","Ship Control","Structured","Frame Perfect","Cube Timing","Timings"],
     "date_added": "2024-11-30",
     "records": [
+    ]
+  },
+
+        {
+    "id": "leyo7",
+    "name": "LEYO 7",
+    "creator": "Billy",
+    "gd_id": "115670492",
+    "duration": "0:18",
+    "objects": 609,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Balanced","Calm","Gameplay Sync","Ship Control","Structured"],
+    "date_added": "2023-08-11",
+    "records": [
+      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
+      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
+
+        {
+    "id": "leyo2",
+    "name": "LEYO 2",
+    "creator": "Billy",
+    "gd_id": "113354233",
+    "duration": "0:15",
+    "objects": 473,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Balanced","Precision","Rough Gameplay","Transition Heavy"],
+    "date_added": "2024-12-22",
+    "records": [
+      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
 
@@ -361,7 +473,22 @@
     ]
   },
 
-    
+            {
+    "id": "leyo8",
+    "name": "LEYO 8",
+    "creator": "Billy",
+    "gd_id": "115736286",
+    "duration": "0:23",
+    "objects": 496,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Balanced","Consistency","Visual Sync","Structured"],
+    "date_added": "2023-08-11",
+    "records": [
+      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
+      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
   
     {
     "id": "lebiyo4",
@@ -376,6 +503,20 @@
     "date_added": "2025-02-28",
     "records": [
 
+    ]
+  },
+          {
+    "id": "leyo9",
+    "name": "LEYO 9",
+    "creator": "Billy",
+    "gd_id": "124852829",
+    "duration": "0:19",
+    "objects": 598,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Transition Heavy","Sightreadable","Ship Control"],
+    "date_added": "2020-10-10",
+    "records": [
     ]
   },
     {
@@ -404,6 +545,21 @@
     "difficulty": "harder",
     "tags": ["Lebi","Short","Calm","Balanced","Wave Control","Structured"],
     "date_added": "2025-04-01",
+    "records": [
+    ]
+  },
+
+    {
+    "id": "leyo3",
+    "name": "LEYO 3",
+    "creator": "Billy",
+    "gd_id": "113779837",
+    "duration": "0:27",
+    "objects": 2329,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Jumpy","Rough Gameplay","Technical","Start Heavy"],
+    "date_added": "2020-10-10",
     "records": [
     ]
   },

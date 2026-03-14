@@ -184,6 +184,7 @@
     "tags": ["Lebi","Chokepoints","Short","Consistency","Balanced","Precision","Structured","Technical","Tight","Wave Control"],
     "date_added": "2025-01-02",
     "records": [
+                  {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
 
@@ -330,7 +331,7 @@
     "tags": ["Lebiyo","Short","Jumpy","Precision","Technical","Rough Gameplay"],
     "date_added": "2025-02-16",
     "records": [
-
+            {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
 
@@ -361,7 +362,7 @@
     "tags": ["Lebiyo","Short","Calm","Dash Heavy","Balanced","Technical"],
     "date_added": "2025-02-16",
     "records": [
-
+            {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
 
@@ -377,6 +378,7 @@
     "tags": ["Lebi","Tiny","Structured","Learny","Technical","Rough Gameplay"],
     "date_added": "2024-12-22",
     "records": [
+                  {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   }
 ]

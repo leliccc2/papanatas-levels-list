@@ -48,17 +48,32 @@
     ]
   },
 
-{
+      {
     "id": "lebi4",
     "name": "LEBI 4",    
     "creator": "Yoyi",
     "gd_id": "112724933",
     "duration": "0:08",
-    "objects": 457,
+    "objects": 285,
     "tier": "Tough",
     "difficulty": "harder",
     "tags": ["Lebi","Chokepoints","Tiny","Straight Fly","Frame Perfect","Wave Control","Transition Heavy","Tight","Fast-Paced","Timings","Sightreadable","Rough Gameplay","End Heavy"],
     "date_added": "2024-12-02",
+    "records": [
+    ]
+  },
+
+    {
+    "id": "lebi7",
+    "name": "LEBI 7",    
+    "creator": "Yoyi",
+    "gd_id": "113354033",
+    "duration": "0:09",
+    "objects": 237,
+    "tier": "Tough",
+    "difficulty": "harder",
+    "tags": ["Lebi","Chokepoints","Tiny","Wave Control","Transition Heavy","Tight","Sightreadable","Rough Gameplay","High CPS","Wave Spam","Unforgiving","Consistency","Precision"],
+    "date_added": "2024-12-22",
     "records": [
     ]
   },
@@ -138,6 +153,21 @@
     "date_added": "2025-08-18",
     "records": [
 
+    ]
+  },
+
+    {
+    "id": "lebi8",
+    "name": "LEBI 8",
+    "creator": "Yoyi",
+    "gd_id": "113780872",
+    "duration": "0:??",
+    "objects": 440,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Lebi","Chokepoints","Short","Consistency","Balanced","Precision","Structured","Technical","Tight","Wave Control"],
+    "date_added": "2025-01-02",
+    "records": [
     ]
   },
 
@@ -286,6 +316,21 @@
     "date_added": "2025-02-16",
     "records": [
 
+    ]
+  },
+
+    {
+    "id": "lebi2",
+    "name": "LEBI 2",
+    "creator": "Yoyi",
+    "gd_id": "113353279",
+    "duration": "0:06",
+    "objects": 146,
+    "tier": "Easy",
+    "difficulty": "harder",
+    "tags": ["Lebi","Tiny","Ship Control","Structured","Learny","Technical","Rough Gameplay"],
+    "date_added": "2024-12-22",
+    "records": [
     ]
   }
 ]

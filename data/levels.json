@@ -140,6 +140,21 @@
     ]
   },
 
+              {
+    "id": "biyole6",
+    "name": "Biyole 6",
+    "creator": "Eiron456",
+    "gd_id": "115198131",
+    "duration": "0:05",
+    "objects": 561,
+    "tier": "Harder",
+    "difficulty": "harder",
+    "tags": ["Biyole","Tiny","Rough Gameplay","Fast-Paced","Swing","Straight Fly","Cube Timing","Tight","Transition Heavy"],
+    "date_added": "2021-01-01",
+    "records": [
+    ]
+  },
+
 
           {
     "id": "lebi18",
@@ -153,6 +168,22 @@
     "tags": ["Lebi","Chokepoints","Short","Timings","Consistency","Sightreadable","Frame Perfect","Ship Control","Cube Timing"],
     "date_added": "2025-08-04",
     "records": [
+    ]
+  },
+
+        {
+    "id": "biyole1fliying",
+    "name": "Biyole 1 Fliying",
+    "creator": "Eiron456",
+    "gd_id": "134225638",
+    "duration": "0:11",
+    "objects": 447,
+    "tier": "Harder",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Ship Control","Straight Fly","Structured","Slow Paced","Consistency","Tight"],
+    "date_added": "2020-10-10",
+    "records": [
+                        {"holder":"Lelike","progress":"100%","date":"2026-02-23"}
     ]
   },
 
@@ -202,6 +233,22 @@
     ]
   },
 
+      {
+    "id": "lebi14",
+    "name": "LEBI 14",
+    "creator": "Yoyi",
+    "gd_id": "115197733",
+    "duration": "0:19",
+    "objects": 406,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Ship Control","Chokepoints","Precision","Skill Based","Timings","Unforgiving"],
+    "date_added": "2025-02-16",
+    "records": [
+                  {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+    ]
+  },
+
 
         {
     "id": "lebi5remastered",
@@ -217,6 +264,22 @@
     "records": [
       {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
       {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
+
+      {
+    "id": "biyole",
+    "name": "Biyole",
+    "creator": "Eiron456",
+    "gd_id": "115042112",
+    "duration": "0:??",
+    "objects": 683,
+    "tier": "Harder",
+    "difficulty": "harder",
+    "tags": ["Biyole","Short","Fast-Paced","Click Pattern","Ship Control"],
+    "date_added": "2021-01-01",
+    "records": [
+      {"holder":"Eiron456","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
     {
@@ -235,22 +298,6 @@
     ]
   },
 
-
-    {
-    "id": "lebi14",
-    "name": "LEBI 14",
-    "creator": "Yoyi",
-    "gd_id": "115197733",
-    "duration": "0:19",
-    "objects": 406,
-    "tier": "Hard",
-    "difficulty": "harder",
-    "tags": ["Lebi","Short","Ship Control","Chokepoints","Precision","Skill Based","Timings","Unforgiving"],
-    "date_added": "2025-02-16",
-    "records": [
-                  {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
-    ]
-  },
 
               {
     "id": "lemarbiyo4",
@@ -298,6 +345,37 @@
     ]
   },
 
+        {
+    "id": "biyole3",
+    "name": "Biyole 3",
+    "creator": "Eiron456",
+    "gd_id": "115062717",
+    "duration": "0:15",
+    "objects": 1284,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Biyole","Short","Slow Paced","Ship Control","Straight Fly","Rough Gameplay","Tight"],
+    "date_added": "2021-01-01",
+    "records": [
+      {"holder":"Eiron456","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
+
+          {
+    "id": "biyole4",
+    "name": "Biyole 4",
+    "creator": "Eiron456",
+    "gd_id": "115196685",
+    "duration": "0:??",
+    "objects": 363,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Biyole","Short","Click Pattern","Jumpy","Cube Timing","Timings"],
+    "date_added": "2021-01-01",
+    "records": [
+    ]
+  },
+
     {
     "id": "lebi8",
     "name": "LEBI 8",
@@ -324,6 +402,21 @@
     "difficulty": "harder",
     "tags": ["Leyo","XL","Consistency","Unforgiving"],
     "date_added": "2020-10-10",
+    "records": [
+    ]
+  },
+
+            {
+    "id": "biyole5",
+    "name": "Biyole 5",
+    "creator": "Eiron456",
+    "gd_id": "115197203",
+    "duration": "0:0?",
+    "objects": 363,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Biyole","Tiny","Click Pattern","Jumpy","Cube Timing","Rough Gameplay","Fast-Paced","Learny","Precision"],
+    "date_added": "2021-01-01",
     "records": [
     ]
   },
@@ -361,6 +454,21 @@
     ]
   },
 
+                {
+    "id": "biyole7",
+    "name": "Biyole 7",
+    "creator": "Eiron456",
+    "gd_id": "115208441",
+    "duration": "0:??",
+    "objects": 1136,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Biyole","Short","Wave Control","Ship Control","Chokepoints","Sightreadable"],
+    "date_added": "2021-01-01",
+    "records": [
+    ]
+  },
+
             {
     "id": "lemarbiyo3",
     "name": "LeMarBiYo 3",
@@ -375,6 +483,21 @@
     "records": [
       {"holder":"Carlos","progress":"100%","date":"Hace muchos meses"},
       {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+    ]
+  },
+
+      {
+    "id": "biyole9",
+    "name": "Biyole 9",
+    "creator": "Eiron456",
+    "gd_id": "133809917",
+    "duration": "0:??",
+    "objects": 416,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Jumpy","Rough Gameplay","Learny","Sightreadable","Spider Timing","Transition Heavy","Fast-Paced"],
+    "date_added": "2020-10-10",
+    "records": [
     ]
   },
 
@@ -665,6 +788,21 @@
   },
 
     {
+    "id": "biyole8",
+    "name": "Biyole 8",
+    "creator": "Eiron456",
+    "gd_id": "116240727",
+    "duration": "0:09",
+    "objects": 1126,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Biyole","Short","Balanced","Calm","Consistency","Jumpy","Precision","Spider Timing"],
+    "date_added": "2021-01-01",
+    "records": [
+    ]
+  },
+
+    {
     "id": "leyo3",
     "name": "LEYO 3",
     "creator": "Billy",
@@ -679,6 +817,8 @@
     ]
   },
 
+
+
     {
     "id": "lebiyo7",
     "name": "LeBiYo 7",
@@ -686,7 +826,7 @@
     "gd_id": "124872553",
     "duration": "0:23",
     "objects": 503,
-    "tier": "Casual",
+    "tier": "Normal",
     "difficulty": "harder",
     "tags": ["Lebiyo","Short","Jumpy","Technical","Balanced"],
     "date_added": "2025-08-18",

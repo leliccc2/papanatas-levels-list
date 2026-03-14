@@ -40,7 +40,7 @@
     "objects": 1165,
     "tier": "Insane",
     "difficulty": "harder",
-    "tags": ["Lebi","Short","Consistency","Click Pattern","End Heavy","Fake Difficulty","Frame Perfect","High CPS","Spam Control","Spider Timing"],
+    "tags": ["Lebi","Short","Consistency","Click Pattern","End Heavy","Fake Difficulty","Frame Perfect","High CPS","Spam Control","Spider Timing","Unforgiving"],
     "date_added": "2025-02-14",
     "records": [
     ]
@@ -202,6 +202,37 @@
 
     ]
   },
+    {
+    "id": "lebi16",
+    "name": "LEBI 16",
+    "creator": "Yoyi",
+    "gd_id": "115670570",
+    "duration": "0:24",
+    "objects": 1121,
+    "tier": "Harder",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Ship Control","Chokepoints","Precision","Skill Based","Balanced","Learny","Rough Gameplay","Sightreadable","Straight Fly","Tight"],
+    "date_added": "2025-03-02",
+    "records": [
+                  {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+    ]
+  },
+
+    {
+    "id": "lebi14",
+    "name": "LEBI 14",
+    "creator": "Yoyi",
+    "gd_id": "115197733",
+    "duration": "0:19",
+    "objects": 406,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Ship Control","Chokepoints","Precision","Skill Based","Timings","Unforgiving"],
+    "date_added": "2025-02-16",
+    "records": [
+                  {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+    ]
+  },
       {
     "id": "lebi12",
     "name": "LEBI 12",
@@ -284,6 +315,21 @@
 
   },
 
+      {
+    "id": "lebi15",
+    "name": "LEBI 15",
+    "creator": "Yoyi",
+    "gd_id": "115590450",
+    "duration": "0:27",
+    "objects": 831,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Balanced","Ball Timing","Chokepoints","Straight Fly","Technical"],
+    "date_added": "2025-02-28",
+    "records": [
+    ]
+  },
+
     {
     "id": "lebi2",
     "name": "LEBI 2",
@@ -347,6 +393,20 @@
     ]
   },
 
+      {
+    "id": "lebi17",
+    "name": "LEBI 17",
+    "creator": "Yoyi",
+    "gd_id": "116801021",
+    "duration": "0:25",
+    "objects": 1294,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Lebi","Short","Calm","Balanced","Wave Control","Structured"],
+    "date_added": "2025-04-01",
+    "records": [
+    ]
+  },
 
     {
     "id": "lebiyo7",

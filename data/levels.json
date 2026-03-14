@@ -34,6 +34,38 @@
   },
 
     {
+    "id": "lebi3",
+    "name": "LEBI 3",    
+    "creator": "Yoyi",
+    "gd_id": "112682005",
+    "duration": "0:09",
+    "objects": 457,
+    "tier": "Tough",
+    "difficulty": "harder",
+    "tags": ["Lebi","Chokepoints","Long","Consistency","Ship Control","Straight Fly","Nerve Control","Structured"],
+    "date_added": "2025-12-23",
+    "records": [
+    ]
+  },
+
+    
+    {
+    "id": "lebi",
+    "name": "LEBI",
+    "creator": "Yoyi",
+    "gd_id": "92921019",
+    "duration": "0:13",
+    "objects": 304,
+    "tier": "Tough",
+    "difficulty": "harder",
+    "tags": ["Lebi","Chokepoints","Short","Timings","High CPS","Spam","Consistency","Spam Control","Wave Spam","Transition Heavy","Frame Perfect","Tight","End Heavy", "Start Heavy"],
+    "date_added": "2023-07-30",
+    "records": [
+            {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
+
+        {
     "id": "lebi19",
     "name": "LEBI 19",
     "creator": "Yoyi",
@@ -48,22 +80,6 @@
     ]
   },
 
-  
-    {
-    "id": "lebi",
-    "name": "LEBI",
-    "creator": "Yoyi",
-    "gd_id": "92921019",
-    "duration": "0:13",
-    "objects": 304,
-    "tier": "Harder",
-    "difficulty": "harder",
-    "tags": ["Lebi","Chokepoints","Short","Timings","High CPS","Spam","Consistency","Spam Control","Wave Spam","Transition Heavy","Frame Perfect","Tight","End Heavy", "Start Heavy"],
-    "date_added": "2023-07-30",
-    "records": [
-            {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
-    ]
-  },
 
           {
     "id": "lebi18",

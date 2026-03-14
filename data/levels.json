@@ -186,22 +186,22 @@
                   {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
     ]
   },
-      {
-    "id": "leyo6",
-    "name": "LEYO 6",
-    "creator": "Billy",
-    "gd_id": "93301848",
-    "duration": "0:28",
-    "objects": 683,
+
+                  {
+    "id": "lemarbiyo6",
+    "name": "LeMarBiYo 6",
+    "creator": "Carlos",
+    "gd_id": "129992326",
+    "duration": "1:02",
+    "objects": 1815,
     "tier": "Harder",
     "difficulty": "harder",
-    "tags": ["Leyo","Short","Balanced","Learny","High CPS","Wave Control","Structured"],
+    "tags": ["Lemarbiyo","Long","Sightreadable","Learny","Unforgiving","End Heavy","Nerve Control","Rough Gameplay"],
     "date_added": "2023-08-11",
     "records": [
-      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
-      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
+
 
         {
     "id": "lebi5remastered",
@@ -249,6 +249,22 @@
     "date_added": "2025-02-16",
     "records": [
                   {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+    ]
+  },
+
+              {
+    "id": "lemarbiyo4",
+    "name": "LeMarBiYo 4",
+    "creator": "Carlos",
+    "gd_id": "124930410",
+    "duration": "1:18",
+    "objects": 1072,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Lemarbiyo","Long","Learny","Jumpy","Rough Gameplay","Memory","Calm","Long Sections","Nerve Control","Precision","Unforgiving"],
+    "date_added": "2023-08-11",
+    "records": [
+      {"holder":"Carlos","progress":"100%","date":"Hace muchos meses"}
     ]
   },
 
@@ -312,6 +328,23 @@
     ]
   },
 
+        {
+    "id": "leyo6",
+    "name": "LEYO 6",
+    "creator": "Billy",
+    "gd_id": "93301848",
+    "duration": "0:28",
+    "objects": 683,
+    "tier": "Harder",
+    "difficulty": "harder",
+    "tags": ["Leyo","Short","Balanced","Learny","High CPS","Wave Control","Structured"],
+    "date_added": "2023-08-11",
+    "records": [
+      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
+      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
+
       {
     "id": "lebiyo8",
     "name": "LeBiYo 8",
@@ -325,6 +358,23 @@
     "date_added": "2025-08-19",
     "records": [
 
+    ]
+  },
+
+            {
+    "id": "lemarbiyo3",
+    "name": "LeMarBiYo 3",
+    "creator": "Carlos",
+    "gd_id": "124894079",
+    "duration": "0:47",
+    "objects": 1072,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Lemarbiyo","Medium","Balanced","Learny","Orb Heavy","Jumpy","Cube Timing","Rough Gameplay"],
+    "date_added": "2023-08-11",
+    "records": [
+      {"holder":"Carlos","progress":"100%","date":"Hace muchos meses"},
+      {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
     ]
   },
 
@@ -379,6 +429,21 @@
 
   },
 
+        {
+    "id": "lemarbiyonewera",
+    "name": "LeMarBiYo New Era",
+    "creator": "Carlos",
+    "gd_id": "130022635",
+    "duration": "0:34",
+    "objects": 1815,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Lemarbiyo","Medium","Jumpy","Rough Gameplay","Learny","Structured"],
+    "date_added": "2023-08-11",
+    "records": [
+    ]
+  },
+
       {
     "id": "lebi15",
     "name": "LEBI 15",
@@ -409,6 +474,21 @@
     ]
   },
 
+                {
+    "id": "lemarbiyo5",
+    "name": "LeMarBiYo 5",
+    "creator": "Carlos",
+    "gd_id": "125131378",
+    "duration": "0:36",
+    "objects": 749,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Lemarbiyo","Medium","Sightreadable","Gameplay Sync","Balanced","Jumpy"],
+    "date_added": "2023-08-11",
+    "records": [
+    ]
+  },
+
     {
     "id": "lebi2",
     "name": "LEBI 2",
@@ -421,6 +501,23 @@
     "tags": ["Lebi","Chokepoints","Short","Ship Control","Structured","Frame Perfect","Cube Timing","Timings"],
     "date_added": "2024-11-30",
     "records": [
+    ]
+  },
+
+            {
+    "id": "lemarbiyo5ftme",
+    "name": "LeMarBiYo 5 ft Me",
+    "creator": "Carlos",
+    "gd_id": "133661808",
+    "duration": "0:16",
+    "objects": 460,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Lemarbiyo","Short","Balanced","Chokepoints","Rough Gameplay","Sightreadable","Structured","Transition Heavy"],
+    "date_added": "2023-08-11",
+    "records": [
+      {"holder":"Carlos","progress":"100%","date":"(???)"},
+      {"holder":"Lelike","progress":"100%","date":"(???)"}
     ]
   },
 
@@ -438,6 +535,24 @@
     "records": [
       {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
       {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
+
+          {
+    "id": "lemarbiyo2",
+    "name": "LeMarBiYo 2",
+    "creator": "Carlos",
+    "gd_id": "124857230",
+    "duration": "0:36",
+    "objects": 1550,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Lemarbiyo","Medium","Balanced","Learny","Ship Control","Cube Timing","Jumpy","Technical"],
+    "date_added": "2023-08-11",
+    "records": [
+      {"holder":"Carlos","progress":"100%","date":"Hace muchos meses"},
+      {"holder":"Justi","progress":"100%","date":"Hace muchos meses"},
+      {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
     ]
   },
 

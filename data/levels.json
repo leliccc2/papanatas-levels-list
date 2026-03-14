@@ -320,15 +320,15 @@
   },
 
     {
-    "id": "lebi2",
-    "name": "LEBI 2",
+    "id": "lebi6",
+    "name": "LEBI 6",
     "creator": "Yoyi",
     "gd_id": "113353279",
     "duration": "0:06",
     "objects": 146,
     "tier": "Easy",
     "difficulty": "harder",
-    "tags": ["Lebi","Tiny","Ship Control","Structured","Learny","Technical","Rough Gameplay"],
+    "tags": ["Lebi","Tiny","Structured","Learny","Technical","Rough Gameplay"],
     "date_added": "2024-12-22",
     "records": [
     ]

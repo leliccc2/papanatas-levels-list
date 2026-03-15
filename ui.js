@@ -1,9 +1,9 @@
-// ui.js - toggle sidebar + Submit a record modal + admin review, signin & record-management
+// ui.js - FINAL: sidebar toggle + Submit a record modal + admin review, signin & record-management
 (function(){
   'use strict';
 
   // -----------------------
-  // Basic UI / Sidebar toggle (unchanged behavior)
+  // Basic sidebar toggle (kept behavior)
   // -----------------------
   try { document.documentElement.classList.add('no-animate'); } catch(e){}
   const sidebarToggle = document.getElementById('sidebarToggle');
@@ -20,37 +20,28 @@
   });
 
   // -----------------------
-  // Config / keys
+  // Config / constants
   // -----------------------
-  const ADMIN_KEY = '171213';        // admin PIN (you asked for this exact value)
+  const ADMIN_KEY = '171213';        // admin PIN as requested
   const ADMIN_NAME = 'Owner';
   const KNOWN_PLAYERS = ['Lelike','Carlos','Marc','Billy','Yoyi','Eiron456'];
 
-  // Storage keys
   const SUB_KEY = 'papan_submissions';
   const RECS_KEY = 'papan_records_overrides';
   const ISADMIN_KEY = 'papan_is_admin';
   const CURRENT_USER_KEY = 'papan_current_user';
 
   // -----------------------
-  // Styles injection (floating buttons, modal, file-button)
+  // Styles injection
   // -----------------------
   (function injectStyles(){
     const css = `
-/* Floating submit button */
-.papan-submit-btn{
-  position:fixed; right:18px; bottom:18px; z-index:1200;
-  background: linear-gradient(180deg, var(--accent-strong), var(--accent));
-  color:#0b0b0b; border-radius:14px; padding:12px 14px; font-weight:800; border:none; cursor:pointer;
-  box-shadow:0 10px 30px rgba(0,0,0,0.45);
-}
+.papan-submit-btn{ position:fixed; right:18px; bottom:18px; z-index:1200; background: linear-gradient(180deg, var(--accent-strong), var(--accent)); color:#0b0b0b; border-radius:14px; padding:12px 14px; font-weight:800; border:none; cursor:pointer; box-shadow:0 10px 30px rgba(0,0,0,0.45); }
 .papan-submit-btn:hover{ transform: translateY(-3px); }
 
-/* Admin bar bottom-left vertical */
 .papan-admin-bar{ position:fixed; left:18px; bottom:18px; z-index:1200; display:flex; flex-direction:column; gap:8px; }
 .papan-admin-badge{ padding:8px 10px; border-radius:10px; background:rgba(0,0,0,0.6); color:var(--accent); border:1px solid rgba(255,255,255,0.03); font-weight:800; cursor:pointer; }
 
-/* Modal */
 .papan-modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.65); display:flex; align-items:center; justify-content:center; z-index:99999; }
 .papan-modal{ width:980px; max-width:96%; background:var(--card); border-radius:12px; padding:18px; box-shadow:0 28px 60px rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.03); color:var(--white); }
 .papan-form-row{ display:flex; gap:12px; margin-bottom:12px; align-items:center; }
@@ -74,25 +65,94 @@
   })();
 
   // -----------------------
-  // Small DOM helpers
+  // Helpers
   // -----------------------
-  function $(sel){ return document.querySelector(sel); }
-  function create(tag, props){ const el = document.createElement(tag); if(props) Object.assign(el, props); return el; }
+  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   function safeParse(s, fallback){ try{ return JSON.parse(s||'[]'); }catch(e){ return fallback; } }
-
-  // -----------------------
-  // Floating Submit button + Modal (Submit a record)
-  // -----------------------
-  const submitBtn = create('button'); submitBtn.className = 'papan-submit-btn'; submitBtn.textContent = 'Submit a record';
-  document.body.appendChild(submitBtn);
-
   function ensureLevelsLoad(){
     if(window._papan_levels_cache) return Promise.resolve(window._papan_levels_cache);
     return fetch('data/levels.json').then(r=>r.json()).then(data=> { window._papan_levels_cache = Array.isArray(data) ? data : []; return window._papan_levels_cache; }).catch(e=>{ window._papan_levels_cache = []; return window._papan_levels_cache; });
   }
 
+  // storage helpers
+  function loadSubmissions(){ return safeParse(localStorage.getItem(SUB_KEY), []); }
+  function saveSubmissions(arr){ localStorage.setItem(SUB_KEY, JSON.stringify(arr)); }
+  function loadOverrides(){ return safeParse(localStorage.getItem(RECS_KEY), {}); }
+  function saveOverrides(obj){ localStorage.setItem(RECS_KEY, JSON.stringify(obj)); }
+
+  function getCurrentUser(){ return sessionStorage.getItem(CURRENT_USER_KEY) || null; }
+  function setCurrentUser(name){
+    if(!name){ sessionStorage.removeItem(CURRENT_USER_KEY); updateUserUI(); return; }
+    sessionStorage.setItem(CURRENT_USER_KEY, String(name));
+    // when signing in as a user, ensure admin is logged out (can't be both)
+    if(localStorage.getItem(ISADMIN_KEY) === '1') localStorage.removeItem(ISADMIN_KEY);
+    updateUserUI();
+  }
+  function isAdminLogged(){ return localStorage.getItem(ISADMIN_KEY) === '1'; }
+  function setAdminLogged(val){
+    if(val){
+      localStorage.setItem(ISADMIN_KEY,'1');
+      // admin cannot be a user at the same time
+      sessionStorage.removeItem(CURRENT_USER_KEY);
+    } else {
+      localStorage.removeItem(ISADMIN_KEY);
+    }
+    updateUserUI();
+  }
+
+  function pushNotification(playerName, text){
+    try{
+      const key = `papan_notifications_${playerName}`;
+      const arr = safeParse(localStorage.getItem(key), []);
+      arr.push({ id: 'n_' + Date.now(), text, date: new Date().toISOString().slice(0,10), read:false });
+      localStorage.setItem(key, JSON.stringify(arr));
+      updateUserUI();
+      return true;
+    }catch(e){ console.error(e); return false; }
+  }
+
+  function addRecordOverride(levelId, record){
+    try{
+      const obj = loadOverrides();
+      if(!Array.isArray(obj[levelId])) obj[levelId] = [];
+      const exists = obj[levelId].some(r => r.holder === record.holder && r.progress === record.progress && r.date === record.date);
+      if(!exists) obj[levelId].push(record);
+      saveOverrides(obj);
+      return true;
+    }catch(e){ console.error(e); return false; }
+  }
+
+  // -----------------------
+  // UI elements: floating buttons + modals
+  // -----------------------
+  // Floating submit
+  const submitBtn = document.createElement('button');
+  submitBtn.className = 'papan-submit-btn';
+  submitBtn.textContent = 'Submit a record';
+  document.body.appendChild(submitBtn);
+
+  // Admin bar (vertical, review above admin login)
+  const adminBar = document.createElement('div'); adminBar.className = 'papan-admin-bar';
+  const reviewToggleBtn = document.createElement('button'); reviewToggleBtn.className = 'papan-admin-badge'; reviewToggleBtn.textContent = 'Review';
+  const adminLoginBtn = document.createElement('button'); adminLoginBtn.className = 'papan-admin-badge'; adminLoginBtn.textContent = 'Admin login';
+  const deleteRecordsBtn = document.createElement('button'); deleteRecordsBtn.className = 'papan-admin-badge'; deleteRecordsBtn.textContent = 'Delete records';
+  const signInBtn = document.createElement('button'); signInBtn.className = 'papan-admin-badge'; signInBtn.textContent = 'Sign in';
+  const notifSpan = document.createElement('span'); notifSpan.className = 'papan-notif-badge'; notifSpan.style.display = 'none';
+  signInBtn.appendChild(notifSpan);
+
+  // set defaults: review & delete hidden until admin
+  reviewToggleBtn.style.display = 'none';
+  deleteRecordsBtn.style.display = 'none';
+
+  adminBar.appendChild(reviewToggleBtn);
+  adminBar.appendChild(adminLoginBtn);
+  adminBar.appendChild(deleteRecordsBtn);
+  adminBar.appendChild(signInBtn);
+  document.body.appendChild(adminBar);
+
+  // Submit modal (uses session user, no player selection in form)
   function buildSubmitModal(){
-    const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
+    const wrap = document.createElement('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
     wrap.innerHTML = `
       <div class="papan-modal" role="dialog" aria-modal="true">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -130,12 +190,7 @@
 
           <div class="papan-form-col">
             <div class="papan-form-label">Player / Usuario</div>
-            <select id="papanPlayerSelect" class="papan-select">
-              <option>Selecciona...</option>
-              ${KNOWN_PLAYERS.map(p => `<option>${p}</option>`).join('')}
-              <option>Otro</option>
-            </select>
-            <input id="papanPlayerOther" class="papan-input" placeholder="Tu nombre (si elegiste Otro)" style="display:none;margin-top:8px" />
+            <div id="papanSignedUser" class="papan-subtle">Sign in to submit as a user</div>
           </div>
         </div>
 
@@ -153,22 +208,34 @@
     `;
     document.body.appendChild(wrap);
 
-    // wiring
     const search = wrap.querySelector('#papanLevelSearch');
     const sug = wrap.querySelector('#papanSug');
     const info = wrap.querySelector('#papanLevelInfo');
     const fileInput = wrap.querySelector('#papanFile');
     const preview = wrap.querySelector('#papanPreview');
     const fname = wrap.querySelector('#papanFileName');
-    const playerSelect = wrap.querySelector('#papanPlayerSelect');
-    const playerOther = wrap.querySelector('#papanPlayerOther');
+    const signedUser = wrap.querySelector('#papanSignedUser');
 
     let selectedLevel = null;
     let currentFileBase64 = null;
 
-    // close handlers
     wrap.querySelector('#papanClose').addEventListener('click', ()=> wrap.style.display = 'none');
     wrap.querySelector('#papanCancelBtn').addEventListener('click', ()=> wrap.style.display = 'none');
+
+    // open hook: update signed user display and reset form
+    wrap._onOpen = function(){
+      const cur = getCurrentUser();
+      signedUser.textContent = cur ? `Submitting as: ${cur}` : 'Sign in to submit as a user';
+      preview.src = 'images/placeholder.png';
+      fileInput.value = '';
+      fname.textContent = 'No file selected';
+      currentFileBase64 = null;
+      wrap.querySelector('#papanPercent').value = '';
+      wrap.querySelector('#papanNotes').value = '';
+      search.value = '';
+      info.innerHTML = '';
+      selectedLevel = null;
+    };
 
     // autocomplete
     search.addEventListener('input', ()=>{
@@ -198,7 +265,7 @@
       });
     });
 
-    // file input: custom button already hides default text; show filename in a custom span + preview
+    // file input handling
     fileInput.addEventListener('change', (ev)=>{
       const f = ev.target.files && ev.target.files[0];
       if(!f){ preview.src='images/placeholder.png'; currentFileBase64 = null; fname.textContent='No file selected'; return; }
@@ -209,54 +276,16 @@
       reader.readAsDataURL(f);
     });
 
-    // player select behavior (other)
-    playerSelect.addEventListener('change', ()=>{
-      if(playerSelect.value === 'Otro'){ playerOther.style.display = ''; playerOther.focus(); } else { playerOther.style.display = 'none'; }
-    });
-
-    // if user is logged in auto-select and lock player select
-    function syncPlayerToSession(){
-      const cur = getCurrentUser();
-      if(cur){
-        // preselect and disable change
-        playerSelect.value = cur;
-        playerSelect.disabled = true;
-        playerOther.style.display = 'none';
-      } else {
-        playerSelect.value = 'Selecciona...';
-        playerSelect.disabled = false;
-      }
-    }
-    syncPlayerToSession();
-
-    // open-time hook: when modal opens we must refresh sync (we call this externally too)
-    wrap._onOpen = function(){
-      syncPlayerToSession();
-      // clear previous preview / state
-      preview.src = 'images/placeholder.png';
-      fileInput.value = '';
-      fname.textContent = 'No file selected';
-      currentFileBase64 = null;
-      wrap.querySelector('#papanPercent').value = '';
-      wrap.querySelector('#papanNotes').value = '';
-      search.value = '';
-      info.innerHTML = '';
-      selectedLevel = null;
-    };
-
-    // submit
+    // submit handler uses current signed user
     wrap.querySelector('#papanSubmitBtn').addEventListener('click', ()=>{
+      const curUser = getCurrentUser();
+      if(!curUser){ alert('Debes iniciar sesión con un usuario antes de enviar. Usa Sign in (bottom-left).'); return; }
+
       const lvlQuery = (search.value||'').trim();
-      if(!selectedLevel || selectedLevel.name !== lvlQuery){
-        alert('Selecciona un nivel válido desde la lista (escribe y selecciona).');
-        return;
-      }
+      if(!selectedLevel || selectedLevel.name !== lvlQuery){ alert('Selecciona un nivel válido desde la lista (escribe y selecciona).'); return; }
+
       const percentVal = Number((wrap.querySelector('#papanPercent').value||'').trim());
       if(isNaN(percentVal) || percentVal < 0 || percentVal > 100){ alert('Introduce un porcentaje válido entre 0 y 100.'); return; }
-
-      let playerName = playerSelect.value;
-      if(playerName === 'Selecciona...' || !playerName){ alert('Selecciona un jugador.'); return; }
-      if(playerName === 'Otro'){ playerName = (playerOther.value||'').trim(); if(!playerName){ alert('Escribe tu nombre (otro).'); return; } }
 
       const notes = (wrap.querySelector('#papanNotes').value || '').trim();
       const date = new Date().toISOString().slice(0,10);
@@ -270,7 +299,7 @@
         levelId: selectedLevel.id,
         levelName: selectedLevel.name,
         progress: String(percentVal) + '%',
-        holder: playerName,
+        holder: curUser,
         notes: notes,
         image: currentFileBase64 || null,
         date: date,
@@ -279,9 +308,9 @@
       };
 
       try{
-        const arr = safeParse(localStorage.getItem(SUB_KEY), []);
+        const arr = loadSubmissions();
         arr.push(sub);
-        localStorage.setItem(SUB_KEY, JSON.stringify(arr));
+        saveSubmissions(arr);
       }catch(e){ alert('No se pudo guardar la submisión: ' + e); return; }
 
       alert('Enviado. La submisión está en estado PENDING y será revisada por el admin.');
@@ -290,36 +319,14 @@
 
     return wrap;
   }
-
   const papanModal = buildSubmitModal();
   submitBtn.addEventListener('click', ()=> { papanModal.style.display = 'flex'; if(typeof papanModal._onOpen === 'function') papanModal._onOpen(); });
 
   // -----------------------
-  // Admin bar (vertical): REVIEW above Admin login, Sign in, Delete Records button (admin-only)
-  // -----------------------
-  const adminBar = create('div'); adminBar.className = 'papan-admin-bar';
-  // review button (top)
-  const reviewToggleBtn = create('button'); reviewToggleBtn.className = 'papan-admin-badge'; reviewToggleBtn.textContent = 'Review';
-  // admin login
-  const adminLoginBtn = create('button'); adminLoginBtn.className = 'papan-admin-badge'; adminLoginBtn.textContent = 'Admin login';
-  // delete records (admin only)
-  const deleteRecordsBtn = create('button'); deleteRecordsBtn.className = 'papan-admin-badge'; deleteRecordsBtn.textContent = 'Delete records'; deleteRecordsBtn.style.display = 'none';
-  // sign-in / user control
-  const signInBtn = create('button'); signInBtn.className = 'papan-admin-badge'; signInBtn.textContent = 'Sign in';
-  // notification badge small span appended to signInBtn (we'll update)
-  const notifSpan = create('span'); notifSpan.className = 'papan-notif-badge'; notifSpan.style.display = 'none'; signInBtn.appendChild(notifSpan);
-
-  adminBar.appendChild(reviewToggleBtn); // intentionally first -> sits above admin
-  adminBar.appendChild(adminLoginBtn);
-  adminBar.appendChild(deleteRecordsBtn);
-  adminBar.appendChild(signInBtn);
-  document.body.appendChild(adminBar);
-
-  // -----------------------
-  // Sign-in modal (select existing or create new)
+  // Sign-in modal (choose or create)
   // -----------------------
   function buildSignInModal(){
-    const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
+    const wrap = document.createElement('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
     wrap.innerHTML = `
       <div class="papan-modal" role="dialog" aria-modal="true">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -333,7 +340,7 @@
           </div>
         </div>
         <div style="margin-bottom:12px">
-          <div class="papan-form-label">Or create / type your username</div>
+          <div class="papan-form-label">Or type a name</div>
           <input id="papanSignName" class="papan-input" placeholder="Type a name..." />
         </div>
         <div style="display:flex;gap:8px;justify-content:flex-end">
@@ -348,17 +355,18 @@
     wrap.querySelector('#papanSignCancel').addEventListener('click', ()=> wrap.style.display='none');
 
     Array.from(wrap.querySelectorAll('.papan-quickuser')).forEach(b=>{
-      b.addEventListener('click', ()=> {
-        const name = b.dataset.name;
-        wrap.querySelector('#papanSignName').value = name;
-      });
+      b.addEventListener('click', ()=> wrap.querySelector('#papanSignName').value = b.dataset.name);
     });
 
     wrap.querySelector('#papanSignInBtn').addEventListener('click', ()=>{
       const name = (wrap.querySelector('#papanSignName').value || '').trim();
       if(!name){ alert('Escribe un nombre para iniciar sesión.'); return; }
-      setCurrentUser(name);
+      // signing in as user must log out admin if any
+      localStorage.removeItem(ISADMIN_KEY);
+      sessionStorage.setItem(CURRENT_USER_KEY, name);
       wrap.style.display = 'none';
+      updateUserUI();
+      alert('Signed in as ' + name);
     });
 
     return wrap;
@@ -366,10 +374,10 @@
   const signInModal = buildSignInModal();
 
   // -----------------------
-  // Review modal (admin): list submissions and accept/deny (removes submission on action)
+  // Review modal (admin)
   // -----------------------
   function buildReviewModal(){
-    const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
+    const wrap = document.createElement('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
     wrap.innerHTML = `
       <div class="papan-modal" role="dialog" aria-modal="true">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -392,10 +400,10 @@
   const reviewModal = buildReviewModal();
 
   // -----------------------
-  // Delete Records modal (admin-only)
+  // Delete Records modal (admin)
   // -----------------------
   function buildDeleteRecordsModal(){
-    const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
+    const wrap = document.createElement('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
     wrap.innerHTML = `
       <div class="papan-modal" role="dialog" aria-modal="true">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -418,65 +426,7 @@
   const delModal = buildDeleteRecordsModal();
 
   // -----------------------
-  // Utilities: session, submissions, overrides, notifications
-  // -----------------------
-  function getCurrentUser(){ return sessionStorage.getItem(CURRENT_USER_KEY) || null; }
-  function setCurrentUser(name){
-    if(!name) { sessionStorage.removeItem(CURRENT_USER_KEY); updateUserUI(); return; }
-    sessionStorage.setItem(CURRENT_USER_KEY, String(name));
-    updateUserUI();
-  }
-  function isAdminLogged(){ return localStorage.getItem(ISADMIN_KEY) === '1'; }
-  function setAdminLogged(v){ if(v) localStorage.setItem(ISADMIN_KEY,'1'); else localStorage.removeItem(ISADMIN_KEY); updateAdminUI(); }
-
-  function loadSubmissions(){ return safeParse(localStorage.getItem(SUB_KEY), []); }
-  function saveSubmissions(arr){ localStorage.setItem(SUB_KEY, JSON.stringify(arr)); }
-
-  function loadOverrides(){ return safeParse(localStorage.getItem(RECS_KEY), {}); }
-  function saveOverrides(obj){ localStorage.setItem(RECS_KEY, JSON.stringify(obj)); }
-
-  function pushNotification(playerName, text){
-    try{
-      const key = `papan_notifications_${playerName}`;
-      const arr = safeParse(localStorage.getItem(key), []);
-      arr.push({ id: 'n_' + Date.now(), text, date: new Date().toISOString().slice(0,10), read:false });
-      localStorage.setItem(key, JSON.stringify(arr));
-      updateUserUI(); // update badge if current user
-      return true;
-    }catch(e){ console.error(e); return false; }
-  }
-
-  function addRecordOverride(levelId, record){
-    try{
-      const obj = loadOverrides();
-      if(!Array.isArray(obj[levelId])) obj[levelId] = [];
-      const exists = obj[levelId].some(r => r.holder === record.holder && r.progress === record.progress && r.date === record.date);
-      if(!exists) obj[levelId].push(record);
-      saveOverrides(obj);
-      return true;
-    }catch(e){ console.error(e); return false; }
-  }
-
-  // Accept a submission: add override, push notif, remove submission from queue
-  function acceptSubmission(sub){
-    addRecordOverride(sub.levelId, { holder: sub.holder, progress: sub.progress, date: sub.date });
-    pushNotification(sub.holder, `Tu submisión para "${sub.levelName}" (${sub.progress}) ha sido ACEPTADA.`);
-    // remove submission
-    const arr = loadSubmissions();
-    const kept = arr.filter(x => x.id !== sub.id);
-    saveSubmissions(kept);
-  }
-
-  // Deny: push notification and remove submission
-  function denySubmission(sub, reason){
-    pushNotification(sub.holder, `Tu submisión para "${sub.levelName}" (${sub.progress}) ha sido DENEGADA.${reason ? ' Motivo: '+reason : ''}`);
-    const arr = loadSubmissions();
-    const kept = arr.filter(x => x.id !== sub.id);
-    saveSubmissions(kept);
-  }
-
-  // -----------------------
-  // Render / UI update functions
+  // Render functions for modals
   // -----------------------
   function renderReviewList(){
     const listNode = reviewModal.querySelector('#papanReviewList');
@@ -485,7 +435,7 @@
     if(!arr.length){ listNode.innerHTML = '<div class="papan-subtle">No hay submisiones.</div>'; return; }
 
     arr.forEach(sub => {
-      const card = create('div');
+      const card = document.createElement('div');
       card.style = 'padding:12px;border-radius:10px;background:var(--card);margin-bottom:8px;border:1px solid rgba(255,255,255,0.02);';
       card.innerHTML = `
         <div style="display:flex;gap:12px;align-items:center">
@@ -494,7 +444,6 @@
             <div style="font-weight:800">${escapeHtml(sub.levelName)} <span class="papan-subtle">#${escapeHtml(sub.levelId)}</span></div>
             <div style="color:var(--muted);margin-top:6px">${escapeHtml(sub.holder)} — ${escapeHtml(sub.progress)} — ${escapeHtml(sub.date)}</div>
             <div style="margin-top:8px;color:var(--muted);font-size:13px">${escapeHtml(sub.notes||'')}</div>
-            <div style="margin-top:8px" class="papan-subtle">Status: ${escapeHtml(sub.status)}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px">
             <button class="papan-accept papan-primary">Aceptar</button>
@@ -502,21 +451,37 @@
           </div>
         </div>
       `;
-      // handlers
+      // accept handler: add override, notify user, remove submission
       card.querySelector('.papan-accept').addEventListener('click', ()=>{
         if(!isAdminLogged()){ alert('No eres admin.'); return; }
         if(!confirm('Aceptar esta submisión? (se añadirá a records del nivel)')) return;
-        acceptSubmission(sub);
+        // add override
+        addRecordOverride(sub.levelId, { holder: sub.holder, progress: sub.progress, date: sub.date });
+        // remove submission
+        const arr = loadSubmissions();
+        const kept = arr.filter(x => x.id !== sub.id);
+        saveSubmissions(kept);
+        // notify
+        pushNotification(sub.holder, `Tu submisión para "${sub.levelName}" (${sub.progress}) ha sido ACEPTADA.`);
+        // refresh UI
         renderReviewList();
         updateUserUI();
+        alert('Submisión aceptada y añadida a records.');
       });
       card.querySelector('.papan-deny').addEventListener('click', ()=>{
         if(!isAdminLogged()){ alert('No eres admin.'); return; }
         const reason = prompt('Motivo (opcional):');
-        denySubmission(sub, reason || null);
+        // remove submission
+        const arr = loadSubmissions();
+        const kept = arr.filter(x => x.id !== sub.id);
+        saveSubmissions(kept);
+        // notify
+        pushNotification(sub.holder, `Tu submisión para "${sub.levelName}" (${sub.progress}) ha sido DENEGADA.${reason ? ' Motivo: '+reason : ''}`);
         renderReviewList();
         updateUserUI();
+        alert('Submisión denegada.');
       });
+
       listNode.appendChild(card);
     });
   }
@@ -526,20 +491,20 @@
     listNode.innerHTML = '';
     const obj = loadOverrides();
     const keys = Object.keys(obj);
-    if(!keys.length){ listNode.innerHTML = '<div class="papan-subtle">No hay registros overrides guardados.</div>'; return; }
+    if(!keys.length){ listNode.innerHTML = '<div class="papan-subtle">No hay record overrides guardados.</div>'; return; }
 
     keys.forEach(levelId => {
       const arr = Array.isArray(obj[levelId]) ? obj[levelId] : [];
-      const section = create('div');
+      const section = document.createElement('div');
       section.style = 'margin-bottom:12px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.01);';
       section.innerHTML = `<div style="font-weight:800;margin-bottom:6px">${escapeHtml(levelId)}</div>`;
       arr.forEach((rec, idx) => {
-        const r = create('div');
+        const r = document.createElement('div');
         r.style = 'display:flex;justify-content:space-between;align-items:center;padding:6px;border-radius:6px;margin-bottom:6px;background:var(--card);';
         r.innerHTML = `<div><strong>${escapeHtml(rec.holder)}</strong> — ${escapeHtml(rec.progress)} <div class="papan-subtle">${escapeHtml(rec.date||'')}</div></div><div><button class="papan-muted">Eliminar</button></div>`;
         r.querySelector('.papan-muted').addEventListener('click', ()=> {
+          if(!isAdminLogged()){ alert('No eres admin.'); return; }
           if(!confirm('Eliminar este record override?')) return;
-          // remove arr[idx]
           const obj2 = loadOverrides();
           if(Array.isArray(obj2[levelId])) obj2[levelId] = obj2[levelId].filter((_,i)=>i!==idx);
           if(obj2[levelId].length === 0) delete obj2[levelId];
@@ -553,7 +518,7 @@
   }
 
   // -----------------------
-  // Admin / Sign in interactions wiring
+  // Wiring admin / sign-in buttons
   // -----------------------
   adminLoginBtn.addEventListener('click', ()=>{
     if(isAdminLogged()){
@@ -563,102 +528,94 @@
     const key = prompt('Introduce admin PIN:');
     if(!key) return;
     if(String(key) === String(ADMIN_KEY)){
-      setAdminLogged(true); setAdminLogged(true); alert('Admin logged in');
+      setAdminLogged(true);
+      // ensure admin is not also a user
+      sessionStorage.removeItem(CURRENT_USER_KEY);
+      alert('Admin access granted.');
+      updateUserUI();
     } else {
       alert('PIN incorrecto.');
     }
   });
 
   reviewToggleBtn.addEventListener('click', ()=>{
-    if(!isAdminLogged()){ alert('Primero haz login como admin'); return; }
+    if(!isAdminLogged()){ alert('Necesitas ser admin.'); return; }
     renderReviewList();
     reviewModal.style.display = 'flex';
   });
 
   deleteRecordsBtn.addEventListener('click', ()=>{
-    if(!isAdminLogged()){ alert('Solo admin puede borrar records'); return; }
+    if(!isAdminLogged()){ alert('Necesitas ser admin.'); return; }
     renderDeleteList();
     delModal.style.display = 'flex';
   });
 
-  // sign-in UI
-  signInBtn.addEventListener('click', ()=> {
+  signInBtn.addEventListener('click', ()=>{
     const cur = getCurrentUser();
     if(cur){
-      // show options: logout
       if(confirm(`Cerrar sesión (${cur})?`)){ setCurrentUser(null); alert('Logged out'); }
       return;
     }
+    // open sign-in modal
     signInModal.style.display = 'flex';
   });
 
-  // hook sign-in modal to set current user
-  signInModal.querySelector('#papanSignInBtn').addEventListener('click', ()=>{
-    const name = (signInModal.querySelector('#papanSignName').value || '').trim();
-    if(!name){ alert('Escribe un nombre para iniciar sesión.'); return; }
-    setCurrentUser(name);
-    signInModal.style.display = 'none';
-  });
+  // create signIn modal wiring (buttons declared earlier via buildSignInModal)
+  // (we already built signInModal at creation time)
+  // find sign-in elements and attach behavior is done inside the modal creation (above)
 
   // -----------------------
-  // UI update functions (admin + user)
+  // Update UI bits (admin & user badges)
   // -----------------------
-  function updateAdminUI(){
+  function updateUserUI(){
+    // admin state
     if(isAdminLogged()){
-      adminLoginBtn.textContent = 'Admin: ' + (ADMIN_NAME || 'Owner');
+      adminLoginBtn.textContent = 'Admin: ' + ADMIN_NAME;
+      reviewToggleBtn.style.display = '';
       deleteRecordsBtn.style.display = '';
+      // sign-in button should show plain text (admin cannot be user)
+      signInBtn.textContent = 'Admin';
+      notifSpan.style.display = 'none';
     } else {
       adminLoginBtn.textContent = 'Admin login';
+      reviewToggleBtn.style.display = 'none';
       deleteRecordsBtn.style.display = 'none';
-    }
-  }
-
-  function updateUserUI(){
-    const cur = getCurrentUser();
-    if(cur){
-      // show username & unread notif count
-      signInBtn.textContent = `User: ${cur}`;
-      const count = getUnreadCount(cur);
-      if(count > 0){
-        notifSpan.textContent = String(count);
-        notifSpan.style.display = '';
+      // user badge
+      const cur = getCurrentUser();
+      if(cur){
+        signInBtn.textContent = `User: ${cur}`;
+        const count = getUnreadCount(cur);
+        if(count > 0){ notifSpan.textContent = String(count); notifSpan.style.display = ''; } else { notifSpan.style.display = 'none'; }
       } else {
+        signInBtn.textContent = 'Sign in';
         notifSpan.style.display = 'none';
       }
-    } else {
-      signInBtn.textContent = 'Sign in';
-      notifSpan.style.display = 'none';
     }
-    updateAdminUI();
   }
 
-  // unread notifications count for user
   function getUnreadCount(user){
     if(!user) return 0;
     try{
       const arr = safeParse(localStorage.getItem(`papan_notifications_${user}`), []);
-      if(!Array.isArray(arr)) return 0;
-      return arr.filter(n => !n.read).length;
+      return Array.isArray(arr) ? arr.filter(n => !n.read).length : 0;
     }catch(e){ return 0; }
   }
 
   // -----------------------
-  // Initial load: set admin state & user state from storage
+  // Initial state
   // -----------------------
-  (function initState(){
-    if(localStorage.getItem(ISADMIN_KEY) === '1'){ /* ok */ }
+  (function init(){
+    // ensure review and delete hidden until admin
     updateUserUI();
   })();
 
-  // expose small API for other scripts if needed (optional)
+  // -----------------------
+  // Expose small API
+  // -----------------------
   window.Papan = window.Papan || {};
-  window.Papan.refreshSubmissions = function(){ renderReviewList(); };
+  window.Papan.refreshSubmissions = function(){ if(isAdminLogged()) renderReviewList(); };
   window.Papan.openSubmitModal = function(){ papanModal.style.display = 'flex'; if(typeof papanModal._onOpen === 'function') papanModal._onOpen(); };
   window.Papan.setCurrentUser = setCurrentUser;
-
-  // -----------------------
-  // Helper small functions
-  // -----------------------
-  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  window.Papan.isAdmin = isAdminLogged;
 
 })();

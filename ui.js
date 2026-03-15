@@ -417,18 +417,51 @@
   }
 
   // add record override (robust)
-  function addRecordOverride(levelId, record){
+function addRecordOverride(levelId, record){
+
+  try{
+
+    let obj;
+
     try{
-      const obj = loadOverrides();
-      if(typeof obj !== 'object' || Array.isArray(obj)) { /* normalize */ }
-      if(!Array.isArray(obj[levelId])) obj[levelId] = [];
-      // avoid duplicates
-      const exists = obj[levelId].some(r => r.holder === record.holder && r.progress === record.progress && r.date === record.date);
-      if(!exists) obj[levelId].push(record);
-      saveOverrides(obj);
-      return true;
-    }catch(e){ console.error('addRecordOverride error', e); return false; }
+      obj = JSON.parse(localStorage.getItem(RECS_KEY));
+    }catch(e){
+      obj = {};
+    }
+
+    if(!obj || typeof obj !== 'object' || Array.isArray(obj)){
+      obj = {};
+    }
+
+    if(!Array.isArray(obj[levelId])){
+      obj[levelId] = [];
+    }
+
+    // evitar duplicados
+    const exists = obj[levelId].some(r =>
+      r.holder === record.holder &&
+      r.progress === record.progress &&
+      r.date === record.date
+    );
+
+    if(!exists){
+      obj[levelId].push({
+        holder: record.holder,
+        progress: record.progress,
+        date: record.date
+      });
+    }
+
+    localStorage.setItem(RECS_KEY, JSON.stringify(obj));
+
+    return true;
+
+  }catch(e){
+    console.error("Error guardando record:", e);
+    return false;
   }
+
+}
 
   // accept submission: add override, notif, remove submission
   function acceptSubmission(sub){

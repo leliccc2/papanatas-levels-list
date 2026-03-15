@@ -86,7 +86,7 @@
   const submitBtn = document.createElement('button');
   submitBtn.className = 'papan-submit-btn';
   submitBtn.title = 'Enviar prueba / submit proof';
-  submitBtn.innerText = 'Enviar prueba';
+  submitBtn.innerText = 'Submit a record';
   document.body.appendChild(submitBtn);
 
   // small admin controls area (login / review) inserted bottom-left
@@ -332,7 +332,7 @@
       if(confirm('Cerrar sesión como admin?')){ isAdmin = false; localStorage.removeItem('papan_is_admin'); updateAdminUI(); }
       return;
     }
-    const key = prompt('Introduce admin key:');
+    const key = prompt('171213');
     if(!key) return;
     if(key === ADMIN_KEY){
       isAdmin = true; localStorage.setItem('papan_is_admin','1'); updateAdminUI();

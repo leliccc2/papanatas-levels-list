@@ -13,13 +13,14 @@
     else document.body.classList.remove('sidebar-hidden');
   }catch(e){}
   requestAnimationFrame(()=> requestAnimationFrame(()=> { try{ document.documentElement.classList.remove('no-animate'); } catch(e){} }));
+
   if(sidebarToggle) sidebarToggle.addEventListener('click', ()=>{
     const hidden = document.body.classList.toggle('sidebar-hidden');
     try { sessionStorage.setItem('papan_sidebar_hidden', hidden ? '1' : '0'); } catch(e){}
   });
 
   // -----------------------
-  // Supabase init (replace with your own values or keep the ones placed)
+  // Supabase init - keep your keys here (or move to supabase.js)
   // -----------------------
   const supabaseUrl = 'https://hlvvxgljcrwjuelmascs.supabase.co';
   const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsdnZ4Z2xqY3J3anVlbG1hc2NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1OTc0MjEsImV4cCI6MjA4OTE3MzQyMX0.r1bS2NeloY1EgtdlJH-ZqLyOzgIpoL2Y_qsRGQIOYiM';
@@ -33,7 +34,7 @@
   const KNOWN_PLAYERS = ['Lelike','Carlos','Marc','Billy','Yoyi','Eiron456'];
 
   // storage keys
-  const SUB_KEY = 'papan_submissions'; // legacy (not used for Supabase submissions)
+  const SUB_KEY = 'papan_submissions'; // legacy
   const RECS_KEY = 'papan_records_overrides';
   const ISADMIN_KEY = 'papan_is_admin';
   const CURRENT_USER_KEY = 'papan_current_user';
@@ -65,6 +66,14 @@
 .papan-file-name{ color:var(--muted); font-size:13px; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .papan-subtle{ color:var(--muted); font-size:13px; }
 .papan-notif-badge{ background:#ff6b6b;color:#111;padding:2px 6px;border-radius:999px;font-weight:800;margin-left:6px;font-size:12px; }
+
+/* danger button style (red) */
+.papan-danger{ background:linear-gradient(180deg,#ff6b6b,#ff4c4c); color:#111; padding:10px 12px; border-radius:10px; border:none; font-weight:800; cursor:pointer; }
+.papan-danger:hover{ filter:brightness(0.95); transform:translateY(-1px); }
+
+/* small layout helpers for review cards */
+.papan-review-list .card{ padding:12px;border-radius:10px;background:var(--card);margin-bottom:8px;border:1px solid rgba(255,255,255,0.02); display:flex; gap:12px; align-items:center;}
+.papan-review-list .actions{ display:flex; flex-direction:column; gap:8px; }
 `;
     const s = document.createElement('style'); s.textContent = css; document.head.appendChild(s);
   })();
@@ -345,12 +354,12 @@
   const signInModal = buildSignInModal();
 
   // -----------------------
-  // Review modal (admin)
+  // Review modal (admin) - ONLY ONE "Cerrar" button
   // -----------------------
   function buildReviewModal(){
     const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
     wrap.innerHTML = `
-      <div class="papan-modal" role="dialog" aria-modal="true">
+      <div class="papan-modal" role="dialog" aria-modal="true" style="max-width:900px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
           <div style="font-weight:900;font-size:16px">Reviews — Submissions</div>
           <div><button id="papanReviewClose" class="papan-muted">Cerrar</button></div>
@@ -358,13 +367,11 @@
         <div id="papanReviewList" class="papan-review-list"></div>
         <div style="display:flex;justify-content:flex-end;margin-top:12px">
           <button id="papanReviewRefresh" class="papan-muted" style="margin-right:8px">Refrescar</button>
-          <button id="papanReviewClose2" class="papan-muted">Cerrar</button>
         </div>
       </div>
     `;
     document.body.appendChild(wrap);
     wrap.querySelector('#papanReviewClose').addEventListener('click', ()=> wrap.style.display='none');
-    wrap.querySelector('#papanReviewClose2').addEventListener('click', ()=> wrap.style.display='none');
     wrap.querySelector('#papanReviewRefresh').addEventListener('click', async ()=> { await renderReviewList(); });
     return wrap;
   }
@@ -384,13 +391,11 @@
         <div id="papanDelList" style="max-height:420px;overflow:auto"></div>
         <div style="display:flex;justify-content:flex-end;margin-top:12px">
           <button id="papanDelRefresh" class="papan-muted" style="margin-right:8px">Refrescar</button>
-          <button id="papanDelClose2" class="papan-muted">Cerrar</button>
         </div>
       </div>
     `;
     document.body.appendChild(wrap);
     wrap.querySelector('#papanDelClose').addEventListener('click', ()=> wrap.style.display='none');
-    wrap.querySelector('#papanDelClose2').addEventListener('click', ()=> wrap.style.display='none');
     wrap.querySelector('#papanDelRefresh').addEventListener('click', ()=> renderDeleteList());
     return wrap;
   }
@@ -404,7 +409,8 @@
       const { data, error } = await supabaseClient
         .from('submissions')
         .select('*')
-        .eq('status', 'pending');
+        .eq('status', 'pending')
+        .order('date', { ascending: false });
       if(error){ console.error('Supabase loadSubmissions error', error); return []; }
       return Array.isArray(data) ? data : [];
     }catch(e){
@@ -445,91 +451,68 @@
   }
 
   // accept submission: update DB status, add override, notif
-async function acceptSubmission(sub){
-  try{
-    const { data, error } = await supabaseClient
-      .from('submissions')
-      .update({ status: 'accepted', reviewer: ADMIN_NAME })
-      .eq('id', sub.id)
-      .select();
+  async function acceptSubmission(sub){
+    try{
+      const { data, error } = await supabaseClient
+        .from('submissions')
+        .update({ status: 'accepted', reviewer: ADMIN_NAME, reviewed_at: new Date().toISOString() })
+        .eq('id', sub.id)
+        .select();
+      if(error){ console.error('Supabase accept error', error); alert('Error al aceptar (DB). Mira la consola.'); return false; }
 
-    if(error){ 
-      console.error('Supabase accept error', error); 
-      alert('Error al aceptar (DB). Mira la consola.'); 
-      return false; 
-    }
+      addRecordOverride(
+        sub.level_id || sub.levelId,
+        { holder: sub.player || sub.holder, progress: sub.progress, date: sub.date || (new Date().toISOString().slice(0,10)) }
+      );
 
-    addRecordOverride(
-      sub.level_id || sub.levelId,
-      { holder: sub.player || sub.holder, progress: sub.progress, date: sub.date || (new Date().toISOString().slice(0,10)) }
-    );
+      pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been ACCEPTED.`);
 
-    pushNotification(
-      sub.player || sub.holder,
-      `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been ACCEPTED.`
-    );
+      await renderReviewList(); // refresh UI
 
-    await renderReviewList();   // 👈 AQUI
-
-    return true;
-
-  }catch(e){
-    console.error('acceptSubmission exception', e);
-    return false;
-  }
-}
-
-  // deny submission: update DB status, notify
-async function denySubmission(sub, reason){
-  try{
-    const { data, error } = await supabaseClient
-      .from('submissions')
-      .update({ status: 'denied', reviewer: ADMIN_NAME })
-      .eq('id', sub.id)
-      .select();
-
-    if(error){ 
-      console.error('Supabase deny error', error); 
-      alert('Error al denegar (DB). Mira la consola.'); 
-      return false; 
-    }
-
-    pushNotification(
-      sub.player || sub.holder,
-      `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been DENIED.${reason ? ' Reason: '+reason : ''}`
-    );
-
-    await renderReviewList();   // 👈 AQUI
-
-    return true;
-
-  }catch(e){
-    console.error('denySubmission exception', e);
-    return false;
-  }
-}
-
-async function deleteSubmission(sub){
-  try{
-    const { error } = await supabaseClient
-      .from('submissions')
-      .delete()
-      .eq('id', sub.id);
-
-    if(error){
-      console.error('Supabase delete error', error);
-      alert('Error al borrar la submission.');
+      return true;
+    }catch(e){
+      console.error('acceptSubmission exception', e);
       return false;
     }
-
-    await renderReviewList(); // refresca la lista
-    return true;
-
-  }catch(e){
-    console.error('deleteSubmission exception', e);
-    return false;
   }
-}
+
+  // deny submission: update DB status, notify
+  async function denySubmission(sub, reason){
+    try{
+      const { data, error } = await supabaseClient
+        .from('submissions')
+        .update({ status: 'denied', reviewer: ADMIN_NAME, reviewed_at: new Date().toISOString() })
+        .eq('id', sub.id)
+        .select();
+      if(error){ console.error('Supabase deny error', error); alert('Error al denegar (DB). Mira la consola.'); return false; }
+
+      pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been DENIED.${reason ? ' Reason: '+reason : ''}`);
+
+      await renderReviewList(); // refresh UI
+
+      return true;
+    }catch(e){
+      console.error('denySubmission exception', e);
+      return false;
+    }
+  }
+
+  // delete submission permanently
+  async function deleteSubmission(sub){
+    try{
+      const { error } = await supabaseClient
+        .from('submissions')
+        .delete()
+        .eq('id', sub.id);
+      if(error){ console.error('Supabase delete error', error); alert('Error al borrar la submission.'); return false; }
+      await renderReviewList();
+      return true;
+    }catch(e){
+      console.error('deleteSubmission exception', e);
+      return false;
+    }
+  }
+
   // -----------------------
   // Render functions for review and delete lists (async-safe)
   // -----------------------
@@ -539,10 +522,9 @@ async function deleteSubmission(sub){
     const arr = await loadSubmissions();
     if(!arr || arr.length === 0){ listNode.innerHTML = '<div class="papan-subtle">No pending submissions.</div>'; return; }
 
-    // reverse chronological
-    arr.slice().reverse().forEach(sub => {
-      const card = create('div');
-      card.style = 'padding:12px;border-radius:10px;background:var(--card);margin-bottom:8px;border:1px solid rgba(255,255,255,0.02);';
+    // reverse chronological (arr already ordered by date desc)
+    arr.forEach(sub => {
+      const card = create('div'); card.className = 'card';
       const imageSrc = sub.proof || sub.image || 'images/placeholder.png';
       const levelName = escapeHtml(sub.level_name || sub.levelName || '');
       const levelId = escapeHtml(sub.level_id || sub.levelId || '');
@@ -552,48 +534,44 @@ async function deleteSubmission(sub){
       const notes = escapeHtml(sub.notes || '');
 
       card.innerHTML = `
-        <div style="display:flex;gap:12px;align-items:center">
-          <img src="${imageSrc}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:84px;object-fit:cover;border-radius:8px">
-          <div style="flex:1">
-            <div style="font-weight:800">${levelName} <span class="papan-subtle">#${levelId}</span></div>
-            <div style="color:var(--muted);margin-top:6px">${player} — ${progress} — ${date}</div>
-            <div style="margin-top:8px;color:var(--muted);font-size:13px">${notes}</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="papan-accept papan-primary">Accept</button>
-            <button class="papan-deny papan-muted">Deny</button>
-            <button class="delete">Delete</button>
-          </div>
+        <img src="${imageSrc}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:84px;object-fit:cover;border-radius:8px">
+        <div style="flex:1">
+          <div style="font-weight:800">${levelName} <span class="papan-subtle">#${levelId}</span></div>
+          <div style="color:var(--muted);margin-top:6px">${player} — ${progress} — ${date}</div>
+          <div style="margin-top:8px;color:var(--muted);font-size:13px">${notes}</div>
+        </div>
+        <div class="actions">
+          <button class="papan-primary btn-accept">Accept</button>
+          <button class="papan-muted btn-deny">Deny</button>
+          <button class="papan-danger btn-delete">Delete</button>
         </div>
       `;
 
-      const acceptBtn = card.querySelector('.papan-accept');
-      const denyBtn = card.querySelector('.papan-deny');
+      // wire events
+      const acceptBtn = card.querySelector('.btn-accept');
+      const denyBtn = card.querySelector('.btn-deny');
+      const deleteBtn = card.querySelector('.btn-delete');
 
       acceptBtn.addEventListener('click', async ()=>{
         if(!isAdminLogged()){ alert('Not admin'); return; }
         if(!confirm('Accept this submission?')) return;
         const ok = await acceptSubmission(sub);
-        if(ok){
-          await renderReviewList();
-          updateUserUI();
-        }
+        if(ok){ /* UI refreshed inside acceptSubmission */ updateUserUI(); }
       });
 
       denyBtn.addEventListener('click', async ()=>{
         if(!isAdminLogged()){ alert('Not admin'); return; }
         const reason = prompt('Reason (optional):');
         const ok = await denySubmission(sub, reason || null);
-        if(ok){
-          await renderReviewList();
-          updateUserUI();
-        }
+        if(ok){ updateUserUI(); }
       });
-      card.querySelector('.delete').onclick = async () => {
-  if(confirm("¿Borrar esta submission?")){
-    await deleteSubmission(sub);
-  }
-};
+
+      deleteBtn.addEventListener('click', async ()=>{
+        if(!isAdminLogged()){ alert('Not admin'); return; }
+        if(!confirm('Delete this submission permanently?')) return;
+        const ok = await deleteSubmission(sub);
+        if(ok){ updateUserUI(); }
+      });
 
       listNode.appendChild(card);
     });
@@ -726,8 +704,6 @@ async function deleteSubmission(sub){
   window.Papan = window.Papan || {};
   window.Papan.openSubmitModal = function(){ papanModal.style.display = 'flex'; if(typeof papanModal._onOpen === 'function') papanModal._onOpen(); };
   window.Papan.refreshAdminUI = updateUserUI;
-
-  // expose renderers
   window.Papan.renderReviewList = renderReviewList;
   window.Papan.renderDeleteList = renderDeleteList;
 
@@ -745,7 +721,7 @@ async function deleteSubmission(sub){
           progress: data.progress,
           proof: data.proof,
           notes: data.notes,
-          date: new Date().toISOString().slice(0,10),
+          date: data.date || new Date().toISOString().slice(0,10),
           status: "pending"
         }])
         .select();

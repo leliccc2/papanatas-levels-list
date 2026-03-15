@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Random Level — PAPANATAS</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .rand-wrap{ max-width:980px; margin:18px auto; padding:18px; background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent); border-radius:12px; }
+    .rand-card{ background:var(--card); padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.02); display:flex; gap:12px; align-items:center; }
+    .rand-meta{ display:flex; flex-direction:column; gap:8px; }
+    .rand-actions{ margin-top:12px; display:flex; gap:8px; }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar" role="navigation" aria-label="Main navigation">
+    <nav class="nav">
+      <a class="nav-link" href="index.html">Main list</a>
+      <a class="nav-link" href="packs.html">Packs</a>
+      <a class="nav-link" href="users.html">User stats</a>
+      <a class="nav-link" href="roulette.html">Roulette</a>
+      <a class="nav-link active" href="random.html">Random level</a>
+    </nav>
+  </aside>
+
+  <button id="sidebarToggle" title="Ocultar/mostrar menú">☰</button>
+
+  <div class="main-wrap">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="header-left">
+          <a href="index.html" class="site-title">PAPANATAS LEVELS LIST</a>
+        </div>
+        <div class="header-right"></div>
+      </div>
+    </header>
+
+    <main class="levels-container">
+      <div class="rand-wrap">
+        <h2 style="margin-top:0">Random Level Generator — ¡haz algo chulo!</h2>
+        <p style="color:var(--muted)">Este generador crea un nivel "virtual" combinando segmentos aleatorios, tags y atributos para que no sea aburrido. Puedes copiar el JSON resultante para añadirlo a tu `levels.json` o reutilizarlo como inspiración.</p>
+
+        <div id="randCard" class="rand-card" style="margin-top:12px">
+          <img id="randThumb" src="images/placeholder.png" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:220px;height:120px;object-fit:cover;border-radius:8px">
+          <div class="rand-meta">
+            <div><strong id="randName">Pulsa Generar</strong></div>
+            <div style="color:var(--muted)" id="randCreator"></div>
+            <div style="color:var(--muted)" id="randStats"></div>
+            <div id="randTags" style="margin-top:6px"></div>
+            <div class="rand-actions">
+              <button id="btnRandGenerate" class="apply-btn">Generar</button>
+              <button id="btnRandCopy" class="muted-btn" disabled>Copiar JSON</button>
+              <button id="btnRandSeed" class="muted-btn" title="Generar con semilla aleatoria">Semilla</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="randJson" style="margin-top:12px;display:none">
+          <strong>JSON generado</strong>
+          <pre id="randJsonText" style="white-space:pre-wrap;background:#070707;padding:12px;border-radius:8px;margin-top:8px;max-height:320px;overflow:auto"></pre>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="random.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>

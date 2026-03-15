@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Roulette — PAPANATAS</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .roulette-wrap{ max-width:980px; margin:18px auto; padding:18px; background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent); border-radius:12px; }
+    .roulette-main{ display:flex; gap:16px; align-items:flex-start; }
+    .roulette-left{ flex:1 }
+    .roulette-right{ width:320px; flex-shrink:0 }
+    .roulette-card{ background:var(--card); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.02) }
+    .roulette-controls{ display:flex; gap:8px; margin-top:12px; }
+    .big-btn{ padding:10px 14px; border-radius:10px; font-weight:800; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar" role="navigation" aria-label="Main navigation">
+    <nav class="nav">
+      <a class="nav-link" href="index.html">Main list</a>
+      <a class="nav-link" href="packs.html">Packs</a>
+      <a class="nav-link" href="users.html">User stats</a>
+      <a class="nav-link active" href="roulette.html">Roulette</a>
+      <a class="nav-link" href="random.html">Random level</a>
+    </nav>
+  </aside>
+
+  <button id="sidebarToggle" title="Ocultar/mostrar menú">☰</button>
+
+  <div class="main-wrap">
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="header-left">
+          <a href="index.html" class="site-title">PAPANATAS LEVELS LIST</a>
+        </div>
+        <div class="header-right"></div>
+      </div>
+    </header>
+
+    <main class="levels-container">
+      <div class="roulette-wrap">
+        <h2 style="margin-top:0">Roulette — 1% → 100%</h2>
+        <p style="color:var(--muted)">Instrucciones: la <strong>roulette</strong> genera 100 niveles aleatorios (sin repetición si hay suficientes). El primer nivel requiere 1% para considerarse completado, el siguiente 2%, y así sucesivamente hasta el 100%. Usa los botones para avanzar, marcar como completado o fallado. Puedes guardar la run localmente.</p>
+
+        <div class="roulette-main" style="margin-top:18px">
+          <div class="roulette-left">
+            <div id="rouletteCard" class="roulette-card">
+              <div id="rouletteContent">Genera una nueva roulette para empezar.</div>
+            </div>
+
+            <div class="roulette-controls">
+              <button id="btnGenerate" class="big-btn muted-btn">Generar roulette</button>
+              <button id="btnStart" class="big-btn apply-btn" disabled>Start</button>
+              <button id="btnPrev" class="big-btn muted-btn" disabled>Prev</button>
+              <button id="btnNext" class="big-btn" disabled>Siguiente</button>
+            </div>
+
+            <div style="margin-top:12px; display:flex; gap:8px; align-items:center">
+              <button id="btnMarkDone" class="big-btn" disabled>Marcar completado ✅</button>
+              <button id="btnMarkFail" class="big-btn muted-btn" disabled>Fallar ❌</button>
+              <button id="btnSaveRun" class="big-btn" disabled>Guardar run</button>
+            </div>
+
+          </div>
+
+          <div class="roulette-right">
+            <div class="roulette-card">
+              <strong>Estado</strong>
+              <div id="rouletteState" style="margin-top:8px;color:var(--muted)">No hay run activa.</div>
+              <hr style="border:none;height:8px">
+              <strong>Progreso</strong>
+              <div id="rouletteProgress" style="margin-top:8px;color:var(--muted)">0 / 0</div>
+              <hr style="border:none;height:8px">
+              <strong>Instrucciones rápidas</strong>
+              <ol style="margin-top:8px;color:var(--muted)">
+                <li>Genera la roulette (100 niveles).</li>
+                <li>Start para comenzar en el nivel 1 (target 1%).</li>
+                <li>Marcar completado avanza al siguiente nivel y aumenta target.</li>
+                <li>Guardar run guarda localmente si quieres retomarla.</li>
+              </ol>
+            </div>
+
+            <div class="roulette-card" style="margin-top:12px">
+              <strong>Run guardadas</strong>
+              <div id="savedRuns" style="margin-top:8px;color:var(--muted)">Cargando...</div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="roulette.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>

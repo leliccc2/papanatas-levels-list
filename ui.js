@@ -282,9 +282,22 @@
       };
 
       try{
-        const arr = safeParse(localStorage.getItem(SUB_KEY), []);
-        arr.push(sub);
-        localStorage.setItem(SUB_KEY, JSON.stringify(arr));
+sendSubmission({
+  level_id: selectedLevel.id,
+  level_name: selectedLevel.name,
+  player: curUser,
+  progress: String(percentVal) + '%',
+  proof: currentFileBase64 || null,
+  notes: notes
+})
+.then(() => {
+  alert('Enviado. La submission está en estado PENDING y será revisada por el admin.');
+  wrap.style.display = 'none';
+})
+.catch((err) => {
+  console.error(err);
+  alert('No se pudo enviar la submission. Revisa la consola.');
+});
       }catch(e){ alert('No se pudo guardar la submisión: ' + e); return; }
 
       alert('Enviado. La submisión está en estado PENDING y será revisada por el admin.');
@@ -399,7 +412,14 @@
   // -----------------------
   // Data helpers: submissions & overrides
   // -----------------------
-  function loadSubmissions(){ return safeParse(localStorage.getItem(SUB_KEY), []); }
+async function loadSubmissions(){
+  const { data, error } = await supabaseClient
+    .from('submissions')
+    .select('*')
+    .eq('status', 'pending');
+  if(error) return console.error(error);
+  return data;
+}
   function saveSubmissions(arr){ localStorage.setItem(SUB_KEY, JSON.stringify(arr)); }
 
   function loadOverrides(){ return safeParse(localStorage.getItem(RECS_KEY), {}); }
@@ -662,5 +682,22 @@ function addRecordOverride(levelId, record){
   // -----------------------
   window.Papan.renderReviewList = renderReviewList;
   window.Papan.renderDeleteList = renderDeleteList;
+
+  async function sendSubmission(data){
+
+  await supabaseClient
+  .from("submissions")
+  .insert([{
+    level_id: data.level_id,
+    level_name: data.level_name,
+    player: data.player,
+    progress: data.progress,
+    proof: data.proof,
+    notes: data.notes,
+    date: new Date().toISOString(),
+    status: "pending"
+  }]);
+
+}
 
 })();

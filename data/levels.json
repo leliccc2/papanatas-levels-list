@@ -23,7 +23,7 @@
     "duration": "0:??",
     "objects": 1809,
     "tier": "Insane",
-    "difficulty": "harder",
+    "difficulty": "insane",
     "tags": ["Lebi","Medium","Chokepoints","Consistency","End Heavy","Cube Timing","Long Sections","Precision","Ship Control","Nerve Control","Structured","Unforgiving","Slow Paced"],
     "date_added": "2025-02-06",
     "records": [
@@ -39,7 +39,7 @@
     "duration": "0:27",
     "objects": 1165,
     "tier": "Insane",
-    "difficulty": "harder",
+    "difficulty": "insane",
     "tags": ["Lebi","Short","Consistency","Click Pattern","End Heavy","Fake Difficulty","Frame Perfect","High CPS","Spam Control","Spider Timing","Unforgiving"],
     "date_added": "2025-02-14",
     "records": [
@@ -55,7 +55,7 @@
     "duration": "0:25",
     "objects": 5563,
     "tier": "Tough",
-    "difficulty": "harder",
+    "difficulty": "tough",
     "tags": ["Lebiyo","Chokepoints","Timings","Short","Structured","Gameplay Sync","Spider Timing","End Heavy","Transition Heavy","Sightreadable","Consistency"],
     "date_added": "2026-02-28",
     "records": [
@@ -70,7 +70,7 @@
     "duration": "0:09",
     "objects": 457,
     "tier": "Tough",
-    "difficulty": "harder",
+    "difficulty": "tough",
     "tags": ["Lebi","Chokepoints","Tiny","Straight Fly","Frame Perfect","Spam Control","Timings","Precision","Transition Heavy","End Heavy","Tight"],
     "date_added": "2024-12-01",
     "records": [
@@ -85,7 +85,7 @@
     "duration": "0:08",
     "objects": 285,
     "tier": "Tough",
-    "difficulty": "harder",
+    "difficulty": "tough",
     "tags": ["Lebi","Chokepoints","Tiny","Straight Fly","Frame Perfect","Wave Control","Transition Heavy","Tight","Fast-Paced","Timings","Sightreadable","Rough Gameplay","End Heavy"],
     "date_added": "2024-12-02",
     "records": [
@@ -100,7 +100,7 @@
     "duration": "0:09",
     "objects": 237,
     "tier": "Tough",
-    "difficulty": "harder",
+    "difficulty": "tough",
     "tags": ["Lebi","Chokepoints","Tiny","Wave Control","Transition Heavy","Tight","Sightreadable","Rough Gameplay","High CPS","Wave Spam","Unforgiving","Consistency","Precision"],
     "date_added": "2024-12-22",
     "records": [
@@ -115,7 +115,7 @@
     "duration": "0:13",
     "objects": 304,
     "tier": "Tough",
-    "difficulty": "harder",
+    "difficulty": "tough",
     "tags": ["Lebi","Chokepoints","Short","Timings","High CPS","Spam","Consistency","Spam Control","Wave Spam","Transition Heavy","Frame Perfect","Tight","End Heavy", "Start Heavy"],
     "date_added": "2023-07-30",
     "records": [
@@ -130,7 +130,7 @@
     "duration": "1:21",
     "objects": 2413,
     "tier": "Tough",
-    "difficulty": "harder",
+    "difficulty": "tough",
     "tags": ["Lebi","Chokepoints","Long","Consistency","Ship Control","Straight Fly","Nerve Control","Structured"],
     "date_added": "2025-12-23",
     "records": [
@@ -199,21 +199,6 @@
     ]
   },
 
-          {
-    "id": "biyole3",
-    "name": "Biyole 3",
-    "creator": "Eiron456",
-    "gd_id": "115062717",
-    "duration": "0:15",
-    "objects": 1284,
-    "tier": "Harder",
-    "difficulty": "harder",
-    "tags": ["Biyole","Short","Slow Paced","Ship Control","Straight Fly","Rough Gameplay","Tight"],
-    "date_added": "2021-01-01",
-    "records": [
-
-    ]
-  },
            {
       "id": "biyo39",
     "name": "BIYO 39",
@@ -271,6 +256,22 @@
     "tags": ["Biyo","Medium","Chokepoints","Balanced","Ball Timing","Spam Control","High CPS","Gameplay Sync","Visual Sync","Sightreadable"],
     "date_added": "2020-10-01",
     "records": [
+    ]
+  },
+  
+          {
+    "id": "biyole3",
+    "name": "Biyole 3",
+    "creator": "Eiron456",
+    "gd_id": "115062717",
+    "duration": "0:15",
+    "objects": 1284,
+    "tier": "Harder",
+    "difficulty": "harder",
+    "tags": ["Biyole","Short","Slow Paced","Ship Control","Straight Fly","Rough Gameplay","Tight"],
+    "date_added": "2021-01-01",
+    "records": [
+
     ]
   },
 
@@ -411,6 +412,7 @@
     "records": [
     ]
   },
+  
                    {
       "id": "biyo36",
     "name": "BIYO 36",
@@ -835,6 +837,20 @@
     "records": [
     ]
   },
+                    {
+    "id": "lemarbiyo5",
+    "name": "LeMarBiYo 5",
+    "creator": "Carlos",
+    "gd_id": "125131378",
+    "duration": "0:36",
+    "objects": 749,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Lemarbiyo","Medium","Sightreadable","Gameplay Sync","Balanced","Jumpy"],
+    "date_added": "2023-08-11",
+    "records": [
+    ]
+  },
 
                {
       "id": "loloz4",
@@ -850,22 +866,10 @@
     "records": [
     ]
   },
+  
 
 
-                {
-    "id": "lemarbiyo5",
-    "name": "LeMarBiYo 5",
-    "creator": "Carlos",
-    "gd_id": "125131378",
-    "duration": "0:36",
-    "objects": 749,
-    "tier": "Casual",
-    "difficulty": "harder",
-    "tags": ["Lemarbiyo","Medium","Sightreadable","Gameplay Sync","Balanced","Jumpy"],
-    "date_added": "2023-08-11",
-    "records": [
-    ]
-  },
+
           {
       "id": "fimosis4",
     "name": "Fimosis 4",
@@ -1711,7 +1715,7 @@
     "duration": "0:05",
     "objects": 120,
     "tier": "Easy",
-    "difficulty": "harder",
+    "difficulty": "easy",
     "tags": ["Biyo","Tiny","Structured","Spam Control","Wave Spam","Consistency"],
     "date_added": "2020-10-01",
     "records": [

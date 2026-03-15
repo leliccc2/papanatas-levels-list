@@ -1,4 +1,4 @@
-// ui.js - toggle sidebar + submit modal, admin review & minor helpers
+// ui.js - toggle sidebar + Submit a record modal + admin review & helpers (FULL)
 (function(){
   // add no-animate class immediately to prevent CSS transitions on initial state
   try { document.documentElement.classList.add('no-animate'); } catch(e){}
@@ -21,26 +21,31 @@
     });
   });
 
-  if(!btn) return;
-  btn.addEventListener('click', ()=> {
-    const hidden = document.body.classList.toggle('sidebar-hidden');
-    try { sessionStorage.setItem('papan_sidebar_hidden', hidden ? '1' : '0'); } catch(e){}
-  });
+  if(btn) {
+    btn.addEventListener('click', ()=> {
+      const hidden = document.body.classList.toggle('sidebar-hidden');
+      try { sessionStorage.setItem('papan_sidebar_hidden', hidden ? '1' : '0'); } catch(e){}
+    });
+  }
 
   /* ===== NEW: Submission system + admin review UI (injected into all pages) =====
-     - Floating "Submit proof" button
-     - Submit modal: level search, percent, player select, "other", notes, image upload
+     - Floating "Submit a record" button
+     - Submit modal: level search, percent, player select, "Other", notes, image upload (png/jpg)
      - Submissions saved to localStorage:papan_submissions
-     - Admin login (client-side pass) required to accept/deny
-     - Accepted records are stored in localStorage:papan_records_overrides
+     - Admin login (client-side PIN) required to accept/deny (PIN = 171213)
+     - Accepted records stored in localStorage:papan_records_overrides
      - Notifications for players saved under papan_notifications_<playername>
+     - Hides regenerate packs button selectors if present
   */
 
-  // CONFIG: change ADMIN_KEY to something only you know
-  const ADMIN_KEY = 'papana_secret_admin_key_please_change'; // <<--- change this to your secret
-  const ADMIN_NAME = 'Owner'; // label to store in reviewer field when accepting
+  // ADMIN PIN (change here if you ever want a different PIN)
+  const ADMIN_KEY = '171213';
+  const ADMIN_NAME = 'Owner';
 
-  // helper small css injection for the floating button & modal
+  // state
+  let isAdmin = false;
+
+  // inject styles for modal, floating button and custom file button
   (function injectStyles(){
     const css = `
 /* submit floating button */
@@ -61,35 +66,56 @@
 .papan-submit-btn:hover{ transform: translateY(-3px); }
 
 /* modal */
-.papan-modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:99999; }
-.papan-modal{ width:820px; max-width:96%; background:var(--card); border-radius:12px; padding:18px; box-shadow:0 28px 60px rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.03); color:var(--white); }
+.papan-modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.65); display:flex; align-items:center; justify-content:center; z-index:99999; }
+.papan-modal{ width:980px; max-width:96%; background:var(--card); border-radius:12px; padding:18px; box-shadow:0 28px 60px rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.03); color:var(--white); }
 .papan-form-row{ display:flex; gap:12px; margin-bottom:12px; align-items:center; }
 .papan-form-col{ flex:1; display:flex; flex-direction:column; gap:6px; }
 .papan-form-label{ font-size:13px; color:var(--muted); font-weight:700; }
 .papan-input, .papan-textarea, .papan-select { background:#0b0b0b; border:1px solid rgba(255,255,255,0.04); color:var(--white); padding:10px; border-radius:8px; outline:none; }
 .papan-textarea{ min-height:84px; resize:vertical; }
-.papan-suggestions{ max-height:180px; overflow:auto; background:var(--card); border:1px solid rgba(255,255,255,0.03); border-radius:8px; margin-top:6px; padding:6px; }
+.papan-suggestions{ max-height:220px; overflow:auto; background:var(--card); border:1px solid rgba(255,255,255,0.03); border-radius:8px; margin-top:6px; padding:6px; }
 .papan-suggestion-item{ padding:8px; border-radius:8px; cursor:pointer; }
 .papan-suggestion-item:hover{ background:rgba(255,255,255,0.02); }
-.papan-file-preview{ width:180px; height:96px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,0.03); }
+.papan-file-preview{ width:180px; height:110px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:#0b0b0b; }
 .papan-primary{ background:var(--accent); color:#111; padding:10px 12px; border-radius:10px; border:none; font-weight:800; cursor:pointer; }
 .papan-muted{ background:#111; color:var(--muted); padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); cursor:pointer; }
 .papan-admin-bar{ position: fixed; left:18px; bottom:18px; z-index:1200; display:flex; gap:8px; }
 .papan-admin-badge{ padding:8px 10px; border-radius:10px; background:rgba(0,0,0,0.6); color:var(--accent); border:1px solid rgba(255,255,255,0.03); font-weight:800; cursor:pointer;}
 .papan-review-list{ max-height:420px; overflow:auto; margin-top:8px; }
 .papan-subtle{ color:var(--muted); font-size:13px; }
+
+/* custom file button */
+.papan-file-wrap { display:flex; gap:8px; align-items:center; }
+.papan-file-btn{
+  padding:8px 10px;
+  border-radius:8px;
+  background:linear-gradient(180deg,#111,#0b0b0b);
+  border:1px solid rgba(255,255,255,0.04);
+  color:var(--muted);
+  font-weight:800;
+  cursor:pointer;
+}
+.papan-file-btn input[type="file"]{
+  position: absolute;
+  left:0; top:0;
+  width:1px;
+  height:1px;
+  opacity:0;
+  pointer-events:none;
+}
+.papan-file-name{ color:var(--muted); font-size:13px; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     `;
     const s = document.createElement('style'); s.textContent = css; document.head.appendChild(s);
   })();
 
-  // create floating submit button
+  // Create floating submit button
   const submitBtn = document.createElement('button');
   submitBtn.className = 'papan-submit-btn';
-  submitBtn.title = 'Enviar prueba / submit proof';
+  submitBtn.title = 'Submit a record';
   submitBtn.innerText = 'Submit a record';
   document.body.appendChild(submitBtn);
 
-  // small admin controls area (login / review) inserted bottom-left
+  // Admin area (bottom-left): login + review
   const adminBar = document.createElement('div');
   adminBar.className = 'papan-admin-bar';
   const adminLoginBtn = document.createElement('button');
@@ -103,14 +129,14 @@
   adminBar.appendChild(reviewToggleBtn);
   document.body.appendChild(adminBar);
 
-  // helper: load levels list cache
+  // Load and cache levels list
   let _levelsCache = null;
   function ensureLevelsLoad(){
     if(Array.isArray(_levelsCache)) return Promise.resolve(_levelsCache);
     return fetch('data/levels.json').then(r=>r.json()).then(data=> { _levelsCache = Array.isArray(data) ? data : []; return _levelsCache; }).catch(e=>{ _levelsCache = []; return _levelsCache; });
   }
 
-  // create the modal markup (hidden by default)
+  // Build Submit modal (returns element)
   function buildSubmitModal(){
     const wrap = document.createElement('div');
     wrap.className = 'papan-modal-backdrop';
@@ -119,7 +145,7 @@
     wrap.innerHTML = `
       <div class="papan-modal" role="dialog" aria-modal="true">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <div style="font-weight:900;font-size:16px">Enviar prueba / Submit proof</div>
+          <div style="font-weight:900;font-size:16px">Submit a record</div>
           <div><button id="papanClose" class="papan-muted">Cerrar</button></div>
         </div>
 
@@ -131,11 +157,16 @@
             <div id="papanLevelInfo" class="papan-subtle" style="margin-top:6px"></div>
           </div>
 
-          <div style="width:180px">
+          <div style="width:220px">
             <div class="papan-form-label">Captura</div>
             <img id="papanPreview" class="papan-file-preview" src="images/placeholder.png" alt="preview" />
             <div style="margin-top:8px">
-              <input id="papanFile" type="file" accept="image/png,image/jpeg" />
+              <div class="papan-file-wrap">
+                <label class="papan-file-btn">Select image
+                  <input id="papanFile" type="file" accept="image/png,image/jpeg" />
+                </label>
+                <div id="papanFileName" class="papan-file-name">No file selected</div>
+              </div>
             </div>
           </div>
         </div>
@@ -176,13 +207,13 @@
     `;
     document.body.appendChild(wrap);
 
-    // event hooks
+    // hooks
     const papanClose = wrap.querySelector('#papanClose');
     const papanCancel = wrap.querySelector('#papanCancelBtn');
     papanClose.addEventListener('click', ()=> wrap.style.display='none');
     papanCancel.addEventListener('click', ()=> wrap.style.display='none');
 
-    // search autocomplete
+    // search autocomplete logic
     const search = wrap.querySelector('#papanLevelSearch');
     const sug = wrap.querySelector('#papanSug');
     const info = wrap.querySelector('#papanLevelInfo');
@@ -200,11 +231,10 @@
         if(results.length===0){ sug.style.display='none'; info.innerHTML='No hay resultados'; selectedLevel = null; return; }
         sug.innerHTML = results.map(r => `<div class="papan-suggestion-item" data-id="${escapeHtml(r.id)}"><strong>${escapeHtml(r.name)}</strong> — ${escapeHtml(r.creator || '')} <div class="papan-subtle">#${escapeHtml(r.id)}</div></div>`).join('');
         sug.style.display = 'block';
-        // wire click
         Array.from(sug.querySelectorAll('.papan-suggestion-item')).forEach(el=>{
           el.addEventListener('click', ()=>{
             const lid = el.dataset.id;
-            const lvl = list.find(x=>String(x.id)===String(lid));
+            const lvl = (_levelsCache||[]).find(x=>String(x.id)===String(lid));
             if(lvl){
               selectedLevel = lvl;
               search.value = lvl.name;
@@ -216,24 +246,26 @@
       });
     });
 
-    // file upload preview -> load base64 later on submit
+    // file input handling (custom button + filename + preview)
     const fileInput = wrap.querySelector('#papanFile');
     const preview = wrap.querySelector('#papanPreview');
+    const fname = wrap.querySelector('#papanFileName');
     let currentFileBase64 = null;
     fileInput.addEventListener('change', (ev)=>{
       const f = ev.target.files && ev.target.files[0];
-      if(!f) { preview.src='images/placeholder.png'; currentFileBase64 = null; return; }
+      if(!f) { preview.src='images/placeholder.png'; currentFileBase64 = null; fname.textContent = 'No file selected'; return; }
       if(!['image/png','image/jpeg'].includes(f.type)){
         alert('Sólo png/jpg permitidos.');
         fileInput.value = '';
         return;
       }
+      fname.textContent = f.name;
       const reader = new FileReader();
       reader.onload = function(e){ preview.src = e.target.result; currentFileBase64 = e.target.result; };
       reader.readAsDataURL(f);
     });
 
-    // player selection: show other input when selected 'Otro'
+    // player selection: "Otro" behavior
     const playerSelect = wrap.querySelector('#papanPlayerSelect');
     const playerOther = wrap.querySelector('#papanPlayerOther');
     playerSelect.addEventListener('change', ()=>{
@@ -241,10 +273,9 @@
       else playerOther.style.display = 'none';
     });
 
-    // submit
+    // submit button handler
     const submit = wrap.querySelector('#papanSubmitBtn');
     submit.addEventListener('click', ()=>{
-      // validate
       const lvlQuery = (search.value || '').trim();
       if(!selectedLevel || selectedLevel.name !== lvlQuery){
         alert('Selecciona un nivel válido desde la lista (escribe y selecciona).');
@@ -261,18 +292,16 @@
         playerName = (playerOther.value || '').trim();
         if(!playerName){ alert('Escribe tu nombre (otro).'); return; }
       }
-
       const notes = (wrap.querySelector('#papanNotes').value || '').trim();
       const date = new Date().toISOString().slice(0,10);
 
-      // ensure we have an image - optional? You demanded attach a photo; enforce it.
+      // image optional but confirm if missing
       if(!currentFileBase64){
-        if(!confirm('No has adjuntado una imagen. ¿Quieres enviar sin captura? (recomendado incluir evidencia)')) {
+        if(!confirm('No has adjuntado una imagen. ¿Enviar sin captura?')) {
           return;
         }
       }
 
-      // build submission object
       const sub = {
         id: 'sub_' + Date.now() + '_' + Math.floor(Math.random()*9999),
         levelId: selectedLevel.id,
@@ -282,11 +311,10 @@
         notes: notes,
         image: currentFileBase64 || null,
         date: date,
-        status: 'pending', // pending | accepted | denied
+        status: 'pending',
         reviewer: null
       };
 
-      // persist to localStorage
       try{
         const raw = localStorage.getItem('papan_submissions') || '[]';
         const arr = JSON.parse(raw);
@@ -297,25 +325,24 @@
         return;
       }
 
-      // feedback
       alert('Enviado. La submisión está en estado PENDING y será revisada por el admin.');
       wrap.style.display = 'none';
-      // reset form basic
+      // reset
       search.value=''; info.innerHTML=''; playerSelect.value='Selecciona...'; playerOther.value=''; playerOther.style.display='none';
-      wrap.querySelector('#papanPercent').value=''; wrap.querySelector('#papanNotes').value=''; fileInput.value=''; preview.src='images/placeholder.png'; currentFileBase64 = null;
+      wrap.querySelector('#papanPercent').value=''; wrap.querySelector('#papanNotes').value=''; fileInput.value=''; preview.src='images/placeholder.png'; fname.textContent='No file selected'; currentFileBase64 = null;
     });
 
+    // expose for external use (rare)
+    wrap._selectedLevelGetter = ()=> selectedLevel;
     return wrap;
   }
 
-  // attach modal to body
   const papanModal = buildSubmitModal();
 
   // open modal on floating button click
   submitBtn.addEventListener('click', ()=> { papanModal.style.display = 'flex'; });
 
-  // Admin login & review
-  let isAdmin = (localStorage.getItem('papan_is_admin') === '1');
+  // Admin login & review handling
   function updateAdminUI(){
     if(isAdmin){
       adminLoginBtn.textContent = 'Admin: ' + ADMIN_NAME;
@@ -332,17 +359,18 @@
       if(confirm('Cerrar sesión como admin?')){ isAdmin = false; localStorage.removeItem('papan_is_admin'); updateAdminUI(); }
       return;
     }
-    const key = prompt('Introduce la clave de acceso');
+    const key = prompt('Introduce admin PIN:');
     if(!key) return;
-    if(key === 171213){
+    // compare to ADMIN_KEY
+    if(String(key) === String(ADMIN_KEY)){
       isAdmin = true; localStorage.setItem('papan_is_admin','1'); updateAdminUI();
       alert('Acceso admin concedido.');
     } else {
-      alert('Clave incorrecta.');
+      alert('PIN incorrecto.');
     }
   });
 
-  // build review modal (admin)
+  // review modal
   function buildReviewModal(){
     const wrap = document.createElement('div');
     wrap.className = 'papan-modal-backdrop';
@@ -364,23 +392,19 @@
       </div>
     `;
     document.body.appendChild(wrap);
-
     wrap.querySelector('#papanReviewClose').addEventListener('click', ()=> wrap.style.display='none');
     wrap.querySelector('#papanReviewClose2').addEventListener('click', ()=> wrap.style.display='none');
     wrap.querySelector('#papanReviewRefresh').addEventListener('click', ()=> renderReviewList());
-
     return wrap;
   }
   const reviewModal = buildReviewModal();
 
-  // wire the review toggle button
   reviewToggleBtn.addEventListener('click', ()=> {
     if(!isAdmin){ alert('Primero haz login como admin'); return; }
     renderReviewList();
     reviewModal.style.display = 'flex';
   });
 
-  // render list of submissions
   function renderReviewList(){
     const listNode = reviewModal.querySelector('#papanReviewList');
     listNode.innerHTML = '';
@@ -388,7 +412,6 @@
     try { arr = JSON.parse(localStorage.getItem('papan_submissions') || '[]'); } catch(e){ arr = []; }
     if(!arr.length){ listNode.innerHTML = '<div class="papan-subtle">No hay submisiones.</div>'; return; }
 
-    // show most recent first
     arr = arr.slice().reverse();
 
     arr.forEach(sub => {
@@ -409,15 +432,11 @@
           </div>
         </div>
       `;
-      // accept / deny handlers
       card.querySelector('.papan-accept').addEventListener('click', ()=> {
         if(!isAdmin){ alert('No eres admin.'); return; }
         if(!confirm('Aceptar esta submisión? (se añadirá a records del nivel)')) return;
-        // mark accepted in storage
         setSubmissionStatus(sub.id, 'accepted', ADMIN_NAME);
-        // add to records overrides
         addRecordOverride(sub.levelId, { holder: sub.holder, progress: sub.progress, date: sub.date });
-        // add notification to user
         pushNotification(sub.holder, `Tu submisión para "${sub.levelName}" (${sub.progress}) ha sido ACEPTADA.`);
         renderReviewList();
       });
@@ -428,12 +447,10 @@
         pushNotification(sub.holder, `Tu submisión para "${sub.levelName}" (${sub.progress}) ha sido DENEGADA.${reason ? ' Motivo: '+reason : ''}`);
         renderReviewList();
       });
-
       listNode.appendChild(card);
     });
   }
 
-  // helper: set submission status
   function setSubmissionStatus(subId, status, reviewer, reason){
     try{
       const arr = JSON.parse(localStorage.getItem('papan_submissions') || '[]');
@@ -449,14 +466,12 @@
     }
   }
 
-  // helper: add record override to a level
   function addRecordOverride(levelId, record){
     try{
       const key = 'papan_records_overrides';
       const raw = localStorage.getItem(key) || '{}';
       const obj = JSON.parse(raw);
       if(!Array.isArray(obj[levelId])) obj[levelId] = [];
-      // prevent exact duplicates
       const exists = obj[levelId].some(r => r.holder === record.holder && r.progress === record.progress && r.date === record.date);
       if(!exists) obj[levelId].push(record);
       localStorage.setItem(key, JSON.stringify(obj));
@@ -466,7 +481,6 @@
     }
   }
 
-  // helper: push notification to a player
   function pushNotification(playerName, text){
     try{
       const key = `papan_notifications_${playerName}`;
@@ -477,7 +491,7 @@
     }catch(e){ console.error(e); return false; }
   }
 
-  // helper: hide regenerate packs button if present
+  // hide regenerate packs button selectors if present
   (function hideRegenerateIfPresent(){
     try{
       const regen = document.querySelectorAll('[data-action="regenerate-packs"], .regenerate-packs, #regeneratePacks');
@@ -485,7 +499,7 @@
     }catch(e){}
   })();
 
-  // small escape utility
+  // util escape
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
   // initial admin state reflect

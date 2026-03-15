@@ -13,6 +13,7 @@
     .roulette-card{ background:var(--card); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.02) }
     .roulette-controls{ display:flex; gap:8px; margin-top:12px; }
     .big-btn{ padding:10px 14px; border-radius:10px; font-weight:800; cursor:pointer; }
+    .percent-input{ width:120px; padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:#000; color:var(--white); }
   </style>
 </head>
 <body>
@@ -41,8 +42,8 @@
 
     <main class="levels-container">
       <div class="roulette-wrap">
-        <h2 style="margin-top:0">Roulette — 1% → 100%</h2>
-        <p style="color:var(--muted)">Instrucciones: la <strong>roulette</strong> genera 100 niveles aleatorios (sin repetición si hay suficientes). El primer nivel requiere 1% para considerarse completado, el siguiente 2%, y así sucesivamente hasta el 100%. Usa los botones para avanzar, marcar como completado o fallado. Puedes guardar la run localmente.</p>
+        <h2 style="margin-top:0">Roulette</h2>
+        <p style="color:var(--muted)">Instrucciones: la <strong>roulette</strong> genera 100 niveles aleatorios (sin repetición si hay suficientes). Cada paso tiene un objetivo porcentual — pero tú puedes introducir exactamente el porcentaje que hayas alcanzado en el campo «%» para registrar el resultado correctamente.</p>
 
         <div class="roulette-main" style="margin-top:18px">
           <div class="roulette-left">
@@ -52,7 +53,8 @@
 
             <div class="roulette-controls">
               <button id="btnGenerate" class="big-btn muted-btn">Generar roulette</button>
-              <button id="btnStart" class="big-btn apply-btn" disabled>Start</button>
+              <input id="percentInput" class="percent-input" type="number" min="0" max="999" step="1" placeholder="% logrado">
+              <button id="btnApplyPercent" class="big-btn apply-btn" disabled>Registrar %</button>
               <button id="btnPrev" class="big-btn muted-btn" disabled>Prev</button>
               <button id="btnNext" class="big-btn" disabled>Siguiente</button>
             </div>
@@ -60,7 +62,7 @@
             <div style="margin-top:12px; display:flex; gap:8px; align-items:center">
               <button id="btnMarkDone" class="big-btn" disabled>Marcar completado ✅</button>
               <button id="btnMarkFail" class="big-btn muted-btn" disabled>Fallar ❌</button>
-              <button id="btnSaveRun" class="big-btn" disabled>Guardar run</button>
+              <!-- Botón de guardar eliminado a petición -->
             </div>
 
           </div>
@@ -76,16 +78,12 @@
               <strong>Instrucciones rápidas</strong>
               <ol style="margin-top:8px;color:var(--muted)">
                 <li>Genera la roulette (100 niveles).</li>
-                <li>Start para comenzar en el nivel 1 (target 1%).</li>
-                <li>Marcar completado avanza al siguiente nivel y aumenta target.</li>
-                <li>Guardar run guarda localmente si quieres retomarla.</li>
+                <li>Introduce el % real que conseguiste en el campo «%» y pulsa "Registrar %".</li>
+                <li>Si prefieres, usa "Marcar completado" o "Fallar" para un control manual.</li>
               </ol>
             </div>
 
-            <div class="roulette-card" style="margin-top:12px">
-              <strong>Run guardadas</strong>
-              <div id="savedRuns" style="margin-top:8px;color:var(--muted)">Cargando...</div>
-            </div>
+            <!-- eliminada la sección de runs guardadas (ya no hay guardar) -->
 
           </div>
         </div>

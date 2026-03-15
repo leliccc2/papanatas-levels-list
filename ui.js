@@ -1,4 +1,4 @@
-// ui.js - definitivo Supabase-ready: submit modal, admin review, signin, record overrides fix
+// ui.js - Supabase-ready: submit modal, admin review, signin, record overrides fix
 (function(){
   'use strict';
 
@@ -20,7 +20,7 @@
   });
 
   // -----------------------
-  // Supabase init - keep your keys here (or move to supabase.js)
+  // Supabase init - REPLACE with your keys if necessary
   // -----------------------
   const supabaseUrl = 'https://hlvvxgljcrwjuelmascs.supabase.co';
   const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsdnZ4Z2xqY3J3anVlbG1hc2NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1OTc0MjEsImV4cCI6MjA4OTE3MzQyMX0.r1bS2NeloY1EgtdlJH-ZqLyOzgIpoL2Y_qsRGQIOYiM';
@@ -29,23 +29,21 @@
   // -----------------------
   // Config / keys
   // -----------------------
-  const ADMIN_KEY = '171213';        // admin PIN requested
+  const ADMIN_KEY = '171213';
   const ADMIN_NAME = 'Owner';
   const KNOWN_PLAYERS = ['Lelike','Carlos','Marc','Billy','Yoyi','Eiron456'];
 
-  // storage keys
   const SUB_KEY = 'papan_submissions'; // legacy
   const RECS_KEY = 'papan_records_overrides';
   const ISADMIN_KEY = 'papan_is_admin';
   const CURRENT_USER_KEY = 'papan_current_user';
 
   // -----------------------
-  // Inject minimal styles for the UI elements we add
+  // Inject styles
   // -----------------------
   (function injectStyles(){
     const css = `
 .papan-submit-btn{ position:fixed; right:18px; bottom:18px; z-index:1200; background: linear-gradient(180deg, var(--accent-strong), var(--accent)); color:#0b0b0b; border-radius:14px; padding:12px 14px; font-weight:800; border:none; cursor:pointer; box-shadow:0 10px 30px rgba(0,0,0,0.45); }
-.papan-submit-btn:hover{ transform: translateY(-3px); }
 .papan-admin-bar{ position:fixed; left:18px; bottom:18px; z-index:1200; display:flex; flex-direction:column; gap:8px; }
 .papan-admin-badge{ padding:8px 10px; border-radius:10px; background:rgba(0,0,0,0.6); color:var(--accent); border:1px solid rgba(255,255,255,0.03); font-weight:800; cursor:pointer; }
 .papan-modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.65); display:flex; align-items:center; justify-content:center; z-index:99999; }
@@ -57,21 +55,10 @@
 .papan-textarea{ min-height:84px; resize:vertical; }
 .papan-suggestions{ max-height:220px; overflow:auto; background:var(--card); border:1px solid rgba(255,255,255,0.03); border-radius:8px; margin-top:6px; padding:6px; }
 .papan-suggestion-item{ padding:8px; border-radius:8px; cursor:pointer; }
-.papan-suggestion-item:hover{ background:rgba(255,255,255,0.02); }
 .papan-file-preview{ width:180px; height:110px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:#0b0b0b; }
 .papan-primary{ background:var(--accent); color:#111; padding:10px 12px; border-radius:10px; border:none; font-weight:800; cursor:pointer; }
 .papan-muted{ background:#111; color:var(--muted); padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); cursor:pointer; }
-.papan-file-wrap{ display:flex; gap:8px; align-items:center; }
-.papan-file-btn{ padding:8px 10px; border-radius:8px; background:linear-gradient(180deg,#111,#0b0b0b); border:1px solid rgba(255,255,255,0.04); color:var(--muted); font-weight:800; cursor:pointer; position:relative; overflow:hidden; }
-.papan-file-name{ color:var(--muted); font-size:13px; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.papan-subtle{ color:var(--muted); font-size:13px; }
-.papan-notif-badge{ background:#ff6b6b;color:#111;padding:2px 6px;border-radius:999px;font-weight:800;margin-left:6px;font-size:12px; }
-
-/* danger button style (red) */
 .papan-danger{ background:linear-gradient(180deg,#ff6b6b,#ff4c4c); color:#111; padding:10px 12px; border-radius:10px; border:none; font-weight:800; cursor:pointer; }
-.papan-danger:hover{ filter:brightness(0.95); transform:translateY(-1px); }
-
-/* small layout helpers for review cards */
 .papan-review-list .card{ padding:12px;border-radius:10px;background:var(--card);margin-bottom:8px;border:1px solid rgba(255,255,255,0.02); display:flex; gap:12px; align-items:center;}
 .papan-review-list .actions{ display:flex; flex-direction:column; gap:8px; }
 `;
@@ -79,14 +66,14 @@
   })();
 
   // -----------------------
-  // Simple helpers
+  // helpers
   // -----------------------
   function create(tag, props){ const el = document.createElement(tag); if(props) Object.assign(el, props); return el; }
   function safeParse(s, fallback){ try{ return JSON.parse(s||'[]'); }catch(e){ return fallback; } }
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
   // -----------------------
-  // Cache levels loader
+  // ensure levels load
   // -----------------------
   function ensureLevelsLoad(){
     if(window._papan_levels_cache) return Promise.resolve(window._papan_levels_cache);
@@ -94,13 +81,12 @@
   }
 
   // -----------------------
-  // Current user & admin helpers
+  // user/admin helpers
   // -----------------------
   function getCurrentUser(){ return sessionStorage.getItem(CURRENT_USER_KEY) || null; }
   function setCurrentUser(name){
     if(!name) { sessionStorage.removeItem(CURRENT_USER_KEY); updateUserUI(); return; }
     sessionStorage.setItem(CURRENT_USER_KEY, String(name));
-    // When normal user logs in, ensure admin mode off
     localStorage.removeItem(ISADMIN_KEY);
     updateUserUI();
   }
@@ -108,7 +94,6 @@
   function setAdminLogged(flag){
     if(flag){
       localStorage.setItem(ISADMIN_KEY,'1');
-      // If admin logs in, clear current user (can't be both)
       sessionStorage.removeItem(CURRENT_USER_KEY);
     } else {
       localStorage.removeItem(ISADMIN_KEY);
@@ -117,7 +102,7 @@
   }
 
   // -----------------------
-  // Dom: floating buttons & admin bar (stacked vertical)
+  // DOM: buttons
   // -----------------------
   const submitBtn = create('button'); submitBtn.className = 'papan-submit-btn'; submitBtn.textContent = 'Submit a record';
   document.body.appendChild(submitBtn);
@@ -136,7 +121,7 @@
   document.body.appendChild(adminBar);
 
   // -----------------------
-  // Build Submit modal (uses current session user automatically)
+  // Submit modal
   // -----------------------
   function buildSubmitModal(){
     const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
@@ -146,7 +131,6 @@
           <div style="font-weight:900;font-size:16px">Submit a record</div>
           <div><button id="papanClose" class="papan-muted">Cerrar</button></div>
         </div>
-
         <div class="papan-form-row">
           <div class="papan-form-col" style="flex:2">
             <div class="papan-form-label">Buscar nivel</div>
@@ -154,7 +138,6 @@
             <div id="papanSug" class="papan-suggestions" style="display:none"></div>
             <div id="papanLevelInfo" class="papan-subtle" style="margin-top:6px"></div>
           </div>
-
           <div style="width:220px">
             <div class="papan-form-label">Captura</div>
             <img id="papanPreview" class="papan-file-preview" src="images/placeholder.png" alt="preview" />
@@ -168,35 +151,29 @@
             </div>
           </div>
         </div>
-
         <div class="papan-form-row">
           <div class="papan-form-col">
             <div class="papan-form-label">Progreso (%)</div>
             <input id="papanPercent" class="papan-input" type="number" min="0" max="100" placeholder="Introduce porcentaje, e.g. 100" />
           </div>
-
           <div class="papan-form-col">
             <div class="papan-form-label">Submitting as</div>
             <div id="papanSubmittingAs" class="papan-subtle">You are not signed in</div>
             <div class="papan-subtle" style="font-size:12px">Sign in with the Sign in button bottom-left</div>
           </div>
         </div>
-
         <div style="margin-bottom:12px">
           <div class="papan-form-label">Notas / Comentarios (opcional)</div>
           <textarea id="papanNotes" class="papan-textarea" placeholder="Añade contexto: dónde, cómo, intentos, etc."></textarea>
         </div>
-
         <div style="display:flex;gap:8px;justify-content:flex-end;align-items:center">
           <button id="papanSubmitBtn" class="papan-primary">Enviar</button>
           <button id="papanCancelBtn" class="papan-muted">Cancelar</button>
         </div>
-
       </div>
     `;
     document.body.appendChild(wrap);
 
-    // wiring
     const search = wrap.querySelector('#papanLevelSearch');
     const sug = wrap.querySelector('#papanSug');
     const info = wrap.querySelector('#papanLevelInfo');
@@ -208,11 +185,9 @@
     let selectedLevel = null;
     let currentFileBase64 = null;
 
-    // close handlers
     wrap.querySelector('#papanClose').addEventListener('click', ()=> wrap.style.display = 'none');
     wrap.querySelector('#papanCancelBtn').addEventListener('click', ()=> wrap.style.display = 'none');
 
-    // autocomplete
     search.addEventListener('input', ()=>{
       const q = (search.value||'').trim().toLowerCase();
       if(!q){ sug.style.display='none'; info.innerHTML=''; selectedLevel = null; return; }
@@ -240,7 +215,6 @@
       });
     });
 
-    // file input handling
     fileInput.addEventListener('change', (ev)=>{
       const f = ev.target.files && ev.target.files[0];
       if(!f){ preview.src='images/placeholder.png'; currentFileBase64 = null; fname.textContent='No file selected'; return; }
@@ -251,13 +225,10 @@
       reader.readAsDataURL(f);
     });
 
-    // modal onOpen hook
     wrap._onOpen = function(){
-      // update submit-as display
       const cur = getCurrentUser();
       if(cur) submitAsText.textContent = `You are signed in as ${cur}`;
       else submitAsText.textContent = 'You are not signed in';
-      // reset fields
       preview.src = 'images/placeholder.png';
       fileInput.value = '';
       fname.textContent = 'No file selected';
@@ -269,7 +240,6 @@
       selectedLevel = null;
     };
 
-    // submit handler: uses current signed-in user
     wrap.querySelector('#papanSubmitBtn').addEventListener('click', async ()=>{
       const curUser = getCurrentUser();
       if(!curUser){ alert('Debes iniciar sesión antes de enviar. Usa Sign in (abajo izquierda).'); return; }
@@ -278,11 +248,6 @@
       const percentVal = Number((wrap.querySelector('#papanPercent').value||'').trim());
       if(isNaN(percentVal) || percentVal < 0 || percentVal > 100){ alert('Introduce un porcentaje válido entre 0 y 100.'); return; }
       const notes = (wrap.querySelector('#papanNotes').value || '').trim();
-
-      if(!currentFileBase64){
-        if(!confirm('No has adjuntado una imagen. ¿Enviar sin captura?')) return;
-      }
-
       try{
         await sendSubmission({
           level_id: selectedLevel.id,
@@ -290,7 +255,8 @@
           player: curUser,
           progress: String(percentVal) + '%',
           proof: currentFileBase64 || null,
-          notes: notes
+          notes: notes,
+          date: new Date().toISOString().slice(0,10)
         });
         alert('Enviado. La submission está en estado PENDING y será revisada por el admin.');
         wrap.style.display = 'none';
@@ -343,7 +309,6 @@
       const name = (wrap.querySelector('#papanSignName').value || '').trim();
       if(!name){ alert('Escribe un nombre para iniciar sesión.'); return; }
       sessionStorage.setItem(CURRENT_USER_KEY, name);
-      // logging in as user clears admin mode
       localStorage.removeItem(ISADMIN_KEY);
       updateUserUI();
       wrap.style.display = 'none';
@@ -354,7 +319,7 @@
   const signInModal = buildSignInModal();
 
   // -----------------------
-  // Review modal (admin) - ONLY ONE "Cerrar" button
+  // Review modal (one close button, no refresh button)
   // -----------------------
   function buildReviewModal(){
     const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
@@ -365,14 +330,10 @@
           <div><button id="papanReviewClose" class="papan-muted">Cerrar</button></div>
         </div>
         <div id="papanReviewList" class="papan-review-list"></div>
-        <div style="display:flex;justify-content:flex-end;margin-top:12px">
-          <button id="papanReviewRefresh" class="papan-muted" style="margin-right:8px">Refrescar</button>
-        </div>
       </div>
     `;
     document.body.appendChild(wrap);
     wrap.querySelector('#papanReviewClose').addEventListener('click', ()=> wrap.style.display='none');
-    wrap.querySelector('#papanReviewRefresh').addEventListener('click', async ()=> { await renderReviewList(); });
     return wrap;
   }
   const reviewModal = buildReviewModal();
@@ -380,7 +341,7 @@
   // -----------------------
   // Delete records modal (admin)
   // -----------------------
-  function buildDeleteRecordsModal(){
+  function buildDeleteRecordsModal(){ /* unchanged from previous approach */ 
     const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
     wrap.innerHTML = `
       <div class="papan-modal" role="dialog" aria-modal="true">
@@ -389,20 +350,16 @@
           <div><button id="papanDelClose" class="papan-muted">Cerrar</button></div>
         </div>
         <div id="papanDelList" style="max-height:420px;overflow:auto"></div>
-        <div style="display:flex;justify-content:flex-end;margin-top:12px">
-          <button id="papanDelRefresh" class="papan-muted" style="margin-right:8px">Refrescar</button>
-        </div>
       </div>
     `;
     document.body.appendChild(wrap);
     wrap.querySelector('#papanDelClose').addEventListener('click', ()=> wrap.style.display='none');
-    wrap.querySelector('#papanDelRefresh').addEventListener('click', ()=> renderDeleteList());
     return wrap;
   }
   const delModal = buildDeleteRecordsModal();
 
   // -----------------------
-  // Data helpers: submissions & overrides (Supabase integrated)
+  // Data helpers: submissions & overrides
   // -----------------------
   async function loadSubmissions(){
     try{
@@ -433,7 +390,7 @@
     }catch(e){ console.error(e); return false; }
   }
 
-  // add record override (robust, localStorage)
+  // add record override to localStorage (so level page shows it immediately)
   function addRecordOverride(levelId, record){
     try{
       let obj;
@@ -450,9 +407,12 @@
     }
   }
 
-  // accept submission: update DB status, add override, notif
+  // -----------------------
+  // accept: mark accepted, insert into records (best-effort), add local override
+  // -----------------------
   async function acceptSubmission(sub){
     try{
+      // 1) update submissions row
       const { data, error } = await supabaseClient
         .from('submissions')
         .update({ status: 'accepted', reviewer: ADMIN_NAME, reviewed_at: new Date().toISOString() })
@@ -460,15 +420,29 @@
         .select();
       if(error){ console.error('Supabase accept error', error); alert('Error al aceptar (DB). Mira la consola.'); return false; }
 
+      // 2) try to insert into a central 'records' table (optional - fails silently if table doesn't exist)
+      try{
+        await supabaseClient
+          .from('records')
+          .insert([{
+            level_id: sub.level_id || sub.levelId,
+            holder: sub.player || sub.holder,
+            progress: sub.progress,
+            date: sub.date || new Date().toISOString().slice(0,10)
+          }]);
+      }catch(e){ /* ignore if records table not present */ }
+
+      // 3) local override for immediate UI / level page
       addRecordOverride(
         sub.level_id || sub.levelId,
         { holder: sub.player || sub.holder, progress: sub.progress, date: sub.date || (new Date().toISOString().slice(0,10)) }
       );
 
+      // 4) notify user
       pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been ACCEPTED.`);
 
-      await renderReviewList(); // refresh UI
-
+      // 5) refresh list
+      await renderReviewList();
       return true;
     }catch(e){
       console.error('acceptSubmission exception', e);
@@ -476,28 +450,9 @@
     }
   }
 
-  // deny submission: update DB status, notify
-  async function denySubmission(sub, reason){
-    try{
-      const { data, error } = await supabaseClient
-        .from('submissions')
-        .update({ status: 'denied', reviewer: ADMIN_NAME, reviewed_at: new Date().toISOString() })
-        .eq('id', sub.id)
-        .select();
-      if(error){ console.error('Supabase deny error', error); alert('Error al denegar (DB). Mira la consola.'); return false; }
-
-      pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been DENIED.${reason ? ' Reason: '+reason : ''}`);
-
-      await renderReviewList(); // refresh UI
-
-      return true;
-    }catch(e){
-      console.error('denySubmission exception', e);
-      return false;
-    }
-  }
-
-  // delete submission permanently
+  // -----------------------
+  // delete submission permanently (used as "deny")
+  // -----------------------
   async function deleteSubmission(sub){
     try{
       const { error } = await supabaseClient
@@ -505,6 +460,11 @@
         .delete()
         .eq('id', sub.id);
       if(error){ console.error('Supabase delete error', error); alert('Error al borrar la submission.'); return false; }
+
+      // push notification: denied
+      pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been DENIED.`);
+
+      // refresh UI
       await renderReviewList();
       return true;
     }catch(e){
@@ -514,7 +474,7 @@
   }
 
   // -----------------------
-  // Render functions for review and delete lists (async-safe)
+  // Render review list (2 buttons: Accept + Delete(=deny)), hide image when none
   // -----------------------
   async function renderReviewList(){
     const listNode = reviewModal.querySelector('#papanReviewList');
@@ -522,10 +482,10 @@
     const arr = await loadSubmissions();
     if(!arr || arr.length === 0){ listNode.innerHTML = '<div class="papan-subtle">No pending submissions.</div>'; return; }
 
-    // reverse chronological (arr already ordered by date desc)
     arr.forEach(sub => {
       const card = create('div'); card.className = 'card';
-      const imageSrc = sub.proof || sub.image || 'images/placeholder.png';
+      const imageSrc = sub.proof || sub.image || null; // if null => don't render img
+      const imgHtml = imageSrc ? `<img src="${imageSrc}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:84px;object-fit:cover;border-radius:8px">` : '';
       const levelName = escapeHtml(sub.level_name || sub.levelName || '');
       const levelId = escapeHtml(sub.level_id || sub.levelId || '');
       const player = escapeHtml(sub.player || sub.holder || '');
@@ -534,7 +494,7 @@
       const notes = escapeHtml(sub.notes || '');
 
       card.innerHTML = `
-        <img src="${imageSrc}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:84px;object-fit:cover;border-radius:8px">
+        ${imgHtml}
         <div style="flex:1">
           <div style="font-weight:800">${levelName} <span class="papan-subtle">#${levelId}</span></div>
           <div style="color:var(--muted);margin-top:6px">${player} — ${progress} — ${date}</div>
@@ -542,41 +502,34 @@
         </div>
         <div class="actions">
           <button class="papan-primary btn-accept">Accept</button>
-          <button class="papan-muted btn-deny">Deny</button>
           <button class="papan-danger btn-delete">Delete</button>
         </div>
       `;
 
-      // wire events
       const acceptBtn = card.querySelector('.btn-accept');
-      const denyBtn = card.querySelector('.btn-deny');
       const deleteBtn = card.querySelector('.btn-delete');
 
       acceptBtn.addEventListener('click', async ()=>{
         if(!isAdminLogged()){ alert('Not admin'); return; }
         if(!confirm('Accept this submission?')) return;
-        const ok = await acceptSubmission(sub);
-        if(ok){ /* UI refreshed inside acceptSubmission */ updateUserUI(); }
-      });
-
-      denyBtn.addEventListener('click', async ()=>{
-        if(!isAdminLogged()){ alert('Not admin'); return; }
-        const reason = prompt('Reason (optional):');
-        const ok = await denySubmission(sub, reason || null);
-        if(ok){ updateUserUI(); }
+        await acceptSubmission(sub);
+        updateUserUI();
       });
 
       deleteBtn.addEventListener('click', async ()=>{
         if(!isAdminLogged()){ alert('Not admin'); return; }
-        if(!confirm('Delete this submission permanently?')) return;
-        const ok = await deleteSubmission(sub);
-        if(ok){ updateUserUI(); }
+        if(!confirm('Delete (deny) this submission permanently?')) return;
+        await deleteSubmission(sub);
+        updateUserUI();
       });
 
       listNode.appendChild(card);
     });
   }
 
+  // -----------------------
+  // Render delete list for overrides (unchanged)
+  // -----------------------
   function renderDeleteList(){
     const listNode = delModal.querySelector('#papanDelList');
     listNode.innerHTML = '';
@@ -607,7 +560,7 @@
   }
 
   // -----------------------
-  // Admin & sign-in button wiring
+  // Admin & sign-in wiring
   // -----------------------
   adminLoginBtn.addEventListener('click', ()=>{
     if(isAdminLogged()){
@@ -641,7 +594,6 @@
     signInModal.style.display = 'flex';
   });
 
-  // Sign-in modal behavior (re-wired)
   (function wireSignInModal(){
     const modal = signInModal;
     if(!modal) return;
@@ -659,30 +611,22 @@
   })();
 
   // -----------------------
-  // Update UI (sign-in / admin buttons visibility & notif count)
+  // Update UI
   // -----------------------
   function updateUserUI(){
     const cur = getCurrentUser();
     const admin = isAdminLogged();
-    // review & delete only show when admin
     reviewToggleBtn.style.display = admin ? '' : 'none';
     deleteRecordsBtn.style.display = admin ? '' : 'none';
-    // admin login button text
     adminLoginBtn.textContent = admin ? ('Admin: ' + ADMIN_NAME) : 'Admin login';
-    // signIn button
     if(cur && !admin){
       signInBtn.textContent = `User: ${cur}`;
       const count = getUnreadCount(cur);
       if(count > 0){ notifSpan.textContent = String(count); notifSpan.style.display = ''; }
       else { notifSpan.style.display = 'none'; }
     } else {
-      if(admin){
-        signInBtn.textContent = 'Sign in (admin)';
-        notifSpan.style.display = 'none';
-      } else {
-        signInBtn.textContent = 'Sign in';
-        notifSpan.style.display = 'none';
-      }
+      if(admin){ signInBtn.textContent = 'Sign in (admin)'; notifSpan.style.display = 'none'; }
+      else { signInBtn.textContent = 'Sign in'; notifSpan.style.display = 'none'; }
     }
   }
 
@@ -695,12 +639,8 @@
     }catch(e){ return 0; }
   }
 
-  // Initialize UI from storage
-  (function initState(){
-    updateUserUI();
-  })();
+  (function initState(){ updateUserUI(); })();
 
-  // Export small API for dev/console if needed
   window.Papan = window.Papan || {};
   window.Papan.openSubmitModal = function(){ papanModal.style.display = 'flex'; if(typeof papanModal._onOpen === 'function') papanModal._onOpen(); };
   window.Papan.refreshAdminUI = updateUserUI;

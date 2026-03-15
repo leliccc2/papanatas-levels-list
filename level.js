@@ -192,7 +192,7 @@
         const isOverride = overrideSet.has(`${String(r.holder||'')}|${String(r.progress||'')}|${String(r.date||'')}`);
         const holderEnc = encodeURIComponent(r.holder);
         const datePart = r.date ? ` <span class="recdate">(${escapeHtml(r.date)})</span>` : '';
-        const badge = isOverride ? ' <span style="color:var(--muted);font-size:12px;margin-left:6px">[override]</span>' : '';
+const badge = '';
         return `<li><a href="player.html?player=${holderEnc}">${escapeHtml(r.holder)}</a> — ${escapeHtml(r.progress)}${datePart}${badge}</li>`;
       }).join("");
     }

@@ -2,6 +2,10 @@
 (function(){
   const container = document.getElementById('packsContent');
   const regenBtn = document.getElementById('regeneratePacks');
+  const isAdmin = localStorage.getItem("papan_is_admin") === "1";
+  if(regenBtn && !isAdmin){
+  regenBtn.remove();
+}
 
   // key for persisted packs
   const STORAGE_KEY = 'papan_packs_v1';

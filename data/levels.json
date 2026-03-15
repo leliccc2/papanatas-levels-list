@@ -248,6 +248,20 @@
     "records": [
     ]
   },
+      {
+    "id": "biyo30",
+    "name": "BIYO 30",
+    "creator": "Lelike",
+    "gd_id": "115174256",
+    "duration": "0:52",
+    "objects": 1861,
+    "tier": "Harder",
+    "difficulty": "harder",
+    "tags": ["Biyo","Medium","Chokepoints","Balanced","Ball Timing","Spam Control","High CPS","Gameplay Sync","Visual Sync","Sightreadable"],
+    "date_added": "2020-10-01",
+    "records": [
+    ]
+  },
 
       {
     "id": "lebi14",
@@ -305,12 +319,26 @@
     "gd_id": "124851931",
     "duration": "0:28",
     "objects": 473,
-    "tier": "Harder",
+    "tier": "Hard",
     "difficulty": "harder",
     "tags": ["Lebiyo","Chokepoints","Timings","Short","Unforgiving","Swing","Jumpy","End Heavy","Rough Gameplay","Learny","Fake Difficulty","Tight"],
     "date_added": "2025-08-18",
     "records": [
 
+    ]
+  },
+      {
+    "id": "biyo29",
+    "name": "BIYO 29",
+    "creator": "Lelike",
+    "gd_id": "115193485",
+    "duration": "0:44",
+    "objects": 12675,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Biyo","Medium","Chokepoints","Nerve Control","Learny","Sightreadable","Long Sections","Structured"],
+    "date_added": "2020-10-01",
+    "records": [
     ]
   },
 
@@ -342,6 +370,20 @@
     "difficulty": "harder",
     "tags": ["Leyo","Short","Jumpy","Rough Gameplay","Start Heavy","Nerve Control","Wave Control","Structured"],
     "date_added": "2020-10-10",
+    "records": [
+    ]
+  },
+    {
+    "id": "biyo28",
+    "name": "BIYO 28",
+    "creator": "Lelike",
+    "gd_id": "115017173",
+    "duration": "1:02",
+    "objects": 2384,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Biyo","Long","Chokepoints","Nerve Control","Precision","Ship Control","Wave Control","Structured"],
+    "date_added": "2020-10-01",
     "records": [
     ]
   },
@@ -391,6 +433,22 @@
     "date_added": "2025-01-02",
     "records": [
                   {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
+
+  
+  {
+    "id": "biyo24",
+    "name": "BIYO 24",
+    "creator": "Lelike",
+    "gd_id": "114694118",
+    "duration": "0:47",
+    "objects": 1122,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Biyo","Medium","Chokepoints","Fast-Paced","Gameplay Sync","Ship Control","Sightreadable"],
+    "date_added": "2020-10-01",
+    "records": [
     ]
   },
             {
@@ -471,6 +529,7 @@
     "records": [
     ]
   },
+  
 
             {
     "id": "lemarbiyo3",
@@ -520,7 +579,20 @@
       {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
-
+     {
+      "id": "biyo26",
+    "name": "BIYO 26",
+    "creator": "Lelike",
+    "gd_id": "114905014",
+    "duration": "0:43",
+    "objects": 1200,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Biyo","Medium","Cube Timing","Rough Gameplay","Jumpy","Precision","Wave Spam"],
+    "date_added": "2020-10-01",
+    "records": [
+    ]
+  },
        {
       "id": "biyo18",
     "name": "BIYO 18",
@@ -531,6 +603,21 @@
     "tier": "Hard",
     "difficulty": "harder",
     "tags": ["Biyo","Medium","Visual Sync","Gameplay Sync","Chokepoints","Consistency","Click Pattern","Flow","Sightreadable","Wave Control","High CPS"],
+    "date_added": "2020-10-01",
+    "records": [
+            {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"}
+    ]
+  },
+         {
+      "id": "biyo21",
+    "name": "BIYO 21",
+    "creator": "Lelike",
+    "gd_id": "114520896",
+    "duration": "0:48",
+    "objects": 838,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Biyo","Medium","Gameplay Sync","Calm","Chokepoints","Nerve Control","Ship Control","Spider Timing","Structured"],
     "date_added": "2020-10-01",
     "records": [
             {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"}
@@ -567,6 +654,20 @@
     ]
   },
 
+         {
+      "id": "biyo27",
+    "name": "BIYO 27",
+    "creator": "Lelike",
+    "gd_id": "114941751",
+    "duration": "1:37",
+    "objects": 1957,
+    "tier": "Hard",
+    "difficulty": "harder",
+    "tags": ["Biyo","Long","Cube Timing","Ship Control","Balanced","Jumpy","Structured"],
+    "date_added": "2020-10-01",
+    "records": [
+    ]
+  },
 
       {
     "id": "lebiyoftca",
@@ -585,6 +686,7 @@
 
   },
 
+
         {
     "id": "lemarbiyonewera",
     "name": "LeMarBiYo New Era",
@@ -596,6 +698,20 @@
     "difficulty": "harder",
     "tags": ["Lemarbiyo","Medium","Jumpy","Rough Gameplay","Learny","Structured"],
     "date_added": "2023-08-11",
+    "records": [
+    ]
+  },
+               {
+      "id": "biyo23",
+    "name": "BIYO 23",
+    "creator": "Lelike",
+    "gd_id": "114546896",
+    "duration": "0:47",
+    "objects": 1721,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Biyo","Medium", "Balanced","Calm","Slow Paced","Structured","Gameplay Sync","Jumpy"],
+    "date_added": "2020-10-01",
     "records": [
     ]
   },
@@ -692,26 +808,27 @@
   },
 
     {
+      "id": "biyo25",
+    "name": "BIYO 25",
+    "creator": "Lelike",
+    "gd_id": "114665696",
+    "duration": "0:54",
+    "objects": 1721,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Biyo","Medium","Balanced","Fast-Paced","Nerve Control","Jumpy","Transition Heavy","Rough Gameplay"],
+    "date_added": "2020-10-01",
+    "records": [
+    ]
+  },
+
+    {
     "id": "lebi2",
     "name": "LEBI 2",
     "creator": "Yoyi",
     "gd_id": "112656536",
     "duration": "0:12",
     "objects": 322,
-    "tier": "Casual",
-    "difficulty": "harder",
-    "tags": ["Lebi","Chokepoints","Short","Ship Control","Structured","Frame Perfect","Cube Timing","Timings"],
-    "date_added": "2024-11-30",
-    "records": [
-    ]
-  },
-      {
-    "id": "lebi2decorado",
-    "name": "LEBI 2 Decorado",
-    "creator": "Lelike",
-    "gd_id": "112656536",
-    "duration": "0:13",
-    "objects": 2792,
     "tier": "Casual",
     "difficulty": "harder",
     "tags": ["Lebi","Chokepoints","Short","Ship Control","Structured","Frame Perfect","Cube Timing","Timings"],
@@ -894,6 +1011,21 @@
     "records": [
     ]
   },
+       {
+      "id": "billy22",
+    "name": "BILLY 22",
+    "creator": "Lelike",
+    "gd_id": "115196010",
+    "duration": "0:31",
+    "objects": 1679,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Biyo","Medium","Balanced","Cube Timing","Structured","Calm"],
+    "date_added": "2020-10-01",
+    "records": [
+    ]
+  },
+
   
     {
     "id": "lebiyo4",
@@ -908,6 +1040,21 @@
     "date_added": "2025-02-28",
     "records": [
 
+    ]
+  },
+
+             {
+      "id": "biyo22",
+    "name": "BIYO 22",
+    "creator": "Lelike",
+    "gd_id": "114543747",
+    "duration": "0:40",
+    "objects": 776,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Biyo","Medium","Balanced","Gameplay Sync","Structured"],
+    "date_added": "2020-10-01",
+    "records": [
     ]
   },
           {
@@ -1137,6 +1284,20 @@
     "records": [
     ]
   },
+    {
+    "id": "onomatopeia1",
+    "name": "Onomatopeia 1",
+    "creator": "Lelike",
+    "gd_id": "114700561",
+    "duration": "0:20",
+    "objects": 2863,
+    "tier": "Easy",
+    "difficulty": "harder",
+    "tags": ["Onomatopeia","Short","Balanced","Calm","Slow Paced","Spider Timing","Ball Timing","Precision"],
+    "date_added": "2020-10-01",
+    "records": [
+    ]
+  },
 
   {
     "id": "lebiyo3",
@@ -1165,6 +1326,21 @@
     "tags": ["Biyo","Short","Structured","Wave Control"],
     "date_added": "2020-10-01",
     "records": [
+    ]
+  },
+           {
+      "id": "biyo11remastered",
+    "name": "BIYO 11 Remastered",
+    "creator": "Lelike",
+    "gd_id": "114521797",
+    "duration": "0:15",
+    "objects": 291,
+    "tier": "Easy",
+    "difficulty": "harder",
+    "tags": ["Biyo","Short","Balanced","Structured"],
+    "date_added": "2020-10-01",
+    "records": [
+            {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
      {

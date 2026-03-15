@@ -332,9 +332,9 @@
       if(confirm('Cerrar sesión como admin?')){ isAdmin = false; localStorage.removeItem('papan_is_admin'); updateAdminUI(); }
       return;
     }
-    const key = prompt('171213');
+    const key = prompt('Introduce la clave de acceso');
     if(!key) return;
-    if(key === ADMIN_KEY){
+    if(key === 171213){
       isAdmin = true; localStorage.setItem('papan_is_admin','1'); updateAdminUI();
       alert('Acceso admin concedido.');
     } else {

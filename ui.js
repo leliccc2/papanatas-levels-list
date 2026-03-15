@@ -18,6 +18,18 @@
     try { sessionStorage.setItem('papan_sidebar_hidden', hidden ? '1' : '0'); } catch(e){}
   });
 
+  const supabaseUrl = 'https://hlvvxgljcrwjuelmascs.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsdnZ4Z2xqY3J3anVlbG1hc2NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1OTc0MjEsImV4cCI6MjA4OTE3MzQyMX0.r1bS2NeloY1EgtdlJH-ZqLyOzgIpoL2Y_qsRGQIOYiM';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+async function renderReviewList(){
+  const listNode = reviewModal.querySelector('#papanReviewList');
+  listNode.innerHTML = '';
+  const arr = await loadSubmissions();  // <-- aquí el await
+  if(!arr || !arr.length){ listNode.innerHTML = '<div class="papan-subtle">No pending submissions.</div>'; return; }
+  // resto del render sigue igual...
+}
+
   // -----------------------
   // Config / keys
   // -----------------------

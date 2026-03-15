@@ -130,6 +130,10 @@ function renderLevels(levelsArr){
 
     const thumbSrc = `images/levels/${level.id}.png`;
 
+    // compute difficulty icon path (sanitized difficulty -> filename)
+    const diffFilename = difficultyIconFilename(level.difficulty);
+    const diffPath = `images/icons/${diffFilename}`;
+
     card.innerHTML = `
       <div class="position">#${level.position}</div>
 
@@ -144,6 +148,7 @@ function renderLevels(levelsArr){
 
       <div class="card-right">
         ${isNew(level.date_added) ? '<div class="new-badge">NEW</div>' : ''}
+        <img class="diff-icon" src="${diffPath}" alt="${escapeHtml(level.difficulty || '')}" style="width:36px;height:36px;margin-top:6px;margin-left:6px;object-fit:contain" onerror="this.style.display='none'">
       </div>
     `;
 
@@ -206,3 +211,10 @@ function applyFiltersAndSearch(){
 // helpers
 function slug(s){ return String(s||'').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-_]/g,'') }
 function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+// sanitize difficulty and return filename (e.g. "Harder" -> "harder.png")
+function difficultyIconFilename(diff){
+  if(!diff) return 'default.png';
+  const name = String(diff).toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-_]/g,'');
+  return `${name}.png`;
+}

@@ -6,8 +6,8 @@
     "gd_id": "135184544",
     "duration": "1:18",
     "objects": 20080,
-    "tier": "Insane",
-    "difficulty": "harder",
+    "tier": "Cruel",
+    "difficulty": "cruel",
     "tags": ["Lebiyo","Long","Consistency","Nerve Control","Balanced","Skill Based","Long Sections","Wave Control","Structured","Visual Sync"],
     "date_added": "2026-03-08",
     "records": [
@@ -59,8 +59,6 @@
     "tags": ["Lebiyo","Chokepoints","Timings","Short","Structured","Gameplay Sync","Spider Timing","End Heavy","Transition Heavy","Sightreadable","Consistency"],
     "date_added": "2026-02-28",
     "records": [
-      {"holder":"Lelike","progress":"100%","date":"2026-02-28"},
-      {"holder":"Carlos","progress":"74%","date":"???"}
     ]
   },
 
@@ -121,7 +119,6 @@
     "tags": ["Lebi","Chokepoints","Short","Timings","High CPS","Spam","Consistency","Spam Control","Wave Spam","Transition Heavy","Frame Perfect","Tight","End Heavy", "Start Heavy"],
     "date_added": "2023-07-30",
     "records": [
-            {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
 
@@ -183,7 +180,7 @@
     "tags": ["Leyo","Short","Ship Control","Straight Fly","Structured","Slow Paced","Consistency","Tight"],
     "date_added": "2020-10-10",
     "records": [
-                        {"holder":"Lelike","progress":"100%","date":"2026-02-23"}
+
     ]
   },
         {
@@ -198,7 +195,7 @@
     "tags": ["Lebi","Short","Ship Control","Chokepoints","Precision","Skill Based","Balanced","Learny","Rough Gameplay","Sightreadable","Straight Fly","Tight"],
     "date_added": "2025-03-02",
     "records": [
-                  {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+
     ]
   },
 
@@ -214,7 +211,7 @@
     "tags": ["Biyole","Short","Slow Paced","Ship Control","Straight Fly","Rough Gameplay","Tight"],
     "date_added": "2021-01-01",
     "records": [
-      {"holder":"Eiron456","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
            {
@@ -289,7 +286,7 @@
     "tags": ["Lebi","Short","Ship Control","Chokepoints","Precision","Skill Based","Timings","Unforgiving"],
     "date_added": "2025-02-16",
     "records": [
-                  {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+
     ]
   },
 
@@ -306,8 +303,7 @@
     "tags": ["Lebi","Short","Chokepoints","Nerve Control","Ship Control","Sightreadable","Transition Heavy"],
     "date_added": "2025-02-11",
     "records": [
-      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
-      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
 
@@ -323,7 +319,7 @@
     "tags": ["Biyole","Short","Fast-Paced","Click Pattern","Ship Control"],
     "date_added": "2021-01-01",
     "records": [
-      {"holder":"Eiron456","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
     {
@@ -369,7 +365,7 @@
     "tags": ["Lemarbiyo","Long","Learny","Jumpy","Rough Gameplay","Memory","Calm","Long Sections","Nerve Control","Precision","Unforgiving"],
     "date_added": "2023-08-11",
     "records": [
-      {"holder":"Carlos","progress":"100%","date":"Hace muchos meses"}
+
     ]
   },
 
@@ -441,7 +437,6 @@
     "tags": ["Lebi","Short","Ball Timing","Structured","Calm"],
     "date_added": "2025-02-07",
     "records": [
-                  {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
 
@@ -474,7 +469,7 @@
     "tags": ["Lebi","Chokepoints","Short","Consistency","Balanced","Precision","Structured","Technical","Tight","Wave Control"],
     "date_added": "2025-01-02",
     "records": [
-                  {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
 
@@ -549,8 +544,6 @@
     "tags": ["Leyo","Short","Balanced","Learny","High CPS","Wave Control","Structured"],
     "date_added": "2023-08-11",
     "records": [
-      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
-      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
 
@@ -599,8 +592,7 @@
     "tags": ["Lemarbiyo","Medium","Balanced","Learny","Orb Heavy","Jumpy","Cube Timing","Rough Gameplay"],
     "date_added": "2023-08-11",
     "records": [
-      {"holder":"Carlos","progress":"100%","date":"Hace muchos meses"},
-      {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+
     ]
   },
 
@@ -645,8 +637,7 @@
     "tags": ["Bombardeen Renfe","Medium","Balanced","Calm","Chokepoints","Gameplay Sync","Wave Control","Structured","Sightreadable"],
     "date_added": "2023-08-11",
     "records": [
-      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
-      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
      {
@@ -675,7 +666,7 @@
     "tags": ["Biyo","Medium","Visual Sync","Gameplay Sync","Chokepoints","Consistency","Click Pattern","Flow","Sightreadable","Wave Control","High CPS"],
     "date_added": "2020-10-01",
     "records": [
-            {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
          {
@@ -690,7 +681,6 @@
     "tags": ["Biyo","Medium","Gameplay Sync","Calm","Chokepoints","Nerve Control","Ship Control","Spider Timing","Structured"],
     "date_added": "2020-10-01",
     "records": [
-            {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
  
@@ -797,7 +787,6 @@
     "tags": ["Biyo","Medium","Visual Sync","Balanced","Chokepoints","Fast-Paced","Nerve Control","Wave Control"],
     "date_added": "2020-10-01",
     "records": [
-            {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
 
@@ -978,8 +967,7 @@
     "tags": ["Lemarbiyo","Short","Balanced","Chokepoints","Rough Gameplay","Sightreadable","Structured","Transition Heavy"],
     "date_added": "2023-08-11",
     "records": [
-      {"holder":"Carlos","progress":"100%","date":"(???)"},
-      {"holder":"Lelike","progress":"100%","date":"(???)"}
+
     ]
   },
 
@@ -1039,8 +1027,7 @@
     "tags": ["Leyo","Short","Balanced","Calm","Gameplay Sync","Ship Control","Structured"],
     "date_added": "2023-08-11",
     "records": [
-      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
-      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
        {
@@ -1070,9 +1057,7 @@
     "tags": ["Lemarbiyo","Medium","Balanced","Learny","Ship Control","Cube Timing","Jumpy","Technical"],
     "date_added": "2023-08-11",
     "records": [
-      {"holder":"Carlos","progress":"100%","date":"Hace muchos meses"},
-      {"holder":"Justi","progress":"100%","date":"Hace muchos meses"},
-      {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"}
+
     ]
   },
         {
@@ -1145,7 +1130,7 @@
     "tags": ["Leyo","Short","Balanced","Precision","Rough Gameplay","Transition Heavy"],
     "date_added": "2024-12-22",
     "records": [
-      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
          {
@@ -1235,8 +1220,7 @@
     "tags": ["Leyo","Short","Balanced","Consistency","Visual Sync","Structured"],
     "date_added": "2023-08-11",
     "records": [
-      {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"},
-      {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
 
@@ -1444,9 +1428,7 @@
     "tags": ["Biyo","Medium","Calm","Balanced","Gameplay Sync","Jumpy","Slow Paced"],
     "date_added": "2020-10-01",
     "records": [
-                  {"holder":"Lelike","progress":"100%","date":"Hace muchos meses"},
-            {"holder":"Yoyi","progress":"100%","date":"Hace muchos meses"},
-            {"holder":"Billy","progress":"100%","date":"Hace muchos meses"}
+
     ]
   },
       {
@@ -1572,7 +1554,7 @@
     "tags": ["Lebiyo","Short","Jumpy","Precision","Technical","Rough Gameplay"],
     "date_added": "2025-02-16",
     "records": [
-            {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
 
@@ -1646,7 +1628,6 @@
     "tags": ["Lebiyo","Short","Calm","Dash Heavy","Balanced","Technical"],
     "date_added": "2025-02-16",
     "records": [
-            {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
    {
@@ -1675,7 +1656,6 @@
     "tags": ["Biyo","Short","Balanced","Structured"],
     "date_added": "2020-10-01",
     "records": [
-            {"holder":"Billy","progress":"100%","date":"Hace mucho tiempo"}
     ]
   },
      {
@@ -1706,7 +1686,7 @@
     "tags": ["Lebi","Tiny","Structured","Learny","Technical","Rough Gameplay"],
     "date_added": "2024-12-22",
     "records": [
-                  {"holder":"Lelike","progress":"100%","date":"Hace mucho tiempo"}
+
     ]
   },
   {

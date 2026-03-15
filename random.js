@@ -1,6 +1,5 @@
-// random.js - modo dual: "generator" (elige niveles existentes) y "creator" (crea JSON)
-// Cambios: generator muestra la carita de difficulty y botón "Abrir nivel"; generator NO muestra JSON.
-// Creator muestra JSON y también la carita de difficulty. Dificultades posibles: Easy, Normal, Casual, Hard, Harder, Tough, Insane, Cruel.
+// random.js - generator + creator. Generator shows existing levels + difficulty icon and "Abrir nivel" button.
+// Creator produces JSON and also shows difficulty icon. Allowed difficulties: Easy, Normal, Casual, Hard, Harder, Tough, Insane, Cruel.
 (function(){
   'use strict';
 
@@ -24,70 +23,65 @@
   let mode = 'generator'; // 'generator' | 'creator'
   let lastGenerated = null;
 
-  // full difficulty set allowed
   const DIFFICULTIES = ['Easy','Normal','Casual','Hard','Harder','Tough','Insane','Cruel'];
 
   fetch('data/levels.json').then(r=>r.json()).then(data=>{
     levels = Array.isArray(data) ? data : [];
   }).catch(e=>{
     console.warn('No se pudo cargar levels.json para Random:', e);
+    levels = [];
   });
 
-  // mode toggles
   const modes = ['generator','creator'];
   function updateModeUI(){
     if(mode === 'generator'){
-      modeLabel.textContent = 'Random level generator';
-      randThumb.style.display = ''; // show thumbnail
-      btnOpenLevel.style.display = 'inline-block';
-      randJson.style.display = 'none';
-      btnCopy.disabled = true;
+      if(modeLabel) modeLabel.textContent = 'Random level generator';
+      if(randThumb) randThumb.style.display = '';
+      if(btnOpenLevel){ btnOpenLevel.style.display = 'inline-block'; btnOpenLevel.className = 'muted-btn'; }
+      if(randJson) randJson.style.display = 'none';
+      if(btnCopy) btnCopy.disabled = true;
     }else{
-      modeLabel.textContent = 'Random level creator';
-      randThumb.style.display = 'none'; // hide photo in creator
-      btnOpenLevel.style.display = 'none';
-      randJson.style.display = 'none';
-      btnCopy.disabled = true;
+      if(modeLabel) modeLabel.textContent = 'Random level creator';
+      if(randThumb) randThumb.style.display = 'none';
+      if(btnOpenLevel) btnOpenLevel.style.display = 'none';
+      if(randJson) randJson.style.display = 'none';
+      if(btnCopy) btnCopy.disabled = true;
     }
-    // reset UI
-    randNameEl.textContent = 'Pulsa Generar';
-    randCreatorEl.innerHTML = '';
-    randStatsEl.textContent = '';
-    randTagsEl.innerHTML = '';
+    if(randNameEl) randNameEl.textContent = 'Pulsa Generar';
+    if(randCreatorEl) randCreatorEl.innerHTML = '';
+    if(randStatsEl) randStatsEl.textContent = '';
+    if(randTagsEl) randTagsEl.innerHTML = '';
     lastGenerated = null;
   }
 
-  modePrev.addEventListener('click', ()=>{
+  if(modePrev) modePrev.addEventListener('click', ()=>{
     const i = modes.indexOf(mode);
     mode = modes[(i - 1 + modes.length) % modes.length];
     updateModeUI();
   });
-  modeNext.addEventListener('click', ()=>{
+  if(modeNext) modeNext.addEventListener('click', ()=>{
     const i = modes.indexOf(mode);
     mode = modes[(i + 1) % modes.length];
     updateModeUI();
   });
 
-  btnGen.addEventListener('click', ()=> generateRandomLevel());
-  btnSeed.addEventListener('click', ()=> {
+  if(btnGen) btnGen.addEventListener('click', ()=> generateRandomLevel());
+  if(btnSeed) btnSeed.addEventListener('click', ()=> {
     const seed = prompt('Introduce una semilla (texto o número):');
     generateRandomLevel(seed ? String(seed) : undefined);
   });
-  btnCopy.addEventListener('click', ()=> {
+  if(btnCopy) btnCopy.addEventListener('click', ()=> {
     if(!lastGenerated) return;
     copyToClipboard(JSON.stringify(lastGenerated, null, 2));
     alert('JSON copiado al portapapeles.');
   });
 
   function generateRandomLevel(seed){
-    if(mode === 'generator'){
-      generateFromExisting(seed);
-    } else {
-      generateVirtual(seed);
-    }
+    if(mode === 'generator') generateFromExisting(seed);
+    else generateVirtual(seed);
   }
 
-  // Generator: pick a random existing level from levels.json (no JSON creation)
+  // GENERATOR: pick an existing level and show icon + "Abrir nivel" button
   function generateFromExisting(seed){
     if(!levels.length){
       alert('No hay niveles en data/levels.json.');
@@ -100,39 +94,38 @@
     }
     const idx = Math.floor(rnd() * levels.length);
     const lvl = levels[idx];
-    if(!lvl){
-      alert('No se pudo seleccionar un nivel.');
-      return;
-    }
+    if(!lvl){ alert('No se pudo seleccionar un nivel.'); return; }
     lastGenerated = { mode: 'generator', sourceId: lvl.id, data: lvl };
     renderGeneratorLevel(lvl);
   }
 
   function renderGeneratorLevel(lvl){
-    randNameEl.textContent = lvl.name;
+    if(randNameEl) randNameEl.textContent = lvl.name;
 
-    // show creator + difficulty icon (instead of difficulty text)
+    // show creator + difficulty ICON (not text)
     const diffFilename = difficultyIconFilename(lvl.difficulty);
     const diffPath = `images/icons/${diffFilename}`;
-    randCreatorEl.innerHTML = `by ${escapeHtml(lvl.creator)} <img src="${diffPath}" alt="${escapeHtml(lvl.difficulty||'')}" style="width:20px;height:20px;vertical-align:middle;margin-left:8px" onerror="this.style.display='none'">`;
+    if(randCreatorEl) randCreatorEl.innerHTML = `by ${escapeHtml(lvl.creator)} <img src="${diffPath}" alt="${escapeHtml(lvl.difficulty||'')}" style="width:20px;height:20px;vertical-align:middle;margin-left:8px" onerror="this.style.display='none'">`;
 
-    randStatsEl.textContent = `Duration: ${lvl.duration || '-'} — Objects: ${lvl.objects || '-'}`;
-    randTagsEl.innerHTML = (lvl.tags||[]).map(t=>`<span class="tag-pill">${escapeHtml(t)}</span>`).join(' ');
-    randThumb.src = `images/levels/${lvl.id}.png`;
+    if(randStatsEl) randStatsEl.textContent = `Duration: ${lvl.duration || '-'} — Objects: ${lvl.objects || '-'}`;
+    if(randTagsEl) randTagsEl.innerHTML = (lvl.tags||[]).map(t=>`<span class="tag-pill">${escapeHtml(t)}</span>`).join(' ');
+    if(randThumb) randThumb.src = `images/levels/${lvl.id}.png`;
 
-    randJson.style.display = 'none';
-    btnCopy.disabled = true;
+    if(randJson) randJson.style.display = 'none';
+    if(btnCopy) btnCopy.disabled = true;
 
-    btnOpenLevel.href = `level.html?id=${encodeURIComponent(lvl.id)}`;
-    btnOpenLevel.textContent = 'Abrir nivel';
-    btnOpenLevel.className = 'muted-btn'; // match site button style
-    btnOpenLevel.style.display = 'inline-block';
+    if(btnOpenLevel){
+      btnOpenLevel.href = `level.html?id=${encodeURIComponent(lvl.id)}`;
+      btnOpenLevel.textContent = 'Abrir nivel';
+      btnOpenLevel.className = 'muted-btn';
+      btnOpenLevel.style.display = 'inline-block';
+    }
   }
 
-  // Creator: make a virtual level JSON, show JSON and show difficulty icon (choose difficulty from allowed set)
+  // CREATOR: generate JSON virtual level; show difficulty icon and provide JSON area
   function generateVirtual(seed){
     if(!levels.length){
-      alert('No hay niveles en data/levels.json para inspirarse.');
+      alert('No hay niveles para inspirarse.');
       return;
     }
     let rnd = Math.random;
@@ -141,7 +134,7 @@
       rnd = mulberry32(h);
     }
 
-    // pick 2-4 source levels for mixing
+    // picks
     const picks = [];
     const indices = [...Array(levels.length).keys()];
     shuffleArray(indices, rnd);
@@ -150,17 +143,15 @@
       picks.push(levels[indices[i]]);
     }
 
-    // compose name & attributes
+    // name, stats
     const nameParts = picks.slice(0,2).map(p => (p.tags && p.tags[0]) ? p.tags[0] : p.creator);
     const flair = ['Hyper','Neon','Echo','Void','Pulse','Turbo','Drift','Flux'][Math.floor(rnd()*8)];
     const num = Math.floor(rnd()*9999);
     const generatedName = `${nameParts.join(' ')} ${flair} #${num}`;
 
-    // choose difficulty from full set (weighted by picks difficulty roughly)
+    // pick difficulty from allowed DIFFICULTIES
     let diffIndex = Math.floor(rnd() * DIFFICULTIES.length);
-    // try to bias slightly by average difficulty of picks
     const avgScore = Math.round((picks.map(p=>difficultyScore(p.difficulty)||2).reduce((a,b)=>a+b,0))/picks.length);
-    // map avgScore to an index
     diffIndex = Math.min(DIFFICULTIES.length-1, Math.max(0, avgScore - 1 + (Math.floor(rnd()*3)-1)));
     const chosenDifficulty = DIFFICULTIES[diffIndex];
 
@@ -208,19 +199,21 @@
   }
 
   function renderCreatorLevel(g){
-    randNameEl.textContent = g.name;
+    if(randNameEl) randNameEl.textContent = g.name;
 
-    // show creator and difficulty icon (instead of text)
     const diffFilename = difficultyIconFilename(g.difficulty);
     const diffPath = `images/icons/${diffFilename}`;
-    randCreatorEl.innerHTML = `by ${escapeHtml(g.creator)} <img src="${diffPath}" alt="${escapeHtml(g.difficulty||'')}" style="width:20px;height:20px;vertical-align:middle;margin-left:8px" onerror="this.style.display='none'">`;
+    if(randCreatorEl) randCreatorEl.innerHTML = `by ${escapeHtml(g.creator)} <img src="${diffPath}" alt="${escapeHtml(g.difficulty||'')}" style="width:20px;height:20px;vertical-align:middle;margin-left:8px" onerror="this.style.display='none'">`;
 
-    randStatsEl.textContent = `Duration: ${g.duration} — Objects: ${g.objects}`;
-    randTagsEl.innerHTML = (g.tags||[]).map(t=>`<span class="tag-pill">${escapeHtml(t)}</span>`).join(' ');
-    randJson.style.display = 'block';
-    randJsonText.textContent = JSON.stringify(g, null, 2);
-    btnCopy.disabled = false;
-    btnOpenLevel.style.display = 'none';
+    if(randStatsEl) randStatsEl.textContent = `Duration: ${g.duration} — Objects: ${g.objects}`;
+    if(randTagsEl) randTagsEl.innerHTML = (g.tags||[]).map(t=>`<span class="tag-pill">${escapeHtml(t)}</span>`).join(' ');
+
+    if(randJson) {
+      randJson.style.display = 'block';
+      randJsonText.textContent = JSON.stringify(g, null, 2);
+    }
+    if(btnCopy) btnCopy.disabled = false;
+    if(btnOpenLevel) btnOpenLevel.style.display = 'none';
   }
 
   // helpers
@@ -284,7 +277,7 @@
   function hashString(s){ let h = 2166136261 >>> 0; for(let i=0;i<s.length;i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619) >>> 0; return h; }
   function mulberry32(a) { return function() { var t = a += 0x6D2B79F5; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; } }
 
-  // init UI
+  // init
   updateModeUI();
 
 })();

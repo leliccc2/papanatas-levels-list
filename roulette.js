@@ -1,7 +1,8 @@
-// roulette.js - roulette runner: input % enforced, jump-to-P logic, win/fail modals, no "Paso X de 100"
+// roulette.js - roulette runner: input % enforced, jump-to-P logic, win/fail modals, no "Paso X de 100"; title "Roulette (WIP)"
 (function(){
   'use strict';
 
+  // Elementos (asegúrate de que tu HTML tenga estos ids)
   const btnGenerate = document.getElementById('btnGenerate');
   const btnPrev = document.getElementById('btnPrev');
   const btnNext = document.getElementById('btnNext');
@@ -18,34 +19,45 @@
   let levels = [];
   let finished = false;
 
+  // set page title as requested
+  try { document.title = "Roulette (WIP)"; } catch(e){}
+
   init();
 
   function init(){
+    // cargar niveles (si falla, la generación seguirá con placeholders)
     fetch('data/levels.json').then(r=>r.json()).then(data=>{
       levels = Array.isArray(data) ? data : [];
     }).catch(e=>{
       console.warn('No se pudieron cargar levels.json para roulette:', e);
+      levels = [];
     });
 
-    btnGenerate.addEventListener('click', generateRun);
-    btnPrev.addEventListener('click', ()=> { if(!run || finished) return; if(run.index>0){ run.index--; refreshUI(); } });
-    btnNext.addEventListener('click', ()=> { if(!run || finished) return; if(run.index < run.entries.length-1){ run.index++; refreshUI(); } });
-    btnMarkDone.addEventListener('click', ()=> markResult(true));
-    btnMarkFail.addEventListener('click', ()=> markFail());
-    btnApplyPercent.addEventListener('click', applyPercent);
+    // listeners
+    if(btnGenerate) btnGenerate.addEventListener('click', generateRun);
+    if(btnPrev) btnPrev.addEventListener('click', ()=> { if(!run || finished) return; if(run.index>0){ run.index--; refreshUI(); } });
+    if(btnNext) btnNext.addEventListener('click', ()=> { if(!run || finished) return; if(run.index < run.entries.length-1){ run.index++; refreshUI(); } });
+    if(btnMarkDone) btnMarkDone.addEventListener('click', ()=> markResult(true));
+    if(btnMarkFail) btnMarkFail.addEventListener('click', ()=> markFail());
+    if(btnApplyPercent) btnApplyPercent.addEventListener('click', applyPercent);
 
-    percentInput.addEventListener('input', ()=> {
-      if(!run || finished){ btnApplyPercent.disabled = true; return; }
-      const val = Number(percentInput.value);
-      const min = run.index + 1;
-      // disable apply unless numeric and >= target
-      btnApplyPercent.disabled = isNaN(val) || val < min;
-    });
+    if(percentInput){
+      percentInput.addEventListener('input', ()=> {
+        if(!run || finished){ if(btnApplyPercent) btnApplyPercent.disabled = true; return; }
+        const val = Number(percentInput.value);
+        const min = run.index + 1;
+        if(btnApplyPercent) btnApplyPercent.disabled = isNaN(val) || val < min;
+      });
+      // ensure it's number-friendly
+      percentInput.setAttribute('inputmode','numeric');
+      percentInput.setAttribute('pattern','[0-9]*');
+    }
 
     refreshUI();
   }
 
   function generateRun(){
+    // build 100 entries cycling the available levels (stable deterministic not required)
     const pool = levels.slice();
     shuffle(pool);
     const entries = [];
@@ -74,25 +86,23 @@
       results: Array(entries.length).fill(null)
     };
     finished = false;
-    percentInput.value = '';
-    btnApplyPercent.disabled = true;
+    if(percentInput) { percentInput.value = ''; btnApplyPercent.disabled = true; }
     refreshUI();
-    rouletteState.textContent = 'Run generada — lista para empezar.';
+    if(rouletteState) rouletteState.textContent = 'Run generada — lista para empezar.';
   }
 
   function applyPercent(){
     if(!run || finished) return;
-    const raw = percentInput.value.trim();
-    if(raw === '') return alert('Introduce un porcentaje válido.');
+    const raw = (percentInput && percentInput.value) ? percentInput.value.trim() : '';
+    if(raw === '') { alert('Introduce un porcentaje válido.'); return; }
     let val = Number(raw);
-    if(isNaN(val)) return alert('Introduce un número válido.');
-    // clamp to reasonable
+    if(isNaN(val)) { alert('Introduce un número válido.'); return; }
     if(val < 0) val = 0;
     if(val > 999) val = 999;
 
     const target = run.index + 1; // required minimum percent for this step
     if(val < target){
-      // no permitido: es trampa -> fallo
+      // fallo por intentar poner menor que target -> modal "Has perdido"
       run.results[run.index] = false;
       finished = true;
       refreshUI();
@@ -100,13 +110,13 @@
       return;
     }
 
-    // store the percent at current position
+    // guardamos el número en la posición actual
     run.results[run.index] = val;
 
-    // compute next index: floor(val) clamped to last index
+    // next index se calcula como floor(val) (0-based target mapping)
+    // Ej: val=83 -> nextIndex=83 -> siguiente target mostrado será 84%
     const nextIndex = Math.min(run.entries.length - 1, Math.floor(val));
     if(nextIndex >= run.entries.length - 1 || val >= 100){
-      // win
       run.index = run.entries.length - 1;
       finished = true;
       refreshUI();
@@ -114,10 +124,8 @@
       return;
     }
 
-    // advance to nextIndex
     run.index = nextIndex;
-    percentInput.value = '';
-    btnApplyPercent.disabled = true;
+    if(percentInput){ percentInput.value = ''; btnApplyPercent.disabled = true; }
     refreshUI();
   }
 
@@ -130,7 +138,7 @@
       showModal('Has perdido', 'Has marcado este paso como fallado.');
       return;
     }
-    // ok -> advance one step
+    // ok -> advance one index (si no estamos al final)
     if(run.index < run.entries.length - 1){
       run.index++;
       refreshUI();
@@ -151,31 +159,37 @@
 
   function refreshUI(){
     if(!run){
-      rouletteContent.innerHTML = 'Genera una nueva roulette para empezar.';
-      rouletteProgress.textContent = '0 / 0';
-      btnPrev.disabled = true; btnNext.disabled = true; btnMarkDone.disabled = true; btnMarkFail.disabled = true; btnApplyPercent.disabled = true;
-      percentInput.disabled = true;
+      if(rouletteContent) rouletteContent.innerHTML = 'Genera una nueva roulette para empezar.';
+      if(rouletteProgress) rouletteProgress.textContent = '0 / 0';
+      if(btnPrev) btnPrev.disabled = true;
+      if(btnNext) btnNext.disabled = true;
+      if(btnMarkDone) btnMarkDone.disabled = true;
+      if(btnMarkFail) btnMarkFail.disabled = true;
+      if(btnApplyPercent) btnApplyPercent.disabled = true;
+      if(percentInput) percentInput.disabled = true;
       return;
     }
 
     const entry = run.entries[run.index];
-    const target = run.index + 1; // target % displayed = index+1
-    const targetPercent = `${target}%`;
+    const target = run.index + 1; // 1..100 percent target
+    const entryNumber = run.index + 1;
 
-    // main card (no "Paso X de 100")
-    rouletteContent.innerHTML = `
-      <div style="display:flex;gap:12px;align-items:center">
-        <img src="${escapeHtml(entry.thumb)}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:80px;object-fit:cover;border-radius:6px">
-        <div>
-          <div style="font-weight:800;font-size:18px">${escapeHtml(entry.name)} <span style="color:var(--muted);font-weight:700">#${run.index+1}</span></div>
-          <div style="color:var(--muted);margin-top:6px">by ${escapeHtml(entry.creator)} ${entry.gd_id ? '— GD id '+escapeHtml(entry.gd_id) : ''}</div>
-          <div style="margin-top:8px"><strong>Target:</strong> <span id="displayTarget">${targetPercent}</span></div>
-          <div style="margin-top:6px;color:var(--muted);font-size:13px">
-            ${resultDescription(run.results[run.index], target)}
+    // render card (sin "Paso X de 100")
+    if(rouletteContent){
+      rouletteContent.innerHTML = `
+        <div style="display:flex;gap:12px;align-items:center">
+          <img src="${escapeHtml(entry.thumb)}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:80px;object-fit:cover;border-radius:6px">
+          <div>
+            <div style="font-weight:800;font-size:18px">${escapeHtml(entry.name)} <span style="color:var(--muted);font-weight:700">#${entryNumber}</span></div>
+            <div style="color:var(--muted);margin-top:6px">by ${escapeHtml(entry.creator)} ${entry.gd_id ? '— GD id '+escapeHtml(entry.gd_id) : ''}</div>
+            <div style="margin-top:8px"><strong>Target:</strong> <span id="displayTarget">${target}%</span></div>
+            <div style="margin-top:6px;color:var(--muted);font-size:13px">
+              ${resultDescription(run.results[run.index], target)}
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
+    }
 
     // counts
     let doneCount = 0, failCount = 0;
@@ -188,19 +202,21 @@
       }
     }
 
-    rouletteState.innerHTML = `Hechos: ${doneCount} — Fallados: ${failCount}`;
-    rouletteProgress.textContent = `${run.index + 1} / ${run.entries.length}`;
+    if(rouletteState) rouletteState.innerHTML = `Hechos: ${doneCount} — Fallados: ${failCount}`;
+    if(rouletteProgress) rouletteProgress.textContent = `${entryNumber} / ${run.entries.length}`;
 
-    // inputs/buttons state
-    btnPrev.disabled = run.index === 0 || finished;
-    btnNext.disabled = run.index >= run.entries.length - 1 || finished;
-    btnMarkDone.disabled = finished;
-    btnMarkFail.disabled = finished;
-    percentInput.disabled = finished;
-    // set min attribute so user sees the minimum
-    percentInput.min = target;
-    const curVal = Number(percentInput.value || '');
-    btnApplyPercent.disabled = finished || isNaN(curVal) || curVal < target;
+    // controls state
+    if(btnPrev) btnPrev.disabled = run.index === 0 || finished;
+    if(btnNext) btnNext.disabled = run.index >= run.entries.length - 1 || finished;
+    if(btnMarkDone) btnMarkDone.disabled = finished;
+    if(btnMarkFail) btnMarkFail.disabled = finished;
+    if(percentInput) percentInput.disabled = finished;
+
+    // set min attr so the browser shows minimum value and the UI enforces it
+    if(percentInput) percentInput.min = target;
+
+    const curVal = Number(percentInput ? percentInput.value : NaN);
+    if(btnApplyPercent) btnApplyPercent.disabled = finished || isNaN(curVal) || curVal < target;
   }
 
   function resultDescription(res, target){
@@ -211,7 +227,7 @@
     return '';
   }
 
-  // modal helper
+  // modal helper (simple)
   function showModal(title, text){
     const prev = document.querySelector('.roulette-modal-backdrop');
     if(prev) prev.remove();
@@ -232,14 +248,13 @@
     modal.addEventListener('click', (e)=> { if(e.target === modal) modal.remove(); });
   }
 
-  // helpers
+  // small helpers
   function shuffle(array){
     for(let i = array.length -1; i > 0; i--){
       const j = Math.floor(Math.random() * (i+1));
       [array[i], array[j]] = [array[j], array[i]];
     }
   }
-
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
 })();

@@ -1,4 +1,19 @@
 [
+    {
+    "id": "lebiyo14",
+    "name": "Lebiyo 14",
+    "creator": "Justi",
+    "gd_id": "135184544",
+    "duration": "1:18",
+    "objects": 20080,
+    "tier": "Insane",
+    "difficulty": "harder",
+    "tags": ["Lebiyo","Long","Consistency","Nerve Control","Balanced","Skill Based","Long Sections","Wave Control","Structured","Visual Sync"],
+    "date_added": "2026-03-08",
+    "records": [
+
+    ]
+  },
     
       {
     "id": "lebi11",
@@ -14,22 +29,7 @@
     "records": [
     ]
   },
-  
-  {
-    "id": "lebiyo14",
-    "name": "Lebiyo 14",
-    "creator": "Justi",
-    "gd_id": "135184544",
-    "duration": "1:18",
-    "objects": 20080,
-    "tier": "Insane",
-    "difficulty": "harder",
-    "tags": ["Lebiyo","Long","Consistency","Nerve Control","Balanced","Skill Based","Long Sections","Wave Control","Structured","Visual Sync"],
-    "date_added": "2026-03-08",
-    "records": [
 
-    ]
-  },
 
         {
     "id": "lebi13",
@@ -209,7 +209,7 @@
     "gd_id": "115062717",
     "duration": "0:15",
     "objects": 1284,
-    "tier": "Hard",
+    "tier": "Harder",
     "difficulty": "harder",
     "tags": ["Biyole","Short","Slow Paced","Ship Control","Straight Fly","Rough Gameplay","Tight"],
     "date_added": "2021-01-01",
@@ -284,7 +284,7 @@
     "gd_id": "115197733",
     "duration": "0:19",
     "objects": 406,
-    "tier": "Hard",
+    "tier": "Harder",
     "difficulty": "harder",
     "tags": ["Lebi","Short","Ship Control","Chokepoints","Precision","Skill Based","Timings","Unforgiving"],
     "date_added": "2025-02-16",
@@ -544,7 +544,7 @@
     "gd_id": "93301848",
     "duration": "0:28",
     "objects": 683,
-    "tier": "Harder",
+    "tier": "Hard",
     "difficulty": "harder",
     "tags": ["Leyo","Short","Balanced","Learny","High CPS","Wave Control","Structured"],
     "date_added": "2023-08-11",
@@ -1393,7 +1393,7 @@
     "gd_id": "116135401",
     "duration": "0:21",
     "objects": 447,
-    "tier": "Normal",
+    "tier": "Casual",
     "difficulty": "harder",
     "tags": ["Fimosis","Short","Structured","Balanced","Calm","Cube Timing","Gameplay Sync"],
     "date_added": "2020-10-01",

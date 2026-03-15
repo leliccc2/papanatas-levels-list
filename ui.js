@@ -1,4 +1,4 @@
-// ui.js - definitivo: submit modal, admin review, signin, record overrides fix
+// ui.js - definitivo Supabase-ready: submit modal, admin review, signin, record overrides fix
 (function(){
   'use strict';
 
@@ -18,17 +18,12 @@
     try { sessionStorage.setItem('papan_sidebar_hidden', hidden ? '1' : '0'); } catch(e){}
   });
 
+  // -----------------------
+  // Supabase init (replace with your own values or keep the ones placed)
+  // -----------------------
   const supabaseUrl = 'https://hlvvxgljcrwjuelmascs.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsdnZ4Z2xqY3J3anVlbG1hc2NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1OTc0MjEsImV4cCI6MjA4OTE3MzQyMX0.r1bS2NeloY1EgtdlJH-ZqLyOzgIpoL2Y_qsRGQIOYiM';
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-async function renderReviewList(){
-  const listNode = reviewModal.querySelector('#papanReviewList');
-  listNode.innerHTML = '';
-  const arr = await loadSubmissions();  // <-- aquí el await
-  if(!arr || !arr.length){ listNode.innerHTML = '<div class="papan-subtle">No pending submissions.</div>'; return; }
-  // resto del render sigue igual...
-}
+  const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsdnZ4Z2xqY3J3anVlbG1hc2NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1OTc0MjEsImV4cCI6MjA4OTE3MzQyMX0.r1bS2NeloY1EgtdlJH-ZqLyOzgIpoL2Y_qsRGQIOYiM';
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
   // -----------------------
   // Config / keys
@@ -38,7 +33,7 @@ async function renderReviewList(){
   const KNOWN_PLAYERS = ['Lelike','Carlos','Marc','Billy','Yoyi','Eiron456'];
 
   // storage keys
-  const SUB_KEY = 'papan_submissions';
+  const SUB_KEY = 'papan_submissions'; // legacy (not used for Supabase submissions)
   const RECS_KEY = 'papan_records_overrides';
   const ISADMIN_KEY = 'papan_is_admin';
   const CURRENT_USER_KEY = 'papan_current_user';
@@ -266,7 +261,7 @@ async function renderReviewList(){
     };
 
     // submit handler: uses current signed-in user
-    wrap.querySelector('#papanSubmitBtn').addEventListener('click', ()=>{
+    wrap.querySelector('#papanSubmitBtn').addEventListener('click', async ()=>{
       const curUser = getCurrentUser();
       if(!curUser){ alert('Debes iniciar sesión antes de enviar. Usa Sign in (abajo izquierda).'); return; }
       const lvlQuery = (search.value||'').trim();
@@ -274,46 +269,26 @@ async function renderReviewList(){
       const percentVal = Number((wrap.querySelector('#papanPercent').value||'').trim());
       if(isNaN(percentVal) || percentVal < 0 || percentVal > 100){ alert('Introduce un porcentaje válido entre 0 y 100.'); return; }
       const notes = (wrap.querySelector('#papanNotes').value || '').trim();
-      const date = new Date().toISOString().slice(0,10);
 
       if(!currentFileBase64){
         if(!confirm('No has adjuntado una imagen. ¿Enviar sin captura?')) return;
       }
 
-      const sub = {
-        id: 'sub_' + Date.now() + '_' + Math.floor(Math.random()*9999),
-        levelId: selectedLevel.id,
-        levelName: selectedLevel.name,
-        progress: String(percentVal) + '%',
-        holder: curUser,
-        notes: notes,
-        image: currentFileBase64 || null,
-        date: date,
-        status: 'pending',
-        reviewer: null
-      };
-
       try{
-sendSubmission({
-  level_id: selectedLevel.id,
-  level_name: selectedLevel.name,
-  player: curUser,
-  progress: String(percentVal) + '%',
-  proof: currentFileBase64 || null,
-  notes: notes
-})
-.then(() => {
-  alert('Enviado. La submission está en estado PENDING y será revisada por el admin.');
-  wrap.style.display = 'none';
-})
-.catch((err) => {
-  console.error(err);
-  alert('No se pudo enviar la submission. Revisa la consola.');
-});
-      }catch(e){ alert('No se pudo guardar la submisión: ' + e); return; }
-
-      alert('Enviado. La submisión está en estado PENDING y será revisada por el admin.');
-      wrap.style.display = 'none';
+        await sendSubmission({
+          level_id: selectedLevel.id,
+          level_name: selectedLevel.name,
+          player: curUser,
+          progress: String(percentVal) + '%',
+          proof: currentFileBase64 || null,
+          notes: notes
+        });
+        alert('Enviado. La submission está en estado PENDING y será revisada por el admin.');
+        wrap.style.display = 'none';
+      }catch(err){
+        console.error(err);
+        alert('No se pudo enviar la submission. Revisa la consola.');
+      }
     });
 
     return wrap;
@@ -390,7 +365,7 @@ sendSubmission({
     document.body.appendChild(wrap);
     wrap.querySelector('#papanReviewClose').addEventListener('click', ()=> wrap.style.display='none');
     wrap.querySelector('#papanReviewClose2').addEventListener('click', ()=> wrap.style.display='none');
-    wrap.querySelector('#papanReviewRefresh').addEventListener('click', ()=> renderReviewList());
+    wrap.querySelector('#papanReviewRefresh').addEventListener('click', async ()=> { await renderReviewList(); });
     return wrap;
   }
   const reviewModal = buildReviewModal();
@@ -422,17 +397,21 @@ sendSubmission({
   const delModal = buildDeleteRecordsModal();
 
   // -----------------------
-  // Data helpers: submissions & overrides
+  // Data helpers: submissions & overrides (Supabase integrated)
   // -----------------------
-async function loadSubmissions(){
-  const { data, error } = await supabaseClient
-    .from('submissions')
-    .select('*')
-    .eq('status', 'pending');
-  if(error) return console.error(error);
-  return data;
-}
-  function saveSubmissions(arr){ localStorage.setItem(SUB_KEY, JSON.stringify(arr)); }
+  async function loadSubmissions(){
+    try{
+      const { data, error } = await supabaseClient
+        .from('submissions')
+        .select('*')
+        .eq('status', 'pending');
+      if(error){ console.error('Supabase loadSubmissions error', error); return []; }
+      return Array.isArray(data) ? data : [];
+    }catch(e){
+      console.error('loadSubmissions exception', e);
+      return [];
+    }
+  }
 
   function loadOverrides(){ return safeParse(localStorage.getItem(RECS_KEY), {}); }
   function saveOverrides(obj){ localStorage.setItem(RECS_KEY, JSON.stringify(obj)); }
@@ -448,88 +427,88 @@ async function loadSubmissions(){
     }catch(e){ console.error(e); return false; }
   }
 
-  // add record override (robust)
-function addRecordOverride(levelId, record){
-
-  try{
-
-    let obj;
-
+  // add record override (robust, localStorage)
+  function addRecordOverride(levelId, record){
     try{
-      obj = JSON.parse(localStorage.getItem(RECS_KEY));
+      let obj;
+      try{ obj = JSON.parse(localStorage.getItem(RECS_KEY) || '{}'); }catch(e){ obj = {}; }
+      if(!obj || typeof obj !== 'object' || Array.isArray(obj)) obj = {};
+      if(!Array.isArray(obj[levelId])) obj[levelId] = [];
+      const exists = obj[levelId].some(r => r.holder === record.holder && r.progress === record.progress && r.date === record.date);
+      if(!exists) obj[levelId].push({ holder: record.holder, progress: record.progress, date: record.date });
+      localStorage.setItem(RECS_KEY, JSON.stringify(obj));
+      return true;
     }catch(e){
-      obj = {};
+      console.error('addRecordOverride error', e);
+      return false;
     }
-
-    if(!obj || typeof obj !== 'object' || Array.isArray(obj)){
-      obj = {};
-    }
-
-    if(!Array.isArray(obj[levelId])){
-      obj[levelId] = [];
-    }
-
-    // evitar duplicados
-    const exists = obj[levelId].some(r =>
-      r.holder === record.holder &&
-      r.progress === record.progress &&
-      r.date === record.date
-    );
-
-    if(!exists){
-      obj[levelId].push({
-        holder: record.holder,
-        progress: record.progress,
-        date: record.date
-      });
-    }
-
-    localStorage.setItem(RECS_KEY, JSON.stringify(obj));
-
-    return true;
-
-  }catch(e){
-    console.error("Error guardando record:", e);
-    return false;
   }
 
-}
-
-  // accept submission: add override, notif, remove submission
-  function acceptSubmission(sub){
-    addRecordOverride(sub.levelId, { holder: sub.holder, progress: sub.progress, date: sub.date });
-    pushNotification(sub.holder, `Your submission for "${sub.levelName}" (${sub.progress}) has been ACCEPTED.`);
-    // remove submission from queue
-    const arr = loadSubmissions();
-    const kept = arr.filter(x => x.id !== sub.id);
-    saveSubmissions(kept);
+  // accept submission: update DB status, add override, notif
+  async function acceptSubmission(sub){
+    try{
+      // update row in Supabase
+      const { data, error } = await supabaseClient
+        .from('submissions')
+        .update({ status: 'accepted', reviewer: ADMIN_NAME })
+        .eq('id', sub.id)
+        .select();
+      if(error){ console.error('Supabase accept error', error); alert('Error al aceptar (DB). Mira la consola.'); return false; }
+      // add local override for level page
+      addRecordOverride(sub.level_id || sub.levelId, { holder: sub.player || sub.holder, progress: sub.progress, date: sub.date || (new Date().toISOString().slice(0,10)) });
+      pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been ACCEPTED.`);
+      return true;
+    }catch(e){
+      console.error('acceptSubmission exception', e);
+      return false;
+    }
   }
 
-  function denySubmission(sub, reason){
-    pushNotification(sub.holder, `Your submission for "${sub.levelName}" (${sub.progress}) has been DENIED.${reason ? ' Reason: '+reason : ''}`);
-    const arr = loadSubmissions();
-    const kept = arr.filter(x => x.id !== sub.id);
-    saveSubmissions(kept);
+  // deny submission: update DB status, notify
+  async function denySubmission(sub, reason){
+    try{
+      const { data, error } = await supabaseClient
+        .from('submissions')
+        .update({ status: 'denied', reviewer: ADMIN_NAME })
+        .eq('id', sub.id)
+        .select();
+      if(error){ console.error('Supabase deny error', error); alert('Error al denegar (DB). Mira la consola.'); return false; }
+      pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been DENIED.${reason ? ' Reason: '+reason : ''}`);
+      return true;
+    }catch(e){
+      console.error('denySubmission exception', e);
+      return false;
+    }
   }
 
   // -----------------------
-  // Render functions for review and delete lists
+  // Render functions for review and delete lists (async-safe)
   // -----------------------
-  function renderReviewList(){
+  async function renderReviewList(){
     const listNode = reviewModal.querySelector('#papanReviewList');
     listNode.innerHTML = '';
-    const arr = loadSubmissions().slice().reverse();
-    if(!arr.length){ listNode.innerHTML = '<div class="papan-subtle">No pending submissions.</div>'; return; }
-    arr.forEach(sub => {
+    const arr = await loadSubmissions();
+    if(!arr || arr.length === 0){ listNode.innerHTML = '<div class="papan-subtle">No pending submissions.</div>'; return; }
+
+    // reverse chronological
+    arr.slice().reverse().forEach(sub => {
       const card = create('div');
       card.style = 'padding:12px;border-radius:10px;background:var(--card);margin-bottom:8px;border:1px solid rgba(255,255,255,0.02);';
+      const imageSrc = sub.proof || sub.image || 'images/placeholder.png';
+      const levelName = escapeHtml(sub.level_name || sub.levelName || '');
+      const levelId = escapeHtml(sub.level_id || sub.levelId || '');
+      const player = escapeHtml(sub.player || sub.holder || '');
+      const progress = escapeHtml(sub.progress || '');
+      const date = escapeHtml(sub.date || '');
+      const notes = escapeHtml(sub.notes || '');
+
       card.innerHTML = `
         <div style="display:flex;gap:12px;align-items:center">
-          <img src="${sub.image || 'images/placeholder.png'}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:84px;object-fit:cover;border-radius:8px">
+          <img src="${imageSrc}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:84px;object-fit:cover;border-radius:8px">
           <div style="flex:1">
-            <div style="font-weight:800">${escapeHtml(sub.levelName)} <span class="papan-subtle">#${escapeHtml(sub.levelId)}</span></div>
-            <div style="color:var(--muted);margin-top:6px">${escapeHtml(sub.holder)} — ${escapeHtml(sub.progress)} — ${escapeHtml(sub.date)}</div>
-            <div style="margin-top:8px;color:var(--muted);font-size:13px">${escapeHtml(sub.notes||'')}</div>
+            <div style="font-weight:800">${levelName} <span class="papan-subtle">#${levelId}</span></div>
+            <div style="color:var(--muted);margin-top:6px">${player} — ${progress} — ${date}</div>
+            <div style="margin-top:8px;color:var(--muted);font-size:13px">${notes}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px">
             <button class="papan-accept papan-primary">Accept</button>
@@ -537,20 +516,30 @@ function addRecordOverride(levelId, record){
           </div>
         </div>
       `;
-      card.querySelector('.papan-accept').addEventListener('click', ()=>{
+
+      const acceptBtn = card.querySelector('.papan-accept');
+      const denyBtn = card.querySelector('.papan-deny');
+
+      acceptBtn.addEventListener('click', async ()=>{
         if(!isAdminLogged()){ alert('Not admin'); return; }
         if(!confirm('Accept this submission?')) return;
-        acceptSubmission(sub);
-        renderReviewList();
-        updateUserUI();
+        const ok = await acceptSubmission(sub);
+        if(ok){
+          await renderReviewList();
+          updateUserUI();
+        }
       });
-      card.querySelector('.papan-deny').addEventListener('click', ()=>{
+
+      denyBtn.addEventListener('click', async ()=>{
         if(!isAdminLogged()){ alert('Not admin'); return; }
         const reason = prompt('Reason (optional):');
-        denySubmission(sub, reason || null);
-        renderReviewList();
-        updateUserUI();
+        const ok = await denySubmission(sub, reason || null);
+        if(ok){
+          await renderReviewList();
+          updateUserUI();
+        }
       });
+
       listNode.appendChild(card);
     });
   }
@@ -598,41 +587,36 @@ function addRecordOverride(levelId, record){
     else alert('Incorrect PIN');
   });
 
-  reviewToggleBtn.addEventListener('click', ()=>{
+  reviewToggleBtn.addEventListener('click', async ()=>{
     if(!isAdminLogged()){ alert('You must be admin'); return; }
-    renderReviewList();
+    await renderReviewList();
     reviewModal.style.display = 'flex';
   });
 
-  deleteRecordsBtn.addEventListener('click', ()=>{
+  deleteRecordsBtn.addEventListener('click', async ()=>{
     if(!isAdminLogged()){ alert('You must be admin'); return; }
     renderDeleteList();
     delModal.style.display = 'flex';
   });
 
-  signInBtn.addEventListener('click', ()=>{
-    // If logged in as user: offer logout
+  signInBtn.addEventListener('click', ()=>{ 
     const cur = getCurrentUser();
     if(cur){
       if(confirm(`Log out (${cur})?`)){ setCurrentUser(null); alert('Logged out'); }
       return;
     }
-    // not signed in: open modal
     signInModal.style.display = 'flex';
   });
 
-  // Sign-in modal behavior (re-wired) - reuse signInModal from earlier creation
-  // we already added listeners inside its builder; ensure updateUserUI called after sign in
+  // Sign-in modal behavior (re-wired)
   (function wireSignInModal(){
-    // add listener to modal's sign button in its DOM (it exists because builder created it)
     const modal = signInModal;
     if(!modal) return;
     const quicks = modal.querySelectorAll('.papan-quickuser');
     quicks.forEach(b => b.addEventListener('click', ()=> { modal.querySelector('#papanSignName').value = b.dataset.name; }));
-    modal.querySelector('#papanSignInBtn').addEventListener('click', ()=>{
+    modal.querySelector('#papanSignInBtn').addEventListener('click', ()=> {
       const name = (modal.querySelector('#papanSignName').value || '').trim();
       if(!name){ alert('Write a name'); return; }
-      // set session user, and ensure admin is off
       sessionStorage.setItem(CURRENT_USER_KEY, name);
       localStorage.removeItem(ISADMIN_KEY);
       updateUserUI();
@@ -659,7 +643,6 @@ function addRecordOverride(levelId, record){
       if(count > 0){ notifSpan.textContent = String(count); notifSpan.style.display = ''; }
       else { notifSpan.style.display = 'none'; }
     } else {
-      // if admin logged in, show sign in button as disabled / show option to sign in as user (admin can't be user simultaneously)
       if(admin){
         signInBtn.textContent = 'Sign in (admin)';
         notifSpan.style.display = 'none';
@@ -689,27 +672,34 @@ function addRecordOverride(levelId, record){
   window.Papan.openSubmitModal = function(){ papanModal.style.display = 'flex'; if(typeof papanModal._onOpen === 'function') papanModal._onOpen(); };
   window.Papan.refreshAdminUI = updateUserUI;
 
-  // -----------------------
-  // Render list functions exposed for console if needed
-  // -----------------------
+  // expose renderers
   window.Papan.renderReviewList = renderReviewList;
   window.Papan.renderDeleteList = renderDeleteList;
 
+  // -----------------------
+  // sendSubmission: insert into Supabase
+  // -----------------------
   async function sendSubmission(data){
-
-  await supabaseClient
-  .from("submissions")
-  .insert([{
-    level_id: data.level_id,
-    level_name: data.level_name,
-    player: data.player,
-    progress: data.progress,
-    proof: data.proof,
-    notes: data.notes,
-    date: new Date().toISOString(),
-    status: "pending"
-  }]);
-
-}
+    try{
+      const { data: inserted, error } = await supabaseClient
+        .from('submissions')
+        .insert([{
+          level_id: data.level_id,
+          level_name: data.level_name,
+          player: data.player,
+          progress: data.progress,
+          proof: data.proof,
+          notes: data.notes,
+          date: new Date().toISOString().slice(0,10),
+          status: "pending"
+        }])
+        .select();
+      if(error){ console.error('sendSubmission error', error); throw error; }
+      return inserted;
+    }catch(e){
+      console.error('sendSubmission exception', e);
+      throw e;
+    }
+  }
 
 })();

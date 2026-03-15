@@ -1,5 +1,7 @@
-// roulette.js - roulette runner updated: input % en lugar de Start, no guardar, show modals on fail/win, enforce target and allow jumping ahead to P
+// roulette.js - roulette runner: input % enforced, jump-to-P logic, win/fail modals, no "Paso X de 100"
 (function(){
+  'use strict';
+
   const btnGenerate = document.getElementById('btnGenerate');
   const btnPrev = document.getElementById('btnPrev');
   const btnNext = document.getElementById('btnNext');
@@ -12,7 +14,7 @@
   const rouletteState = document.getElementById('rouletteState');
   const rouletteProgress = document.getElementById('rouletteProgress');
 
-  let run = null; // { id, createdAt, entries: [{levelId, name, creator, thumb, gd_id}], index, results: [] }
+  let run = null; // { id, createdAt, entries:[], index, results: [] }
   let levels = [];
   let finished = false;
 
@@ -26,16 +28,17 @@
     });
 
     btnGenerate.addEventListener('click', generateRun);
-    btnPrev.addEventListener('click', ()=> { if(!run) return; if(run.index>0){ run.index--; refreshUI(); } });
-    btnNext.addEventListener('click', ()=> { if(!run) return; if(run.index < run.entries.length-1){ run.index++; refreshUI(); } });
+    btnPrev.addEventListener('click', ()=> { if(!run || finished) return; if(run.index>0){ run.index--; refreshUI(); } });
+    btnNext.addEventListener('click', ()=> { if(!run || finished) return; if(run.index < run.entries.length-1){ run.index++; refreshUI(); } });
     btnMarkDone.addEventListener('click', ()=> markResult(true));
     btnMarkFail.addEventListener('click', ()=> markFail());
     btnApplyPercent.addEventListener('click', applyPercent);
 
     percentInput.addEventListener('input', ()=> {
-      if(!run) { btnApplyPercent.disabled = true; return; }
+      if(!run || finished){ btnApplyPercent.disabled = true; return; }
       const val = Number(percentInput.value);
       const min = run.index + 1;
+      // disable apply unless numeric and >= target
       btnApplyPercent.disabled = isNaN(val) || val < min;
     });
 
@@ -44,7 +47,6 @@
 
   function generateRun(){
     const pool = levels.slice();
-    // shuffle
     shuffle(pool);
     const entries = [];
     const needed = 100;
@@ -69,7 +71,7 @@
       createdAt: new Date().toISOString(),
       entries,
       index: 0,
-      results: Array(entries.length).fill(null) // store true/false or numeric percent
+      results: Array(entries.length).fill(null)
     };
     finished = false;
     percentInput.value = '';
@@ -90,25 +92,21 @@
 
     const target = run.index + 1; // required minimum percent for this step
     if(val < target){
-      // can't input less than target -> treat as fail
-      showModal('Has perdido', 'Has introducido un porcentaje menor al objetivo. La run se considera fallada.');
-      // mark fail at current index
+      // no permitido: es trampa -> fallo
       run.results[run.index] = false;
       finished = true;
       refreshUI();
+      showModal('Has perdido', 'Has introducido un porcentaje menor al objetivo. La run queda fallada.');
       return;
     }
 
     // store the percent at current position
     run.results[run.index] = val;
 
-    // advance to index that corresponds to val (so next target will be floor(val)+1)
-    // mapping: percent P => we want next index = floor(P) (0-based index), because index n has target (n+1)%
-    // Example: P=83 -> set run.index = 83 -> next target = 84%
+    // compute next index: floor(val) clamped to last index
     const nextIndex = Math.min(run.entries.length - 1, Math.floor(val));
-    // if nextIndex === run.entries.length - 1 -> we completed roulette
     if(nextIndex >= run.entries.length - 1 || val >= 100){
-      // mark all intermediate as done if desired (we keep only this result)
+      // win
       run.index = run.entries.length - 1;
       finished = true;
       refreshUI();
@@ -116,7 +114,7 @@
       return;
     }
 
-    // otherwise advance to nextIndex
+    // advance to nextIndex
     run.index = nextIndex;
     percentInput.value = '';
     btnApplyPercent.disabled = true;
@@ -126,20 +124,21 @@
   function markResult(ok){
     if(!run || finished) return;
     run.results[run.index] = !!ok;
-    // if marked as fail -> show modal and finish
     if(!ok){
-      showModal('Has perdido', 'Has marcado este paso como fallado.');
       finished = true;
-    } else {
-      // advance one step (normal completion; equivalent to giving 1% more)
-      if(run.index < run.entries.length - 1){
-        run.index++;
-      } else {
-        finished = true;
-        showModal('MUY BIEN!, has ganado', '¡Felicidades! Has completado la roulette.');
-      }
+      refreshUI();
+      showModal('Has perdido', 'Has marcado este paso como fallado.');
+      return;
     }
-    refreshUI();
+    // ok -> advance one step
+    if(run.index < run.entries.length - 1){
+      run.index++;
+      refreshUI();
+    } else {
+      finished = true;
+      refreshUI();
+      showModal('MUY BIEN!, has ganado', '¡Felicidades! Has completado la roulette.');
+    }
   }
 
   function markFail(){
@@ -160,18 +159,17 @@
     }
 
     const entry = run.entries[run.index];
-    const target = run.index + 1; // 1..100 percent target
-    const entryNumber = run.index + 1;
+    const target = run.index + 1; // target % displayed = index+1
     const targetPercent = `${target}%`;
 
-    // show main card (include #numero next to name)
+    // main card (no "Paso X de 100")
     rouletteContent.innerHTML = `
       <div style="display:flex;gap:12px;align-items:center">
         <img src="${escapeHtml(entry.thumb)}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:80px;object-fit:cover;border-radius:6px">
         <div>
-          <div style="font-weight:800;font-size:18px">${escapeHtml(entry.name)} <span style="color:var(--muted);font-weight:700">#${entryNumber}</span></div>
+          <div style="font-weight:800;font-size:18px">${escapeHtml(entry.name)} <span style="color:var(--muted);font-weight:700">#${run.index+1}</span></div>
           <div style="color:var(--muted);margin-top:6px">by ${escapeHtml(entry.creator)} ${entry.gd_id ? '— GD id '+escapeHtml(entry.gd_id) : ''}</div>
-          <div style="margin-top:8px"><strong>Target:</strong> ${targetPercent}</div>
+          <div style="margin-top:8px"><strong>Target:</strong> <span id="displayTarget">${targetPercent}</span></div>
           <div style="margin-top:6px;color:var(--muted);font-size:13px">
             ${resultDescription(run.results[run.index], target)}
           </div>
@@ -179,27 +177,28 @@
       </div>
     `;
 
-    // compute done/failed counts
+    // counts
     let doneCount = 0, failCount = 0;
     for(let i=0;i<run.results.length;i++){
       const res = run.results[i];
       if(res === true) doneCount++;
       else if(res === false) failCount++;
       else if(typeof res === 'number'){
-        // consider numbers >= their step target (i+1) as done
         if(res >= (i+1)) doneCount++; else failCount++;
       }
     }
 
     rouletteState.innerHTML = `Hechos: ${doneCount} — Fallados: ${failCount}`;
-    rouletteProgress.textContent = `${entryNumber} / ${run.entries.length}`;
+    rouletteProgress.textContent = `${run.index + 1} / ${run.entries.length}`;
 
+    // inputs/buttons state
     btnPrev.disabled = run.index === 0 || finished;
     btnNext.disabled = run.index >= run.entries.length - 1 || finished;
     btnMarkDone.disabled = finished;
     btnMarkFail.disabled = finished;
     percentInput.disabled = finished;
-    // enable apply if percent input is valid and >= target
+    // set min attribute so user sees the minimum
+    percentInput.min = target;
     const curVal = Number(percentInput.value || '');
     btnApplyPercent.disabled = finished || isNaN(curVal) || curVal < target;
   }
@@ -212,9 +211,8 @@
     return '';
   }
 
-  // small modal helper (simple)
+  // modal helper
   function showModal(title, text){
-    // remove existing
     const prev = document.querySelector('.roulette-modal-backdrop');
     if(prev) prev.remove();
     const modal = document.createElement('div');

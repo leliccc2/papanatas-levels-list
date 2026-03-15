@@ -213,3 +213,6 @@ a:visited{
 a:hover{
   color: var(--accent);
 }
+/* ajuste iconos difficulty */
+.detail-right h2 img { width:28px; height:28px; object-fit:contain; }
+.muted-btn[href][class~="muted-btn"]{ display:inline-block; text-decoration:none; padding:8px 10px; border-radius:8px; }

@@ -508,6 +508,28 @@ async function denySubmission(sub, reason){
     return false;
   }
 }
+
+async function deleteSubmission(sub){
+  try{
+    const { error } = await supabaseClient
+      .from('submissions')
+      .delete()
+      .eq('id', sub.id);
+
+    if(error){
+      console.error('Supabase delete error', error);
+      alert('Error al borrar la submission.');
+      return false;
+    }
+
+    await renderReviewList(); // refresca la lista
+    return true;
+
+  }catch(e){
+    console.error('deleteSubmission exception', e);
+    return false;
+  }
+}
   // -----------------------
   // Render functions for review and delete lists (async-safe)
   // -----------------------
@@ -540,6 +562,7 @@ async function denySubmission(sub, reason){
           <div style="display:flex;flex-direction:column;gap:8px">
             <button class="papan-accept papan-primary">Accept</button>
             <button class="papan-deny papan-muted">Deny</button>
+            <button class="delete">Delete</button>
           </div>
         </div>
       `;
@@ -566,6 +589,11 @@ async function denySubmission(sub, reason){
           updateUserUI();
         }
       });
+      card.querySelector('.delete').onclick = async () => {
+  if(confirm("¿Borrar esta submission?")){
+    await deleteSubmission(sub);
+  }
+};
 
       listNode.appendChild(card);
     });

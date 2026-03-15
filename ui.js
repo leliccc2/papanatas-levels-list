@@ -61,14 +61,26 @@
 .papan-form-row{ display:flex; gap:12px; margin-bottom:12px; align-items:center; }
 .papan-form-col{ flex:1; display:flex; flex-direction:column; gap:6px; }
 .papan-form-label{ font-size:13px; color:var(--muted); font-weight:700; }
-.papan-input, .papan-textarea, .papan-select{ background:#0b0b0b; border:1px solid rgba(255,255,255,0.04); color:var(--white); padding:10px; border-radius:8px; outline:none; }
+.papan-input, .papan-textarea, .papan-select{ background:#0b0b0b; border:1px solid rgba(255,255,255,0.04); color:var(--white); padding:10px; border-radius:8px; outline:none; box-sizing:border-box; }
 .papan-textarea{ min-height:84px; resize:vertical; }
 .papan-suggestions{ max-height:220px; overflow:auto; background:var(--card); border:1px solid rgba(255,255,255,0.03); border-radius:8px; margin-top:6px; padding:6px; }
 .papan-suggestion-item{ padding:8px; border-radius:8px; cursor:pointer; }
-.papan-file-preview{ width:180px; height:110px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:#0b0b0b; }
+
+/* file preview & file control */
+.papan-file-preview{ width:180px; height:110px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:#0b0b0b; display:none; }
+.papan-file-wrap{ display:flex; gap:8px; align-items:center; }
+.papan-file-name{ color:var(--muted); font-size:13px; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:none; }
+
+/* buttons */
 .papan-primary{ background:var(--accent); color:#111; padding:10px 12px; border-radius:10px; border:none; font-weight:800; cursor:pointer; }
 .papan-muted{ background:#111; color:var(--muted); padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); cursor:pointer; }
 .papan-danger{ background:linear-gradient(180deg,#ff6b6b,#ff4c4c); color:#111; padding:10px 12px; border-radius:10px; border:none; font-weight:800; cursor:pointer; }
+
+/* styled file label looks like a button; input covers it */
+.papan-file-btn{ padding:8px 10px; border-radius:8px; display:inline-flex; gap:8px; align-items:center; font-weight:800; cursor:pointer; border:1px solid rgba(255,255,255,0.04); background:linear-gradient(180deg,#111,#0b0b0b); color:var(--muted); position:relative; overflow:hidden; }
+.papan-file-btn input[type=file]{ position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+
+/* review cards */
 .papan-review-list .card{ padding:12px;border-radius:10px;background:var(--card);margin-bottom:8px;border:1px solid rgba(255,255,255,0.02); display:flex; gap:12px; align-items:center;}
 .papan-review-list .actions{ display:flex; flex-direction:column; gap:8px; }
 `;
@@ -154,13 +166,13 @@
 
           <div style="width:220px">
             <div class="papan-form-label">Captura</div>
-            <img id="papanPreview" class="papan-file-preview" src="images/placeholder.png" alt="preview" />
+            <img id="papanPreview" class="papan-file-preview" src="" alt="preview" />
             <div style="margin-top:8px">
               <div class="papan-file-wrap">
-                <label class="papan-file-btn">Select image
+                <label class="papan-file-btn papan-primary">Select image
                   <input id="papanFile" type="file" accept="image/png,image/jpeg" />
                 </label>
-                <div id="papanFileName" class="papan-file-name">No file selected</div>
+                <div id="papanFileName" class="papan-file-name"></div>
               </div>
             </div>
           </div>
@@ -205,6 +217,10 @@
     let selectedLevel = null;
     let currentFileBase64 = null;
 
+    // start hidden: no preview, no filename
+    preview.style.display = 'none';
+    fname.style.display = 'none';
+
     // only cancel handler (no Close button)
     wrap.querySelector('#papanCancelBtn').addEventListener('click', ()=> wrap.style.display = 'none');
 
@@ -239,11 +255,29 @@
     // file input handling
     fileInput.addEventListener('change', (ev)=>{
       const f = ev.target.files && ev.target.files[0];
-      if(!f){ preview.src='images/placeholder.png'; currentFileBase64 = null; fname.textContent='No file selected'; return; }
-      if(!['image/png','image/jpeg'].includes(f.type)){ alert('Sólo png/jpg permitidos.'); fileInput.value=''; fname.textContent='No file selected'; return; }
+      if(!f){
+        // reset: hide preview & filename
+        preview.src = '';
+        preview.style.display = 'none';
+        currentFileBase64 = null;
+        fname.textContent = '';
+        fname.style.display = 'none';
+        fileInput.value = '';
+        return;
+      }
+      if(!['image/png','image/jpeg'].includes(f.type)){ alert('Sólo png/jpg permitidos.'); fileInput.value=''; preview.src=''; preview.style.display='none'; fname.textContent=''; fname.style.display='none'; currentFileBase64 = null; return; }
+
+      // show filename truncated
       fname.textContent = f.name;
+      fname.style.display = '';
+
+      // show preview and store base64
       const reader = new FileReader();
-      reader.onload = function(e){ preview.src = e.target.result; currentFileBase64 = e.target.result; };
+      reader.onload = function(e){
+        preview.src = e.target.result;
+        preview.style.display = '';
+        currentFileBase64 = e.target.result;
+      };
       reader.readAsDataURL(f);
     });
 
@@ -254,9 +288,11 @@
       if(cur) submitAsText.textContent = `You are signed in as ${cur}`;
       else submitAsText.textContent = 'You are not signed in';
       // reset fields
-      preview.src = 'images/placeholder.png';
+      preview.src = '';
+      preview.style.display = 'none';
       fileInput.value = '';
-      fname.textContent = 'No file selected';
+      fname.textContent = '';
+      fname.style.display = 'none';
       currentFileBase64 = null;
       wrap.querySelector('#papanPercent').value = '';
       wrap.querySelector('#papanNotes').value = '';
@@ -498,7 +534,7 @@
 
     arr.forEach(sub => {
       const card = create('div'); card.className = 'card';
-      const imageSrc = sub.proof || sub.image || null;
+      const imageSrc = (sub.proof || sub.image || null);
       const imgHtml = imageSrc ? `<img src="${imageSrc}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:84px;object-fit:cover;border-radius:8px">` : '';
       const levelName = escapeHtml(sub.level_name || sub.levelName || '');
       const levelId = escapeHtml(sub.level_id || sub.levelId || '');
@@ -667,7 +703,7 @@
       if(!supabaseClient){
         // local fallback
         const arr = safeParse(localStorage.getItem('papan_submissions'), []);
-        arr.push({
+        const item = {
           id: 'sub_' + Date.now() + '_' + Math.floor(Math.random()*9999),
           levelId: data.level_id,
           levelName: data.level_name,
@@ -677,9 +713,10 @@
           image: data.proof || null,
           date: data.date || new Date().toISOString().slice(0,10),
           status: 'pending'
-        });
+        };
+        arr.push(item);
         localStorage.setItem('papan_submissions', JSON.stringify(arr));
-        return arr[arr.length-1];
+        return item;
       }
       const { data: inserted, error } = await supabaseClient
         .from('submissions')

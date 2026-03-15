@@ -1,58 +1,167 @@
-// packs.js - generates packs once and persist them in localStorage so they do not change on levels.json edits
+// packs.js - generates packs once and persist them in localStorage or Supabase so they do not change on levels.json edits
 (function(){
   const container = document.getElementById('packsContent');
   const regenBtn = document.getElementById('regeneratePacks');
+
+  const STORAGE_KEY = 'papan_packs_v1';
+  const SUPABASE_URL = 'https://hlvvxgljcrwjuelmascs.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsdnZ4Z2xqY3J3anVlbG1hc2NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1OTc0MjEsImV4cCI6MjA4OTE3MzQyMX0.r1bS2NeloY1EgtdlJH-ZqLyOzgIpoL2Y_qsRGQIOYiM';
+
+  // detect admin from localStorage (same mechanism UI uses)
   const isAdmin = localStorage.getItem("papan_is_admin") === "1";
   if(regenBtn && !isAdmin){
-  regenBtn.remove();
-}
+    // remove regen button for non-admins (keeps DOM clean)
+    regenBtn.remove();
+  }
 
-  // key for persisted packs
-  const STORAGE_KEY = 'papan_packs_v1';
-
-  fetch('data/levels.json').then(r=>r.json()).then(levels=>{
-    if(!Array.isArray(levels)) return container.innerHTML = "<p style='color:#f66'>Formato JSON inválido.</p>";
-
-    // set positions locally
-    levels.forEach((lvl, i)=> lvl.position = i+1);
-
-    // get persisted packs if present
-    let persisted = null;
-    try { persisted = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch(e) { persisted = null; }
-
-    if(persisted && Array.isArray(persisted.packs) && persisted.packs.length){
-      // Use persisted packs: they contain tag + levelIds
-      renderPacksFromPersisted(persisted.packs, levels);
+  // create supabase client (if library present)
+  let supabaseClient = null;
+  try{
+    if(window.supabase && typeof window.supabase.createClient === 'function'){
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
     } else {
-      // No persisted packs -> generate and persist
-      const packs = computePacks(levels);
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ createdAt: new Date().toISOString(), packs }));
-      } catch(e){ console.warn('No se pudo persistir packs:', e); }
-      renderPacksFromPersisted(packs, levels);
+      // create our own instance (safe even if ui.js also created one)
+      if(window.supabase && typeof window.supabase.createClient !== 'function'){
+        supabaseClient = null;
+      } else if(typeof window.supabase !== 'undefined' && window.supabase.createClient){
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+      } else {
+        // try to reference global supabase variable anyway (in case library loaded)
+        try { supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON); } catch(e){ supabaseClient = null; }
+      }
+    }
+  }catch(e){
+    supabaseClient = null;
+  }
+
+  // Entry: load levels, then load packs (remote/local/generate)
+  fetch('data/levels.json').then(r=>r.json()).then(async (levels)=>{
+    if(!Array.isArray(levels)) {
+      if(container) container.innerHTML = "<p style='color:#f66'>Formato JSON inválido.</p>";
+      return;
     }
 
-    // attach regenerate button
+    // set positions
+    levels.forEach((lvl,i)=> lvl.position = i+1);
+
+    // try remote packs first (if supabase available)
+    let packs = null;
+    let remoteRow = null;
+    if(supabaseClient){
+      try{
+        // attempt to fetch the latest packs row
+        const { data, error } = await supabaseClient
+          .from('packs')
+          .select('id,packs,created_at,created_by')
+          .order('created_at', { ascending: false })
+          .limit(1);
+        if(error){
+          console.warn('Supabase: could not read packs table (fallback to local):', error);
+        } else if(Array.isArray(data) && data.length){
+          remoteRow = data[0];
+          // packs may be stored as JSON array in column 'packs'
+          if(remoteRow && (Array.isArray(remoteRow.packs) || typeof remoteRow.packs === 'string')){
+            packs = Array.isArray(remoteRow.packs) ? remoteRow.packs : (JSON.parse(remoteRow.packs || '[]'));
+          }
+        }
+      }catch(e){
+        console.warn('Supabase packs load failed (fallback to local):', e);
+        packs = null;
+      }
+    }
+
+    // if no remote packs, try localStorage persisted packs
+    if(!packs){
+      try{
+        const persisted = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        if(persisted && Array.isArray(persisted.packs) && persisted.packs.length){
+          packs = persisted.packs;
+        }
+      }catch(e){
+        packs = null;
+      }
+    }
+
+    // if still no packs, compute and persist locally (and optionally remotely if admin)
+    if(!packs || !packs.length){
+      packs = computePacks(levels);
+      // persist locally
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ createdAt: new Date().toISOString(), packs }));
+      }catch(e){ console.warn('Could not write packs locally:', e); }
+
+      // if supabase available and admin, try to insert remote row
+      if(supabaseClient && isAdmin){
+        try{
+          const { data: inserted, error: insertErr } = await supabaseClient
+            .from('packs')
+            .insert([{ packs }])
+            .select();
+          if(insertErr) console.warn('Supabase: failed to insert generated packs (ignored):', insertErr);
+          else remoteRow = Array.isArray(inserted) ? inserted[0] : inserted;
+        }catch(e){ console.warn('Supabase insert packs failed:', e); }
+      }
+    }
+
+    // finally render
+    renderPacksFromPersisted(packs, levels);
+
+    // attach regenerate button handler (only if regenBtn exists)
     if(regenBtn){
-      regenBtn.addEventListener('click', ()=>{
+      regenBtn.addEventListener('click', async ()=>{
         if(!confirm('Regenerar packs hará que se reemplacen los packs guardados. ¿Continuar?')) return;
         const newPacks = computePacks(levels, /*forceNew*/ true);
+        // update local
         try{
           localStorage.setItem(STORAGE_KEY, JSON.stringify({ createdAt: new Date().toISOString(), packs: newPacks }));
+        }catch(e){ console.warn('Could not persist packs locally:', e); }
+        // if supabase available and admin, update remote row (update latest row if exists, otherwise insert)
+        if(supabaseClient && isAdmin){
+          try{
+            if(remoteRow && remoteRow.id){
+              const { data: upd, error: errUpd } = await supabaseClient
+                .from('packs')
+                .update({ packs: newPacks, created_at: new Date().toISOString() })
+                .eq('id', remoteRow.id)
+                .select();
+              if(errUpd){
+                // fallback: insert new row
+                const { data: ins2, error: errIns2 } = await supabaseClient
+                  .from('packs')
+                  .insert([{ packs }])
+                  .select();
+                if(errIns2) console.warn('Supabase update/insert failed:', errIns2);
+                else remoteRow = Array.isArray(ins2) ? ins2[0] : ins2;
+              } else {
+                remoteRow = Array.isArray(upd) ? upd[0] : upd;
+              }
+            } else {
+              const { data: ins, error: errIns } = await supabaseClient
+                .from('packs')
+                .insert([{ packs }])
+                .select();
+              if(errIns) console.warn('Supabase insert failed:', errIns);
+              else remoteRow = Array.isArray(ins) ? ins[0] : ins;
+            }
+            alert('Packs regenerados y guardados (remote/local).');
+          }catch(e){
+            console.warn('Supabase regen failed, but local persisted:', e);
+            alert('Packs regenerados localmente (no se pudo actualizar remote).');
+          }
+        } else {
           alert('Packs regenerados y guardados localmente.');
-        }catch(e){ alert('Error guardando packs: '+(e && e.message)); }
+        }
         renderPacksFromPersisted(newPacks, levels);
       });
     }
 
   }).catch(err=>{
-    console.error(err);
-    container.innerHTML = "<p style='color:#f66'>Error cargando datos.</p>"
+    console.error('Error cargando levels.json:', err);
+    if(container) container.innerHTML = "<p style='color:#f66'>Error cargando datos.</p>"
   });
 
-  // Compute packs deterministically from levels (used only on first-run or when user regenerates)
+  // Compute packs deterministically from levels
   function computePacks(levels){
-    // tag -> list of levels
     const tagMap = new Map();
     levels.forEach(lvl => {
       (lvl.tags||[]).forEach(t => {
@@ -64,7 +173,6 @@
     const packs = [];
     for(const [tag, lvls] of tagMap.entries()){
       if(lvls.length >= 4){
-        // choose up to 8 levels deterministically
         const shuffled = seededShuffle(lvls.slice(), hashString(tag));
         const size = Math.min(8, Math.max(4, Math.floor((lvls.length + 3)/3)));
         const selected = shuffled.slice(0, Math.min(size, shuffled.length));
@@ -72,18 +180,20 @@
       }
     }
 
-    // sort packs by tag for stable ordering
     packs.sort((a,b)=> a.tag.localeCompare(b.tag));
     return packs;
   }
 
-  // Render using persisted packs (which store level ids) but show up-to-date info (name, pos)
+  // Render packs (same UI as before)
   function renderPacksFromPersisted(packs, levels){
     const levelById = new Map(levels.map(l => [String(l.id), l]));
 
-    if(!packs.length) return container.innerHTML = "<p style='color:var(--muted)'>No hay suficientes niveles para crear packs.</p>";
+    if(!packs.length){
+      if(container) container.innerHTML = "<p style='color:var(--muted)'>No hay suficientes niveles para crear packs.</p>";
+      return;
+    }
 
-    // compute user completions map
+    // compute user completions map from levels' records (local JSON)
     const userMap = new Map();
     levels.forEach(lvl => {
       (lvl.records||[]).forEach(rec=>{
@@ -118,9 +228,8 @@
       </div>`;
     }).join('');
 
-    container.innerHTML = packsHtml;
+    if(container) container.innerHTML = packsHtml;
 
-    // add click listeners to pack cards
     document.querySelectorAll('.pack-card').forEach(card=>{
       card.addEventListener('click', (e)=>{
         const idx = Number(card.dataset.packIndex);
@@ -129,10 +238,8 @@
     });
   }
 
-  // open modal showing pack details (resolve stored ids to current level objects if possible)
+  // open modal showing pack details
   function openPackModal(pack, userMap, levelById){
-    const levelsResolved = pack.levelIds.map(id => levelById.get(String(id))).filter(Boolean);
-    // if a stored id is missing, show as placeholder entry
     const levelsList = pack.levelIds.map(id => {
       const l = levelById.get(String(id));
       if(l) return `<li><a href="level.html?id=${encodeURIComponent(l.id)}">${escapeHtml(l.name)}</a> — #${escapeHtml(String(l.position||'-'))}</li>`;

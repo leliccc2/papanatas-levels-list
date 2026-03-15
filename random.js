@@ -1,9 +1,8 @@
-// random.js - crea un "nivel virtual" combinando etiquetas y atributos de levels.json
+// random.js - modo dual: "generator" (elige niveles existentes) y "creator" (crea JSON sin foto)
 (function(){
   const btnGen = document.getElementById('btnRandGenerate');
   const btnCopy = document.getElementById('btnRandCopy');
   const btnSeed = document.getElementById('btnRandSeed');
-
   const randNameEl = document.getElementById('randName');
   const randCreatorEl = document.getElementById('randCreator');
   const randStatsEl = document.getElementById('randStats');
@@ -11,14 +10,53 @@
   const randThumb = document.getElementById('randThumb');
   const randJson = document.getElementById('randJson');
   const randJsonText = document.getElementById('randJsonText');
+  const btnOpenLevel = document.getElementById('btnOpenLevel');
+
+  const modeLabel = document.getElementById('modeLabel');
+  const modePrev = document.getElementById('modePrev');
+  const modeNext = document.getElementById('modeNext');
 
   let levels = [];
+  let mode = 'generator'; // 'generator' | 'creator'
   let lastGenerated = null;
 
   fetch('data/levels.json').then(r=>r.json()).then(data=>{
     levels = Array.isArray(data) ? data : [];
   }).catch(e=>{
-    console.warn('No se pudo cargar levels.json para Random generator:', e);
+    console.warn('No se pudo cargar levels.json para Random:', e);
+  });
+
+  // mode toggles
+  const modes = ['generator','creator'];
+  function updateModeUI(){
+    if(mode === 'generator'){
+      modeLabel.textContent = 'Random level generator';
+      randThumb.style.display = ''; // show thumbnail
+      btnOpenLevel.style.display = 'inline-block';
+    }else{
+      modeLabel.textContent = 'Random level creator';
+      randThumb.style.display = 'none'; // hide photo in creator
+      btnOpenLevel.style.display = 'none';
+    }
+    // reset UI
+    randNameEl.textContent = 'Pulsa Generar';
+    randCreatorEl.textContent = '';
+    randStatsEl.textContent = '';
+    randTagsEl.innerHTML = '';
+    randJson.style.display = 'none';
+    btnCopy.disabled = true;
+    lastGenerated = null;
+  }
+
+  modePrev.addEventListener('click', ()=>{
+    const i = modes.indexOf(mode);
+    mode = modes[(i - 1 + modes.length) % modes.length];
+    updateModeUI();
+  });
+  modeNext.addEventListener('click', ()=>{
+    const i = modes.indexOf(mode);
+    mode = modes[(i + 1) % modes.length];
+    updateModeUI();
   });
 
   btnGen.addEventListener('click', ()=> generateRandomLevel());
@@ -29,55 +67,85 @@
   btnCopy.addEventListener('click', ()=> {
     if(!lastGenerated) return;
     copyToClipboard(JSON.stringify(lastGenerated, null, 2));
-    alert('JSON copiado al portapapeles. Pégalo en tu levels.json si quieres añadirlo.');
+    alert('JSON copiado al portapapeles.');
   });
 
   function generateRandomLevel(seed){
+    if(mode === 'generator'){
+      generateFromExisting(seed);
+    } else {
+      generateVirtual(seed);
+    }
+  }
+
+  // Generator: pick a random existing level from levels.json
+  function generateFromExisting(seed){
     if(!levels.length){
-      alert('No hay niveles cargados para generar contenido. Asegúrate de que data/levels.json existe y tiene entradas.');
+      alert('No hay niveles en data/levels.json.');
       return;
     }
+    let rnd = Math.random;
+    if(seed !== undefined){
+      const h = hashString(String(seed));
+      rnd = mulberry32(h);
+    }
+    const idx = Math.floor(rnd() * levels.length);
+    const lvl = levels[idx];
+    if(!lvl){
+      alert('No se pudo seleccionar un nivel.');
+      return;
+    }
+    lastGenerated = { mode: 'generator', sourceId: lvl.id, data: lvl };
+    renderGeneratorLevel(lvl);
+  }
 
-    // seeded randomness optional
+  function renderGeneratorLevel(lvl){
+    randNameEl.textContent = lvl.name;
+    randCreatorEl.textContent = `by ${lvl.creator} — ${lvl.tier || ''} • ${lvl.difficulty || ''}`;
+    randStatsEl.textContent = `Duration: ${lvl.duration || '-'} — Objects: ${lvl.objects || '-'}`;
+    randTagsEl.innerHTML = (lvl.tags||[]).map(t=>`<span class="tag-pill">${escapeHtml(t)}</span>`).join(' ');
+    randThumb.src = `images/levels/${lvl.id}.png`;
+    randJson.style.display = 'block';
+    randJsonText.textContent = JSON.stringify(lvl, null, 2);
+    btnCopy.disabled = false;
+    btnOpenLevel.href = `level.html?id=${encodeURIComponent(lvl.id)}`;
+    btnOpenLevel.textContent = 'Abrir nivel';
+  }
+
+  // Creator: create a virtual level JSON (no photo)
+  function generateVirtual(seed){
+    if(!levels.length){
+      alert('No hay niveles en data/levels.json para inspirarse.');
+      return;
+    }
     let rnd = Math.random;
     if(seed !== undefined){
       const h = hashString(String(seed));
       rnd = mulberry32(h);
     }
 
-    // pick 3-6 source levels (avoid same creator for variety)
-    shuffle(levels, rnd);
-    const pickCount = 3 + Math.floor(rnd() * 4); // 3..6
+    // pick 2-4 source levels for mixing
     const picks = [];
-    const usedCreators = new Set();
-    for(let i=0;i<levels.length && picks.length < pickCount;i++){
-      const l = levels[i];
-      if(!usedCreators.has(l.creator) || rnd() < 0.25){
-        picks.push(l);
-        usedCreators.add(l.creator);
-      }
+    const indices = [...Array(levels.length).keys()];
+    shuffleArray(indices, rnd);
+    const pickCount = 2 + Math.floor(rnd() * 3);
+    for(let i=0;i<indices.length && picks.length < pickCount;i++){
+      picks.push(levels[indices[i]]);
     }
 
-    // compose name from tags + creators + random flair
-    const nameParts = [];
-    picks.slice(0,3).forEach(p=> {
-      const t = (p.tags && p.tags[0]) ? p.tags[0] : (p.creator||'');
-      if(t) nameParts.push(t);
-    });
+    // compose name & attributes (similar a la versión anterior pero sin thumb)
+    const nameParts = picks.slice(0,2).map(p => (p.tags && p.tags[0]) ? p.tags[0] : p.creator);
     const flair = ['Hyper','Neon','Echo','Void','Pulse','Turbo','Drift','Flux'][Math.floor(rnd()*8)];
     const num = Math.floor(rnd()*9999);
     const generatedName = `${nameParts.join(' ')} ${flair} #${num}`;
 
-    // difficulty: aggregate and pick a mixed label
     const diffScores = picks.map(p => difficultyScore(p.difficulty));
     const avgScore = Math.max(1, Math.round(diffScores.reduce((a,b)=>a+b,0)/diffScores.length));
     const difficultyLabel = difficultyLabelFromScore(avgScore);
 
-    // objects: combine somewhat but randomize to keep things plausible
     const baseObjects = picks.reduce((a,b)=> a + (Number(b.objects)||0), 0);
     const objects = Math.max(150, Math.round((baseObjects / picks.length) * (0.7 + rnd()*0.8)));
 
-    // duration: mix durations if present, else random 0:15..2:00
     const durations = picks.map(p=> parseDuration(p.duration)).filter(Boolean);
     let durationStr = '0:45';
     if(durations.length){
@@ -88,27 +156,22 @@
       durationStr = formatDuration(15 + Math.floor(rnd()*105));
     }
 
-    // tags: merge distinctive tags from picks, prioritize interesting ones and add random flavor
     const tagPool = [];
     picks.forEach(p => (p.tags||[]).forEach(t => { if(!tagPool.includes(t)) tagPool.push(t); }));
     const flavorTags = ['Neon','Flow','Spam Control','Precision','Wave Control','End Heavy','Click Pattern','Consistency'];
-    // mix some flavor tags
     for(let i=0;i<3;i++){
       if(rnd() < 0.35) tagPool.push(flavorTags[Math.floor(rnd()*flavorTags.length)]);
     }
-    // pick up to 8 tags
-    shuffle(tagPool, rnd);
+    shuffleArray(tagPool, rnd);
     const tags = Array.from(new Set(tagPool)).slice(0,8);
 
-    // produce fake gd_id
     const gd_id = String(90000000 + Math.floor(rnd()*89999999));
-
     const id = `rand_${Date.now().toString(36)}_${Math.floor(rnd()*10000)}`;
 
     const generated = {
       id,
       name: generatedName,
-      creator: "RandomGen",
+      creator: "RandomCreator",
       gd_id,
       duration: durationStr,
       objects,
@@ -119,22 +182,22 @@
       records: []
     };
 
-    lastGenerated = generated;
-    renderGenerated(generated);
+    lastGenerated = { mode: 'creator', data: generated };
+    renderCreatorLevel(generated);
   }
 
-  function renderGenerated(g){
+  function renderCreatorLevel(g){
     randNameEl.textContent = g.name;
     randCreatorEl.textContent = `by ${g.creator} — ${g.tier} • ${g.difficulty}`;
     randStatsEl.textContent = `Duration: ${g.duration} — Objects: ${g.objects}`;
     randTagsEl.innerHTML = (g.tags||[]).map(t=>`<span class="tag-pill">${escapeHtml(t)}</span>`).join(' ');
-    randThumb.src = `images/placeholder.png`;
+    // no thumb for creator mode (thumb element is hidden via CSS)
     randJson.style.display = 'block';
     randJsonText.textContent = JSON.stringify(g, null, 2);
     btnCopy.disabled = false;
   }
 
-  // helpers
+  // helpers (reused)
   function difficultyScore(diff){
     if(!diff) return 2;
     const d = String(diff).toLowerCase();
@@ -171,7 +234,7 @@
     const s = sec%60;
     return `${m}:${s.toString().padStart(2,'0')}`;
   }
-  function shuffle(arr, rnd){
+  function shuffleArray(arr, rnd){
     const r = rnd || Math.random;
     for(let i = arr.length -1; i > 0; i--){
       const j = Math.floor(r() * (i+1));
@@ -183,7 +246,6 @@
       navigator.clipboard.writeText(text);
       return true;
     }catch(e){
-      // fallback
       const ta = document.createElement('textarea');
       ta.value = text;
       document.body.appendChild(ta);
@@ -196,5 +258,8 @@
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   function hashString(s){ let h = 2166136261 >>> 0; for(let i=0;i<s.length;i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619) >>> 0; return h; }
   function mulberry32(a) { return function() { var t = a += 0x6D2B79F5; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; } }
+
+  // init UI
+  updateModeUI();
 
 })();

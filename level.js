@@ -1,170 +1,164 @@
-// level.js - level detail page: merges base records + overrides from localStorage and updates when overrides change
+// level.js - muestra detalle de nivel + merges accepted record overrides from localStorage + difficulty icon
 (function(){
 
-  function qs(key){
-    const p = new URLSearchParams(location.search);
-    return p.get(key);
+function qs(key){
+  const p = new URLSearchParams(location.search);
+  return p.get(key);
+}
+
+const levelID = qs("id");
+const container = document.getElementById("levelContent");
+
+if(!levelID){
+  container.innerHTML = "<p style='color:var(--muted)'>Nivel no encontrado.</p>";
+  return;
+}
+
+fetch("data/levels.json")
+.then(r => r.json())
+.then(levels => {
+
+  if(!Array.isArray(levels)){
+    container.innerHTML = "<p style='color:#f66'>Formato JSON inválido.</p>";
+    return;
   }
 
-  const levelID = qs("id");
-  const container = document.getElementById("levelContent");
+  // assign positions
+  levels.forEach((lvl,i)=>lvl.position = i+1);
 
-  if(!levelID){
-    if(container) container.innerHTML = "<p style='color:var(--muted)'>Nivel no encontrado.</p>";
-    throw new Error('No level id');
+  const lvl = levels.find(x => String(x.id) === String(levelID));
+
+  if(!lvl){
+    container.innerHTML = "<p style='color:#f66'>Nivel no encontrado.</p>";
+    return;
   }
 
-  // helper escape
-  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  document.title = `${lvl.name} — PAPANATAS`;
 
-  // difficulty icon filename helper
-  function difficultyIconFilename(diff){
-    if(!diff) return 'default.png';
-    const name = String(diff).toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-_]/g,'');
-    return `${name}.png`;
+  const thumb = `images/levels/${lvl.id}.png`;
+
+  // tags
+  const tags = (lvl.tags || []).map(tag =>
+    `<span class="tag-pill">${escapeHtml(tag)}</span>`
+  ).join(" ");
+
+  // base records from JSON
+  const baseRecords = Array.isArray(lvl.records) ? lvl.records.slice() : [];
+
+  // merge accepted overrides from localStorage (papan_records_overrides)
+  let overrideRecords = [];
+  try{
+    const overrides = JSON.parse(localStorage.getItem('papan_records_overrides') || '{}');
+    if(overrides && Array.isArray(overrides[lvl.id])) overrideRecords = overrides[lvl.id].slice();
+  }catch(e){ /* ignore */ }
+
+  // combine and dedupe by holder+progress+date (keep JSON ones first)
+  const combinedRecords = [];
+  const seen = new Set();
+  function pushRecord(r){
+    const key = `${String(r.holder||'')}|${String(r.progress||'')}|${String(r.date||'')}`;
+    if(seen.has(key)) return;
+    seen.add(key);
+    combinedRecords.push(r);
   }
+  baseRecords.forEach(r=>pushRecord(r));
+  overrideRecords.forEach(r=>pushRecord(r));
 
-  // state
-  let levels = [];
-  let lvl = null;
+  const recordsHtml = combinedRecords.map(r => {
+    const encoded = encodeURIComponent(r.holder);
+    return `<li><a href="player.html?player=${encoded}">${escapeHtml(r.holder)}</a> — ${escapeHtml(r.progress)} <span class="recdate">(${escapeHtml(r.date||'')})</span></li>`;
+  }).join("");
 
-  // fetch levels.json
-  fetch('data/levels.json').then(r=>r.json()).then(data=>{
-    levels = Array.isArray(data) ? data : [];
-    levels.forEach((l,i)=> l.position = i+1);
-    lvl = levels.find(x => String(x.id) === String(levelID));
-    if(!lvl){
-      if(container) container.innerHTML = "<p style='color:#f66'>Nivel no encontrado.</p>";
-      return;
-    }
-    renderPage();
-    // listen to localStorage changes to update records in real-time
-    window.addEventListener('storage', (e) => {
-      try{
-        if(e.key === 'papan_records_last_update' || e.key === 'papan_records_overrides'){
-          // update records only
-          renderRecords();
-        }
-      }catch(err){ console.warn('storage event handler error', err); }
-    });
-  }).catch(err=>{
-    console.error(err);
-    if(container) container.innerHTML = "<p style='color:#f66'>Error cargando datos.</p>";
-  });
+  // difficulty icon
+  const diffFilename = difficultyIconFilename(lvl.difficulty);
+  const diffPath = `images/icons/${diffFilename}`;
 
-  function getOverrideRecords(){
-    try{
-      const raw = localStorage.getItem('papan_records_overrides') || '{}';
-      const obj = JSON.parse(raw);
-      if(obj && Array.isArray(obj[lvl.id])) return obj[lvl.id].slice();
-    }catch(e){}
-    return [];
-  }
+  container.innerHTML = `
 
-  function combineRecords(){
-    const base = Array.isArray(lvl.records) ? lvl.records.slice() : [];
-    const overrides = getOverrideRecords();
-    const combined = [];
-    const seen = new Set();
-    function pushRecord(r){
-      const key = `${String(r.holder||'')}|${String(r.progress||'')}|${String(r.date||'')}`;
-      if(seen.has(key)) return;
-      seen.add(key);
-      combined.push(r);
-    }
-    base.forEach(r=> pushRecord(r));
-    overrides.forEach(r=> pushRecord(r));
-    return combined;
-  }
+  <div class="detail-wrap">
 
-  function renderRecords(){
-    const ul = document.getElementById('papanRecordsList');
-    if(!ul) return;
-    const combined = combineRecords();
-    if(!combined.length){
-      ul.innerHTML = "<li style='color:var(--muted)'>Sin records</li>";
-      return;
-    }
-    ul.innerHTML = combined.map(r => {
-      const enc = encodeURIComponent(r.holder);
-      return `<li><a href="player.html?player=${enc}">${escapeHtml(r.holder)}</a> — ${escapeHtml(r.progress)} <span class="recdate">(${escapeHtml(r.date||'')})</span></li>`;
-    }).join('');
-  }
+    <div class="detail-left">
 
-  function renderPage(){
-    document.title = `${lvl.name} — PAPANATAS`;
-    const thumb = `images/levels/${lvl.id}.png`;
-    const tags = (lvl.tags || []).map(tag => `<span class="tag-pill">${escapeHtml(tag)}</span>`).join(" ");
-    const diffFilename = difficultyIconFilename(lvl.difficulty);
-    const diffPath = `images/icons/${diffFilename}`;
+      <img src="${thumb}" onerror="this.onerror=null;this.src='images/placeholder.png'">
 
-    const html = `
-      <div class="detail-wrap">
+      <div class="records-box">
+        <strong>Records</strong>
 
-        <div class="detail-left">
+        <ul>
+          ${recordsHtml || "<li style='color:var(--muted)'>Sin records</li>"}
+        </ul>
+      </div>
 
-          <img src="${thumb}" onerror="this.onerror=null;this.src='images/placeholder.png'">
+    </div>
 
-          <div class="records-box">
-            <strong>Records</strong>
-            <ul id="papanRecordsList">
-              <li style="color:var(--muted)">Cargando records...</li>
-            </ul>
-          </div>
 
+    <div class="detail-right">
+
+      <div>
+
+        <h2 id="levelTitle" style="display:flex;align-items:center;gap:10px">
+          <span>${escapeHtml(lvl.name)}</span>
+          <img src="${diffPath}" alt="${escapeHtml(lvl.difficulty || '')}" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+        </h2>
+
+        <div class="detail-meta">
+          by ${escapeHtml(lvl.creator)} — Position #${escapeHtml(String(lvl.position || '-'))}
         </div>
 
-        <div class="detail-right">
+        <div class="tag-row" style="margin-top:12px">
+          <strong style="margin-right:8px;color:var(--muted);font-size:13px">
+            Tags:
+          </strong>
 
-          <div>
-
-            <h2 id="levelTitle" style="display:flex;align-items:center;gap:10px">
-              <span>${escapeHtml(lvl.name)}</span>
-              <img src="${diffPath}" alt="${escapeHtml(lvl.difficulty || '')}" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
-            </h2>
-
-            <div class="detail-meta">
-              by ${escapeHtml(lvl.creator)} — Position #${escapeHtml(String(lvl.position || '-'))}
-            </div>
-
-            <div class="tag-row" style="margin-top:12px">
-              <strong style="margin-right:8px;color:var(--muted);font-size:13px">Tags:</strong>
-              ${tags || "<span style='color:var(--muted)'>-</span>"}
-            </div>
-
-          </div>
-
-          <div class="info-block">
-
-            <div class="info-row">
-              <div><strong>GD ID:</strong></div>
-              <div style="color:var(--muted)">${escapeHtml(lvl.gd_id || "-")}</div>
-            </div>
-
-            <div class="info-row">
-              <div><strong>Duration:</strong></div>
-              <div style="color:var(--muted)">${escapeHtml(lvl.duration || "-")}</div>
-            </div>
-
-            <div class="info-row">
-              <div><strong>Objects:</strong></div>
-              <div style="color:var(--muted)">${escapeHtml(String(lvl.objects || "-"))}</div>
-            </div>
-
-            <div class="info-row">
-              <div><strong>Tier:</strong></div>
-              <div style="color:var(--muted)">${escapeHtml(lvl.tier || "-")}</div>
-            </div>
-
-          </div>
-
+          ${tags || "<span style='color:var(--muted)'>-</span>"}
         </div>
 
       </div>
-    `;
-    if(container) container.innerHTML = html;
-    // now render records list synchronously from localStorage
-    renderRecords();
-  }
+
+
+      <div class="info-block">
+
+        <div class="info-row">
+          <div><strong>GD ID:</strong></div>
+          <div style="color:var(--muted)">${escapeHtml(lvl.gd_id || "-")}</div>
+        </div>
+
+        <div class="info-row">
+          <div><strong>Duration:</strong></div>
+          <div style="color:var(--muted)">${escapeHtml(lvl.duration || "-")}</div>
+        </div>
+
+        <div class="info-row">
+          <div><strong>Objects:</strong></div>
+          <div style="color:var(--muted)">${escapeHtml(String(lvl.objects || "-"))}</div>
+        </div>
+
+        <div class="info-row">
+          <div><strong>Tier:</strong></div>
+          <div style="color:var(--muted)">${escapeHtml(lvl.tier || "-")}</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  `;
+
+})
+.catch(err=>{
+  console.error(err);
+  container.innerHTML = "<p style='color:#f66'>Error cargando datos.</p>";
+});
+
+// helpers
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+function difficultyIconFilename(diff){
+  if(!diff) return 'default.png';
+  const name = String(diff).toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-_]/g,'');
+  return `${name}.png`;
+}
 
 })();

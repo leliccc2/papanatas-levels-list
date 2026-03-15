@@ -831,20 +831,6 @@
   },
          
 
-    {
-      "id": "biyo8",
-    "name": "BIYO 8",
-    "creator": "Lelike",
-    "gd_id": "92919502",
-    "duration": "0:26",
-    "objects": 2314,
-    "tier": "Casual",
-    "difficulty": "harder",
-    "tags": ["Biyo","Short","Rough Gameplay","Chokepoints","High CPS","Spam Control","Transition Heavy","Technical"],
-    "date_added": "2020-10-01",
-    "records": [
-    ]
-  },
 
         {
     "id": "leyo5",
@@ -978,6 +964,7 @@
     "records": [
     ]
   },
+  
 
             {
     "id": "lemarbiyo5ftme",
@@ -1006,6 +993,21 @@
     "tier": "Casual",
     "difficulty": "harder",
     "tags": ["Biyo","Short","Rough Gameplay","Chokepoints","Sightreadable"],
+    "date_added": "2020-10-01",
+    "records": [
+    ]
+  },
+  
+    {
+      "id": "biyo8",
+    "name": "BIYO 8",
+    "creator": "Lelike",
+    "gd_id": "92919502",
+    "duration": "0:26",
+    "objects": 2314,
+    "tier": "Casual",
+    "difficulty": "harder",
+    "tags": ["Biyo","Short","Rough Gameplay","Chokepoints","High CPS","Spam Control","Transition Heavy","Technical"],
     "date_added": "2020-10-01",
     "records": [
     ]

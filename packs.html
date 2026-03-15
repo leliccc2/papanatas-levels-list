@@ -13,6 +13,8 @@
       <a class="nav-link" href="index.html">Main list</a>
       <a class="nav-link active" href="packs.html">Packs</a>
       <a class="nav-link" href="users.html">User stats</a>
+      <a class="nav-link" href="roulette.html">Roulette</a>
+      <a class="nav-link" href="random.html">Random level</a>
     </nav>
   </aside>
 
@@ -29,7 +31,12 @@
     </header>
 
     <main class="levels-container" id="packsMain">
-      <h2 class="packs-header">PACKS</h2>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h2 class="packs-header" style="margin:0">PACKS</h2>
+        <div>
+          <button id="regeneratePacks" class="muted-btn" title="Regenerar packs (sobrescribe los packs guardados)">Regenerate packs</button>
+        </div>
+      </div>
       <div id="packsContent">Cargando packs...</div>
     </main>
   </div>

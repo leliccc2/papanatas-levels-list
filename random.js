@@ -1,4 +1,5 @@
-// random.js - modo dual: "generator" (elige niveles existentes) y "creator" (crea JSON sin foto)
+// random.js - modo dual: "generator" (elige niveles existentes) y "creator" (crea JSON)
+// cambios: generator muestra la carita de difficulty y botón "Abrir nivel"; el JSON (visual) no aparece en generator mode (se mantiene solo en creator)
 (function(){
   const btnGen = document.getElementById('btnRandGenerate');
   const btnCopy = document.getElementById('btnRandCopy');
@@ -33,10 +34,14 @@
       modeLabel.textContent = 'Random level generator';
       randThumb.style.display = ''; // show thumbnail
       btnOpenLevel.style.display = 'inline-block';
+      // in generator mode we hide JSON area (no JSON generation)
+      randJson.style.display = 'none';
+      btnCopy.disabled = true;
     }else{
       modeLabel.textContent = 'Random level creator';
       randThumb.style.display = 'none'; // hide photo in creator
       btnOpenLevel.style.display = 'none';
+      // creator mode may show JSON area after generation
     }
     // reset UI
     randNameEl.textContent = 'Pulsa Generar';
@@ -100,19 +105,26 @@
   }
 
   function renderGeneratorLevel(lvl){
+    // name and creator
     randNameEl.textContent = lvl.name;
-    randCreatorEl.textContent = `by ${lvl.creator} — ${lvl.tier || ''} • ${lvl.difficulty || ''}`;
+    // show creator and difficulty icon (instead of difficulty text)
+    const diffFilename = difficultyIconFilename(lvl.difficulty);
+    const diffPath = `images/icons/${diffFilename}`;
+    randCreatorEl.innerHTML = `by ${escapeHtml(lvl.creator)} <img src="${diffPath}" alt="${escapeHtml(lvl.difficulty||'')}" style="width:20px;height:20px;vertical-align:middle;margin-left:8px" onerror="this.style.display='none'">`;
     randStatsEl.textContent = `Duration: ${lvl.duration || '-'} — Objects: ${lvl.objects || '-'}`;
     randTagsEl.innerHTML = (lvl.tags||[]).map(t=>`<span class="tag-pill">${escapeHtml(t)}</span>`).join(' ');
     randThumb.src = `images/levels/${lvl.id}.png`;
-    randJson.style.display = 'block';
-    randJsonText.textContent = JSON.stringify(lvl, null, 2);
-    btnCopy.disabled = false;
+    // generator does NOT show JSON block
+    randJson.style.display = 'none';
+    btnCopy.disabled = true;
     btnOpenLevel.href = `level.html?id=${encodeURIComponent(lvl.id)}`;
+    btnOpenLevel.style.display = 'inline-block';
     btnOpenLevel.textContent = 'Abrir nivel';
+    // style the open button similarly to other site buttons (it is an anchor but styled)
+    btnOpenLevel.className = 'muted-btn';
   }
 
-  // Creator: create a virtual level JSON (no photo)
+  // Creator: create a virtual level JSON (old behavior kept)
   function generateVirtual(seed){
     if(!levels.length){
       alert('No hay niveles en data/levels.json para inspirarse.');
@@ -133,7 +145,7 @@
       picks.push(levels[indices[i]]);
     }
 
-    // compose name & attributes (similar a la versión anterior pero sin thumb)
+    // compose name & attributes
     const nameParts = picks.slice(0,2).map(p => (p.tags && p.tags[0]) ? p.tags[0] : p.creator);
     const flair = ['Hyper','Neon','Echo','Void','Pulse','Turbo','Drift','Flux'][Math.floor(rnd()*8)];
     const num = Math.floor(rnd()*9999);
@@ -182,7 +194,7 @@
       records: []
     };
 
-    lastGenerated = { mode: 'creator', data: generated };
+    lastGenerated = generated;
     renderCreatorLevel(generated);
   }
 
@@ -191,13 +203,17 @@
     randCreatorEl.textContent = `by ${g.creator} — ${g.tier} • ${g.difficulty}`;
     randStatsEl.textContent = `Duration: ${g.duration} — Objects: ${g.objects}`;
     randTagsEl.innerHTML = (g.tags||[]).map(t=>`<span class="tag-pill">${escapeHtml(t)}</span>`).join(' ');
-    // no thumb for creator mode (thumb element is hidden via CSS)
     randJson.style.display = 'block';
     randJsonText.textContent = JSON.stringify(g, null, 2);
     btnCopy.disabled = false;
+    btnOpenLevel.style.display = 'none';
   }
 
   // helpers (reused)
+  function difficultyIconFilename(diff){
+    if(!diff) return 'default.png';
+    return String(diff).toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-_]/g,'') + '.png';
+  }
   function difficultyScore(diff){
     if(!diff) return 2;
     const d = String(diff).toLowerCase();

@@ -212,7 +212,7 @@ function applyFiltersAndSearch(){
 function slug(s){ return String(s||'').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-_]/g,'') }
 function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-// sanitize difficulty and return filename (e.g. "Harder" -> "harder.png")
+// sanitize difficulty and return filename (e.g. "harder" -> "harder.png")
 function difficultyIconFilename(diff){
   if(!diff) return 'default.png';
   const name = String(diff).toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-_]/g,'');

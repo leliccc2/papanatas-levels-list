@@ -1,9 +1,9 @@
-// ui.js - Supabase-ready: submit modal, admin review, signin, record overrides fix
+// ui.js - definitivo (submit modal: solo cancelar) + admin UI (supabase-ready)
 (function(){
   'use strict';
 
   // -----------------------
-  // Basic sidebar toggle (no changes)
+  // Basic sidebar toggle
   // -----------------------
   try { document.documentElement.classList.add('no-animate'); } catch(e){}
   const sidebarToggle = document.getElementById('sidebarToggle');
@@ -20,11 +20,22 @@
   });
 
   // -----------------------
-  // Supabase init - REPLACE with your keys if necessary
+  // Supabase init (keep keys here or in separate supabase.js)
   // -----------------------
-  const supabaseUrl = 'https://hlvvxgljcrwjuelmascs.supabase.co';
-  const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsdnZ4Z2xqY3J3anVlbG1hc2NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1OTc0MjEsImV4cCI6MjA4OTE3MzQyMX0.r1bS2NeloY1EgtdlJH-ZqLyOzgIpoL2Y_qsRGQIOYiM';
-  const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+  let supabaseClient = null;
+  try {
+    const supabaseUrl = 'https://hlvvxgljcrwjuelmascs.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsdnZ4Z2xqY3J3anVlbG1hc2NzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1OTc0MjEsImV4cCI6MjA4OTE3MzQyMX0.r1bS2NeloY1EgtdlJH-ZqLyOzgIpoL2Y_qsRGQIOYiM';
+    if(window.supabase && typeof window.supabase.createClient === 'function'){
+      supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+    } else {
+      console.warn('Supabase client is not available (supabase lib not loaded). UI will still work but some features require Supabase.');
+      supabaseClient = null;
+    }
+  } catch(e){
+    console.warn('Supabase init failed', e);
+    supabaseClient = null;
+  }
 
   // -----------------------
   // Config / keys
@@ -33,7 +44,6 @@
   const ADMIN_NAME = 'Owner';
   const KNOWN_PLAYERS = ['Lelike','Carlos','Marc','Billy','Yoyi','Eiron456'];
 
-  const SUB_KEY = 'papan_submissions'; // legacy
   const RECS_KEY = 'papan_records_overrides';
   const ISADMIN_KEY = 'papan_is_admin';
   const CURRENT_USER_KEY = 'papan_current_user';
@@ -73,7 +83,7 @@
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
   // -----------------------
-  // ensure levels load
+  // Cache levels loader
   // -----------------------
   function ensureLevelsLoad(){
     if(window._papan_levels_cache) return Promise.resolve(window._papan_levels_cache);
@@ -81,12 +91,13 @@
   }
 
   // -----------------------
-  // user/admin helpers
+  // Current user & admin helpers
   // -----------------------
   function getCurrentUser(){ return sessionStorage.getItem(CURRENT_USER_KEY) || null; }
   function setCurrentUser(name){
     if(!name) { sessionStorage.removeItem(CURRENT_USER_KEY); updateUserUI(); return; }
     sessionStorage.setItem(CURRENT_USER_KEY, String(name));
+    // When normal user logs in, ensure admin mode off
     localStorage.removeItem(ISADMIN_KEY);
     updateUserUI();
   }
@@ -94,6 +105,7 @@
   function setAdminLogged(flag){
     if(flag){
       localStorage.setItem(ISADMIN_KEY,'1');
+      // If admin logs in, clear current user (can't be both)
       sessionStorage.removeItem(CURRENT_USER_KEY);
     } else {
       localStorage.removeItem(ISADMIN_KEY);
@@ -102,7 +114,7 @@
   }
 
   // -----------------------
-  // DOM: buttons
+  // Dom: floating buttons & admin bar (stacked vertical)
   // -----------------------
   const submitBtn = create('button'); submitBtn.className = 'papan-submit-btn'; submitBtn.textContent = 'Submit a record';
   document.body.appendChild(submitBtn);
@@ -121,7 +133,7 @@
   document.body.appendChild(adminBar);
 
   // -----------------------
-  // Submit modal
+  // Build Submit modal (only Cancel, no Close button)
   // -----------------------
   function buildSubmitModal(){
     const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
@@ -129,8 +141,9 @@
       <div class="papan-modal" role="dialog" aria-modal="true">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
           <div style="font-weight:900;font-size:16px">Submit a record</div>
-          <div><button id="papanClose" class="papan-muted">Cerrar</button></div>
+          <!-- removed extra Close button: only Cancel will be present at the bottom -->
         </div>
+
         <div class="papan-form-row">
           <div class="papan-form-col" style="flex:2">
             <div class="papan-form-label">Buscar nivel</div>
@@ -138,6 +151,7 @@
             <div id="papanSug" class="papan-suggestions" style="display:none"></div>
             <div id="papanLevelInfo" class="papan-subtle" style="margin-top:6px"></div>
           </div>
+
           <div style="width:220px">
             <div class="papan-form-label">Captura</div>
             <img id="papanPreview" class="papan-file-preview" src="images/placeholder.png" alt="preview" />
@@ -151,29 +165,35 @@
             </div>
           </div>
         </div>
+
         <div class="papan-form-row">
           <div class="papan-form-col">
             <div class="papan-form-label">Progreso (%)</div>
             <input id="papanPercent" class="papan-input" type="number" min="0" max="100" placeholder="Introduce porcentaje, e.g. 100" />
           </div>
+
           <div class="papan-form-col">
             <div class="papan-form-label">Submitting as</div>
             <div id="papanSubmittingAs" class="papan-subtle">You are not signed in</div>
             <div class="papan-subtle" style="font-size:12px">Sign in with the Sign in button bottom-left</div>
           </div>
         </div>
+
         <div style="margin-bottom:12px">
           <div class="papan-form-label">Notas / Comentarios (opcional)</div>
           <textarea id="papanNotes" class="papan-textarea" placeholder="Añade contexto: dónde, cómo, intentos, etc."></textarea>
         </div>
+
         <div style="display:flex;gap:8px;justify-content:flex-end;align-items:center">
           <button id="papanSubmitBtn" class="papan-primary">Enviar</button>
           <button id="papanCancelBtn" class="papan-muted">Cancelar</button>
         </div>
+
       </div>
     `;
     document.body.appendChild(wrap);
 
+    // wiring
     const search = wrap.querySelector('#papanLevelSearch');
     const sug = wrap.querySelector('#papanSug');
     const info = wrap.querySelector('#papanLevelInfo');
@@ -185,9 +205,10 @@
     let selectedLevel = null;
     let currentFileBase64 = null;
 
-    wrap.querySelector('#papanClose').addEventListener('click', ()=> wrap.style.display = 'none');
+    // only cancel handler (no Close button)
     wrap.querySelector('#papanCancelBtn').addEventListener('click', ()=> wrap.style.display = 'none');
 
+    // autocomplete
     search.addEventListener('input', ()=>{
       const q = (search.value||'').trim().toLowerCase();
       if(!q){ sug.style.display='none'; info.innerHTML=''; selectedLevel = null; return; }
@@ -215,6 +236,7 @@
       });
     });
 
+    // file input handling
     fileInput.addEventListener('change', (ev)=>{
       const f = ev.target.files && ev.target.files[0];
       if(!f){ preview.src='images/placeholder.png'; currentFileBase64 = null; fname.textContent='No file selected'; return; }
@@ -225,10 +247,13 @@
       reader.readAsDataURL(f);
     });
 
+    // modal onOpen hook
     wrap._onOpen = function(){
+      // update submit-as display
       const cur = getCurrentUser();
       if(cur) submitAsText.textContent = `You are signed in as ${cur}`;
       else submitAsText.textContent = 'You are not signed in';
+      // reset fields
       preview.src = 'images/placeholder.png';
       fileInput.value = '';
       fname.textContent = 'No file selected';
@@ -240,6 +265,7 @@
       selectedLevel = null;
     };
 
+    // submit handler: uses current signed-in user
     wrap.querySelector('#papanSubmitBtn').addEventListener('click', async ()=>{
       const curUser = getCurrentUser();
       if(!curUser){ alert('Debes iniciar sesión antes de enviar. Usa Sign in (abajo izquierda).'); return; }
@@ -248,6 +274,7 @@
       const percentVal = Number((wrap.querySelector('#papanPercent').value||'').trim());
       if(isNaN(percentVal) || percentVal < 0 || percentVal > 100){ alert('Introduce un porcentaje válido entre 0 y 100.'); return; }
       const notes = (wrap.querySelector('#papanNotes').value || '').trim();
+
       try{
         await sendSubmission({
           level_id: selectedLevel.id,
@@ -273,7 +300,7 @@
   submitBtn.addEventListener('click', ()=> { papanModal.style.display = 'flex'; if(typeof papanModal._onOpen === 'function') papanModal._onOpen(); });
 
   // -----------------------
-  // Sign-in modal
+  // Sign-in modal (unchanged)
   // -----------------------
   function buildSignInModal(){
     const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
@@ -309,6 +336,7 @@
       const name = (wrap.querySelector('#papanSignName').value || '').trim();
       if(!name){ alert('Escribe un nombre para iniciar sesión.'); return; }
       sessionStorage.setItem(CURRENT_USER_KEY, name);
+      // logging in as user clears admin mode
       localStorage.removeItem(ISADMIN_KEY);
       updateUserUI();
       wrap.style.display = 'none';
@@ -319,7 +347,7 @@
   const signInModal = buildSignInModal();
 
   // -----------------------
-  // Review modal (one close button, no refresh button)
+  // Review modal (one close, no refresh)
   // -----------------------
   function buildReviewModal(){
     const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
@@ -339,9 +367,9 @@
   const reviewModal = buildReviewModal();
 
   // -----------------------
-  // Delete records modal (admin)
+  // Delete records modal (unchanged)
   // -----------------------
-  function buildDeleteRecordsModal(){ /* unchanged from previous approach */ 
+  function buildDeleteRecordsModal(){
     const wrap = create('div'); wrap.className = 'papan-modal-backdrop'; wrap.style.display = 'none';
     wrap.innerHTML = `
       <div class="papan-modal" role="dialog" aria-modal="true">
@@ -359,10 +387,14 @@
   const delModal = buildDeleteRecordsModal();
 
   // -----------------------
-  // Data helpers: submissions & overrides
+  // Data helpers: submissions & overrides (Supabase integrated when available)
   // -----------------------
   async function loadSubmissions(){
     try{
+      if(!supabaseClient){
+        // fallback: read from localStorage legacy key (if any)
+        return safeParse(localStorage.getItem('papan_submissions'), []);
+      }
       const { data, error } = await supabaseClient
         .from('submissions')
         .select('*')
@@ -390,7 +422,7 @@
     }catch(e){ console.error(e); return false; }
   }
 
-  // add record override to localStorage (so level page shows it immediately)
+  // add record override (robust)
   function addRecordOverride(levelId, record){
     try{
       let obj;
@@ -407,41 +439,25 @@
     }
   }
 
-  // -----------------------
-  // accept: mark accepted, insert into records (best-effort), add local override
-  // -----------------------
+  // accept submission
   async function acceptSubmission(sub){
     try{
-      // 1) update submissions row
-      const { data, error } = await supabaseClient
-        .from('submissions')
-        .update({ status: 'accepted', reviewer: ADMIN_NAME, reviewed_at: new Date().toISOString() })
-        .eq('id', sub.id)
-        .select();
-      if(error){ console.error('Supabase accept error', error); alert('Error al aceptar (DB). Mira la consola.'); return false; }
+      if(!supabaseClient){
+        // local-only fallback: update local submissions array and add override
+        const arr = safeParse(localStorage.getItem('papan_submissions'), []);
+        const kept = arr.filter(x=>x.id !== sub.id);
+        localStorage.setItem('papan_submissions', JSON.stringify(kept));
+      } else {
+        const { data, error } = await supabaseClient
+          .from('submissions')
+          .update({ status: 'accepted', reviewer: ADMIN_NAME, reviewed_at: new Date().toISOString() })
+          .eq('id', sub.id)
+          .select();
+        if(error){ console.error('Supabase accept error', error); alert('Error al aceptar (DB). Mira la consola.'); return false; }
+      }
 
-      // 2) try to insert into a central 'records' table (optional - fails silently if table doesn't exist)
-      try{
-        await supabaseClient
-          .from('records')
-          .insert([{
-            level_id: sub.level_id || sub.levelId,
-            holder: sub.player || sub.holder,
-            progress: sub.progress,
-            date: sub.date || new Date().toISOString().slice(0,10)
-          }]);
-      }catch(e){ /* ignore if records table not present */ }
-
-      // 3) local override for immediate UI / level page
-      addRecordOverride(
-        sub.level_id || sub.levelId,
-        { holder: sub.player || sub.holder, progress: sub.progress, date: sub.date || (new Date().toISOString().slice(0,10)) }
-      );
-
-      // 4) notify user
+      addRecordOverride(sub.level_id || sub.levelId, { holder: sub.player || sub.holder, progress: sub.progress, date: sub.date || new Date().toISOString().slice(0,10) });
       pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been ACCEPTED.`);
-
-      // 5) refresh list
       await renderReviewList();
       return true;
     }catch(e){
@@ -450,21 +466,21 @@
     }
   }
 
-  // -----------------------
-  // delete submission permanently (used as "deny")
-  // -----------------------
+  // delete submission (used as deny)
   async function deleteSubmission(sub){
     try{
-      const { error } = await supabaseClient
-        .from('submissions')
-        .delete()
-        .eq('id', sub.id);
-      if(error){ console.error('Supabase delete error', error); alert('Error al borrar la submission.'); return false; }
-
-      // push notification: denied
+      if(!supabaseClient){
+        const arr = safeParse(localStorage.getItem('papan_submissions'), []);
+        const kept = arr.filter(x=>x.id !== sub.id);
+        localStorage.setItem('papan_submissions', JSON.stringify(kept));
+      } else {
+        const { error } = await supabaseClient
+          .from('submissions')
+          .delete()
+          .eq('id', sub.id);
+        if(error){ console.error('Supabase delete error', error); alert('Error al borrar la submission.'); return false; }
+      }
       pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been DENIED.`);
-
-      // refresh UI
       await renderReviewList();
       return true;
     }catch(e){
@@ -473,9 +489,7 @@
     }
   }
 
-  // -----------------------
-  // Render review list (2 buttons: Accept + Delete(=deny)), hide image when none
-  // -----------------------
+  // renderReviewList (2 buttons: Accept + Delete)
   async function renderReviewList(){
     const listNode = reviewModal.querySelector('#papanReviewList');
     listNode.innerHTML = '';
@@ -484,7 +498,7 @@
 
     arr.forEach(sub => {
       const card = create('div'); card.className = 'card';
-      const imageSrc = sub.proof || sub.image || null; // if null => don't render img
+      const imageSrc = sub.proof || sub.image || null;
       const imgHtml = imageSrc ? `<img src="${imageSrc}" onerror="this.onerror=null;this.src='images/placeholder.png'" style="width:140px;height:84px;object-fit:cover;border-radius:8px">` : '';
       const levelName = escapeHtml(sub.level_name || sub.levelName || '');
       const levelId = escapeHtml(sub.level_id || sub.levelId || '');
@@ -527,9 +541,7 @@
     });
   }
 
-  // -----------------------
-  // Render delete list for overrides (unchanged)
-  // -----------------------
+  // renderDeleteList unchanged (local overrides management)
   function renderDeleteList(){
     const listNode = delModal.querySelector('#papanDelList');
     listNode.innerHTML = '';
@@ -648,10 +660,27 @@
   window.Papan.renderDeleteList = renderDeleteList;
 
   // -----------------------
-  // sendSubmission: insert into Supabase
+  // sendSubmission: insert into Supabase if available else localStorage
   // -----------------------
   async function sendSubmission(data){
     try{
+      if(!supabaseClient){
+        // local fallback
+        const arr = safeParse(localStorage.getItem('papan_submissions'), []);
+        arr.push({
+          id: 'sub_' + Date.now() + '_' + Math.floor(Math.random()*9999),
+          levelId: data.level_id,
+          levelName: data.level_name,
+          progress: data.progress,
+          holder: data.player,
+          notes: data.notes,
+          image: data.proof || null,
+          date: data.date || new Date().toISOString().slice(0,10),
+          status: 'pending'
+        });
+        localStorage.setItem('papan_submissions', JSON.stringify(arr));
+        return arr[arr.length-1];
+      }
       const { data: inserted, error } = await supabaseClient
         .from('submissions')
         .insert([{

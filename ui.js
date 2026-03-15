@@ -445,42 +445,69 @@
   }
 
   // accept submission: update DB status, add override, notif
-  async function acceptSubmission(sub){
-    try{
-      // update row in Supabase
-      const { data, error } = await supabaseClient
-        .from('submissions')
-        .update({ status: 'accepted', reviewer: ADMIN_NAME })
-        .eq('id', sub.id)
-        .select();
-      if(error){ console.error('Supabase accept error', error); alert('Error al aceptar (DB). Mira la consola.'); return false; }
-      // add local override for level page
-      addRecordOverride(sub.level_id || sub.levelId, { holder: sub.player || sub.holder, progress: sub.progress, date: sub.date || (new Date().toISOString().slice(0,10)) });
-      pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been ACCEPTED.`);
-      return true;
-    }catch(e){
-      console.error('acceptSubmission exception', e);
-      return false;
+async function acceptSubmission(sub){
+  try{
+    const { data, error } = await supabaseClient
+      .from('submissions')
+      .update({ status: 'accepted', reviewer: ADMIN_NAME })
+      .eq('id', sub.id)
+      .select();
+
+    if(error){ 
+      console.error('Supabase accept error', error); 
+      alert('Error al aceptar (DB). Mira la consola.'); 
+      return false; 
     }
+
+    addRecordOverride(
+      sub.level_id || sub.levelId,
+      { holder: sub.player || sub.holder, progress: sub.progress, date: sub.date || (new Date().toISOString().slice(0,10)) }
+    );
+
+    pushNotification(
+      sub.player || sub.holder,
+      `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been ACCEPTED.`
+    );
+
+    await renderReviewList();   // 👈 AQUI
+
+    return true;
+
+  }catch(e){
+    console.error('acceptSubmission exception', e);
+    return false;
   }
+}
 
   // deny submission: update DB status, notify
-  async function denySubmission(sub, reason){
-    try{
-      const { data, error } = await supabaseClient
-        .from('submissions')
-        .update({ status: 'denied', reviewer: ADMIN_NAME })
-        .eq('id', sub.id)
-        .select();
-      if(error){ console.error('Supabase deny error', error); alert('Error al denegar (DB). Mira la consola.'); return false; }
-      pushNotification(sub.player || sub.holder, `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been DENIED.${reason ? ' Reason: '+reason : ''}`);
-      return true;
-    }catch(e){
-      console.error('denySubmission exception', e);
-      return false;
-    }
-  }
+async function denySubmission(sub, reason){
+  try{
+    const { data, error } = await supabaseClient
+      .from('submissions')
+      .update({ status: 'denied', reviewer: ADMIN_NAME })
+      .eq('id', sub.id)
+      .select();
 
+    if(error){ 
+      console.error('Supabase deny error', error); 
+      alert('Error al denegar (DB). Mira la consola.'); 
+      return false; 
+    }
+
+    pushNotification(
+      sub.player || sub.holder,
+      `Your submission for "${sub.level_name || sub.levelName}" (${sub.progress}) has been DENIED.${reason ? ' Reason: '+reason : ''}`
+    );
+
+    await renderReviewList();   // 👈 AQUI
+
+    return true;
+
+  }catch(e){
+    console.error('denySubmission exception', e);
+    return false;
+  }
+}
   // -----------------------
   // Render functions for review and delete lists (async-safe)
   // -----------------------

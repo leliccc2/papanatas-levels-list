@@ -1,9 +1,19 @@
 // packs.js - packs synced with Supabase + local overrides + JSON records
+// Regenerate button is shown ONLY to admins (localStorage 'papan_is_admin' === '1')
 (async function(){
   'use strict';
 
   const container = document.getElementById('packsContent');
   const regenBtn = document.getElementById('regeneratePacks');
+
+  // key used elsewhere in your UI
+  const ISADMIN_KEY = 'papan_is_admin';
+  const isAdmin = localStorage.getItem(ISADMIN_KEY) === '1';
+
+  // If the page includes the regenerate button but the current client is not admin -> remove it from DOM
+  if(regenBtn && !isAdmin){
+    regenBtn.remove();
+  }
 
   // Supabase init (optional)
   let supabaseClient = null;
@@ -20,7 +30,6 @@
   // helpers
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   function safeParse(s, fallback){ try{ return JSON.parse(s||'null'); }catch(e){ return fallback; } }
-  function slug(s){ return String(s||'').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-_]/g,''); }
   function hashString(s){ let h = 2166136261 >>> 0; for(let i=0;i<s.length;i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619) >>> 0; return h; }
   function mulberry32(a){ return function(){ var t = a += 0x6D2B79F5; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; } }
   function seededShuffle(array, seed){ let m = array.length, t, i; let random = mulberry32(seed); while (m) { i = Math.floor(random() * m--); t = array[m]; array[m] = array[i]; array[i] = t; } return array; }
@@ -226,8 +235,8 @@
 
       renderPacks(packsToUse, levels, completionsMap);
 
-      // regen button behavior (admin-only UI may remove button in markup)
-      if(regenBtn){
+      // regen button: only attach listener if the element exists AND user is admin.
+      if(regenBtn && isAdmin){
         regenBtn.addEventListener('click', ()=>{
           if(!confirm('Regenerar packs hará que se reemplacen los packs guardados. ¿Continuar?')) return;
           const newPacks = computePacks(levels);

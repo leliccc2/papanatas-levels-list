@@ -1,15 +1,12 @@
 // player.js - perfil del jugador (bonito) + shows notifications from submissions (accepted/denied)
 // includes Supabase sync for accepted records when available
-(function(){
+(async function(){
   'use strict';
 
   function qs(k){ return new URLSearchParams(location.search).get(k) }
   const player = qs('player');
   const container = document.getElementById('playerContent');
-  if(!player){
-    if(container) container.innerHTML = "<p style='color:var(--muted)'>No se indicó jugador.</p>";
-    return;
-  }
+  if(!player){ if(container) container.innerHTML = "<p style='color:var(--muted)'>No se indicó jugador.</p>"; return; }
 
   // Supabase init (optional)
   let supabaseClient = null;
@@ -23,139 +20,91 @@
     }
   }catch(e){ supabaseClient = null; }
 
-  // helper to get current session user
-  function getCurrentUser(){ return sessionStorage.getItem('papan_current_user') || null; }
-
-  // escape helper
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function safeParse(s, fallback){ try{ return JSON.parse(s||'null'); }catch(e){ return fallback; } }
 
-  // main: load levels.json then augment with supabase accepted submissions + local overrides
-  (async function main(){
+  // load levels
+  async function loadLevels(){
     try{
-      const resp = await fetch('data/levels.json');
-      const levels = await resp.json();
-      if(!Array.isArray(levels)){
-        if(container) container.innerHTML = "<p style='color:#f66'>Formato JSON inválido.</p>";
-        return;
-      }
-      // annotate positions
-      levels.forEach((lvl, idx) => lvl.position = idx + 1);
+      const r = await fetch('data/levels.json');
+      const data = await r.json();
+      return Array.isArray(data) ? data : [];
+    }catch(e){
+      return [];
+    }
+  }
 
-      // collect completed entries from levels.json (records array)
-      const completed = []; // entries: { level, record, source }
+  // load overrides
+  function loadOverrides(){ try{ const o = JSON.parse(localStorage.getItem('papan_records_overrides') || '{}'); return (o && typeof o === 'object') ? o : {}; }catch(e){ return {}; } }
 
-      const pushIfNotExists = (lvlObj, recObj, source) => {
-        if(!lvlObj) return;
-        const exists = completed.some(c => String(c.level.id) === String(lvlObj.id));
-        if(!exists) completed.push({ level: lvlObj, record: recObj, source });
-      };
+  // compute completions map (same logic used in packs/users)
+  async function computeCompletionsMap(levels){
+    const map = new Map();
+    function add(name, lid){
+      if(!name) return;
+      const k = String(name);
+      if(!map.has(k)) map.set(k, new Set());
+      map.get(k).add(String(lid));
+    }
 
-      levels.forEach(lvl => {
-        if(Array.isArray(lvl.records)){
-          for(const rec of lvl.records){
-            if(String(rec.holder) === String(player) && String(rec.progress).trim() === "100%"){
-              pushIfNotExists(lvl, rec, 'json');
-              break;
-            }
-          }
-        }
+    levels.forEach(l=>{
+      (l.records||[]).forEach(r=>{
+        if(String(r.progress||'').trim() === '100%') add(r.holder, l.id);
       });
+    });
 
-      // fetch accepted submissions from Supabase (if available)
-      if(supabaseClient){
-        try{
-          const { data, error } = await supabaseClient
-            .from('submissions')
-            .select('id,level_id,level_name,player,progress,date')
-            .eq('status', 'accepted')
-            .eq('player', player);
-          if(error){
-            console.warn('Supabase: error fetching accepted submissions for player', error);
-          } else if(Array.isArray(data)){
-            for(const s of data){
-              if(String(s.progress||'').trim() !== '100%') continue;
-              const lid = String(s.level_id || '');
-              // try to find level in local JSON
-              const lvl = levels.find(x => String(x.id) === lid);
-              if(lvl){
-                // avoid duplicate
-                const exists = completed.some(c => String(c.level.id) === String(lvl.id));
-                if(!exists){
-                  const rec = { holder: player, progress: s.progress, date: s.date || '' };
-                  completed.push({ level: lvl, record: rec, source: 'supabase' });
-                }
-              } else {
-                // level not present in JSON: create placeholder level object so it appears in list
-                const placeholder = { id: lid, name: s.level_name || `Level ${lid}`, creator: '', position: '-', tier: '-' };
-                const rec = { holder: player, progress: s.progress, date: s.date || '' };
-                const exists = completed.some(c => String(c.level.id) === String(lid));
-                if(!exists) completed.push({ level: placeholder, record: rec, source: 'supabase-remote' });
-              }
-            }
-          }
-        }catch(e){
-          console.warn('Supabase player accepted fetch failed', e);
-        }
-      }
+    const overrides = loadOverrides();
+    for(const lid in overrides){
+      const arr = Array.isArray(overrides[lid]) ? overrides[lid] : [];
+      arr.forEach(r => { if(String(r.progress||'').trim() === '100%') add(r.holder, lid); });
+    }
 
-      // local overrides
+    if(supabaseClient){
       try{
-        const overrides = JSON.parse(localStorage.getItem('papan_records_overrides') || '{}');
-        for(const lid in overrides){
-          const arr = overrides[lid] || [];
-          for(const rec of arr){
-            if(String(rec.holder) === String(player) && String(rec.progress).trim() === "100%"){
-              const lvl = levels.find(x => String(x.id) === String(lid));
-              if(lvl){
-                const exists = completed.some(c => String(c.level.id) === String(lvl.id));
-                if(!exists) completed.push({ level: lvl, record: rec, source: 'override' });
-              } else {
-                // override for level not present in JSON -> placeholder
-                const placeholder = { id: lid, name: `Level ${lid}`, creator: '', position: '-', tier: '-' };
-                const exists = completed.some(c => String(c.level.id) === String(lid));
-                if(!exists) completed.push({ level: placeholder, record: rec, source: 'override' });
-              }
-            }
-          }
+        const { data, error } = await supabaseClient
+          .from('submissions')
+          .select('player,level_id,progress,status')
+          .eq('status','accepted');
+        if(!error && Array.isArray(data)){
+          data.forEach(s => { if(String(s.progress||'').trim() === '100%') add(s.player, s.level_id || s.levelId); });
         }
-      }catch(e){
-        // ignore parse errors
-      }
+      }catch(e){ console.warn('player: supabase fetch error', e); }
+    }
+    return map;
+  }
 
-      // sort completed by level.position if present, fallback keep order
-      completed.sort((a,b) => {
-        const pa = (a.level && a.level.position) ? Number(a.level.position) : 1e9;
-        const pb = (b.level && b.level.position) ? Number(b.level.position) : 1e9;
-        return pa - pb;
-      });
+  // render player view using completions map
+  (async function render(){
+    try{
+      const levels = await loadLevels();
+      if(!levels.length){ if(container) container.innerHTML = "<p style='color:#f66'>Error cargando datos.</p>"; return; }
+      levels.forEach((l,i)=> l.position = i+1);
 
-      const total = completed.length;
+      const completionsMap = await computeCompletionsMap(levels);
 
-      // determine "hardest" using difficulty_stars or difficulty name fallback
-      let hardest = null;
+      const set = completionsMap.get(String(player)) || new Set();
+      const completedLevels = Array.from(set).map(lid => levels.find(x => String(x.id) === String(lid))).filter(Boolean);
+
+      const total = completedLevels.length;
+
+      // hardest
       function starsValue(l){
         if(!l) return 0;
         if(l.difficulty_stars){
           const m = String(l.difficulty_stars).match(/(\d+)/);
           if(m) return parseInt(m[1],10);
         }
-        // fallback: map common difficulty names to numbers
         const map = { trivial:1, easy:2, normal:3, harder:4, hard:5, insane:6, extreme:7 };
         const d = String(l.difficulty || '').toLowerCase();
         return map[d] || 0;
       }
-      completed.forEach(c => {
-        if(!hardest) hardest = c.level;
-        else if(starsValue(c.level) > starsValue(hardest)) hardest = c.level;
+      let hardest = null;
+      completedLevels.forEach(l => {
+        if(!hardest) hardest = l;
+        else if(starsValue(l) > starsValue(hardest)) hardest = l;
       });
 
-      document.title = player + " — PAPANATAS";
-
-      const completedListHTML = completed.length
-        ? completed.map(c => `<li>${c.level && c.level.id ? `<a href="level.html?id=${encodeURIComponent(c.level.id)}">${escapeHtml(c.level.name||('Level '+c.level.id))}</a>` : escapeHtml(c.level.name)}</li>`).join('')
-        : '<li style="color:var(--muted)">No ha completado niveles</li>';
-
-      // notifications: localStorage only (ui.js pushNotification writes here)
+      // notifications (localStorage)
       let notificationsHtml = '';
       try{
         const key = `papan_notifications_${player}`;
@@ -164,21 +113,19 @@
           notificationsHtml = `<div style="margin-top:12px"><div class="section-title">Notificaciones</div><ul style="margin-top:8px">` +
             notes.map(n => `<li>${escapeHtml(n.date)} — ${escapeHtml(n.text)}</li>`).join('') +
             `</ul>`;
-
-          // Mark-as-read button only when viewing your own profile
-          const current = getCurrentUser();
+          const current = sessionStorage.getItem('papan_current_user') || null;
           if(current && String(current) === String(player)){
             notificationsHtml += `<div style="margin-top:8px"><button id="clearPlayerNotes" class="papan-muted">Marcar como leídas</button></div>`;
           }
-
           notificationsHtml += `</div>`;
         } else {
           notificationsHtml = `<div style="margin-top:12px"><div class="section-title">Notificaciones</div><div style="color:var(--muted);margin-top:8px">No hay notificaciones</div></div>`;
         }
-      }catch(e){
-        notificationsHtml = `<div style="margin-top:12px"><div class="section-title">Notificaciones</div><div style="color:var(--muted);margin-top:8px">No hay notificaciones</div></div>`;
-      }
+      }catch(e){ notificationsHtml = `<div style="margin-top:12px"><div class="section-title">Notificaciones</div><div style="color:var(--muted);margin-top:8px">No hay notificaciones</div></div>`; }
 
+      const completedListHTML = total ? completedLevels.map(l => `<li><a href="level.html?id=${encodeURIComponent(l.id)}">${escapeHtml(l.name)}</a></li>`).join('') : '<li style="color:var(--muted)">No ha completado niveles</li>';
+
+      document.title = player + " — PAPANATAS";
       if(container){
         container.innerHTML = `
           <div class="player-header">
@@ -199,22 +146,15 @@
         `;
       }
 
-      // wire clear notifications button (only present if current user matches)
       const clearBtn = document.getElementById('clearPlayerNotes');
       if(clearBtn){
         clearBtn.addEventListener('click', ()=>{
-          try{
-            // mark as read (set read=true) rather than deleting so history remains; UI expected old behaviour deleted, but we remove for parity
-            // we'll remove the notifications to match previous behavior
-            localStorage.removeItem(`papan_notifications_${player}`);
-            alert('Notificaciones marcadas como leídas.');
-            location.reload();
-          }catch(e){ console.error(e); }
+          try{ localStorage.removeItem(`papan_notifications_${player}`); alert('Notificaciones marcadas como leídas.'); location.reload(); }catch(e){}
         });
       }
 
-    }catch(err){
-      console.error(err);
+    }catch(e){
+      console.error('player render error', e);
       if(container) container.innerHTML = "<p style='color:#f66'>Error cargando datos.</p>";
     }
   })();

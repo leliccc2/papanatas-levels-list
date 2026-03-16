@@ -315,7 +315,7 @@
     "duration": "0:25",
     "objects": 711,
     "tier": "Harder",
-    "difficulty": "harder",
+    "difficulty": "harder1",
     "tags": ["Lebi","Short","Chokepoints","Nerve Control","Ship Control","Sightreadable","Transition Heavy"],
     "date_added": "2025-02-11",
     "records": [
@@ -346,7 +346,7 @@
     "duration": "0:28",
     "objects": 473,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Lebiyo","Chokepoints","Timings","Short","Unforgiving","Swing","Jumpy","End Heavy","Rough Gameplay","Learny","Fake Difficulty","Tight"],
     "date_added": "2025-08-18",
     "records": [
@@ -361,7 +361,7 @@
     "duration": "0:44",
     "objects": 12675,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard2",
     "tags": ["Biyo","Medium","Chokepoints","Nerve Control","Learny","Sightreadable","Long Sections","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -377,7 +377,7 @@
     "duration": "1:18",
     "objects": 1072,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard1",
     "tags": ["Lemarbiyo","Long","Learny","Jumpy","Rough Gameplay","Memory","Calm","Long Sections","Nerve Control","Precision","Unforgiving"],
     "date_added": "2023-08-11",
     "records": [
@@ -393,7 +393,7 @@
     "duration": "0:22",
     "objects": 1148,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Leyo","Short","Jumpy","Rough Gameplay","Start Heavy","Nerve Control","Wave Control","Structured"],
     "date_added": "2020-10-10",
     "records": [
@@ -407,7 +407,7 @@
     "duration": "0:33",
     "objects": 1060,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard1",
     "tags": ["Biyo","Medium","Skill Based","Chokepoints","Wave Control","Visual Sync","Gameplay Sync","High CPS","Nerve Control"],
     "date_added": "2020-10-01",
     "records": [
@@ -421,7 +421,7 @@
     "duration": "1:02",
     "objects": 2384,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard1",
     "tags": ["Biyo","Long","Chokepoints","Nerve Control","Precision","Ship Control","Wave Control","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -436,7 +436,7 @@
     "duration": "0:28",
     "objects": 630,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard2",
     "tags": ["Biyo","Short","Slow Paced","Learny","Ship Control","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -450,7 +450,7 @@
     "duration": "0:16",
     "objects": 430,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard1",
     "tags": ["Lebi","Short","Ball Timing","Structured","Calm"],
     "date_added": "2025-02-07",
     "records": [
@@ -467,7 +467,7 @@
     "duration": "0:??",
     "objects": 363,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Biyole","Short","Click Pattern","Jumpy","Cube Timing","Timings"],
     "date_added": "2021-01-01",
     "records": [
@@ -482,7 +482,7 @@
     "duration": "0:??",
     "objects": 440,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Lebi","Chokepoints","Short","Consistency","Balanced","Precision","Structured","Technical","Tight","Wave Control"],
     "date_added": "2025-01-02",
     "records": [
@@ -499,7 +499,7 @@
     "duration": "0:47",
     "objects": 1122,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard1",
     "tags": ["Biyo","Medium","Chokepoints","Fast-Paced","Gameplay Sync","Ship Control","Sightreadable"],
     "date_added": "2020-10-01",
     "records": [
@@ -513,7 +513,7 @@
     "duration": "0:49",
     "objects": 1312,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard2",
     "tags": ["Biyo","Medium","Chokepoints","Gameplay Sync","Learny","Nerve Control","Precision","Transition Heavy"],
     "date_added": "2020-10-01",
     "records": [
@@ -527,7 +527,7 @@
     "duration": "2:09",
     "objects": 2992,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Leyo","XL","Consistency","Unforgiving"],
     "date_added": "2020-10-10",
     "records": [
@@ -542,7 +542,7 @@
     "duration": "0:0?",
     "objects": 363,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Biyole","Tiny","Click Pattern","Jumpy","Cube Timing","Rough Gameplay","Fast-Paced","Learny","Precision"],
     "date_added": "2021-01-01",
     "records": [
@@ -557,7 +557,7 @@
     "duration": "0:28",
     "objects": 683,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard1",
     "tags": ["Leyo","Short","Balanced","Learny","High CPS","Wave Control","Structured"],
     "date_added": "2023-08-11",
     "records": [
@@ -572,7 +572,7 @@
     "duration": "0:27",
     "objects": 620,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Lebiyo","Short","Click Pattern","Tight","Consistency","Spam Control","Long Sections"],
     "date_added": "2025-08-19",
     "records": [
@@ -589,7 +589,7 @@
     "duration": "0:24",
     "objects": 2290,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Biyo","Medium","Balanced","Structured","Jumpy","Orb Heavy","Skill Based"],
     "date_added": "2020-10-01",
     "records": [
@@ -605,7 +605,7 @@
     "duration": "0:47",
     "objects": 1072,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Lemarbiyo","Medium","Balanced","Learny","Orb Heavy","Jumpy","Cube Timing","Rough Gameplay"],
     "date_added": "2023-08-11",
     "records": [
@@ -621,7 +621,7 @@
     "duration": "0:??",
     "objects": 416,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Leyo","Short","Jumpy","Rough Gameplay","Learny","Sightreadable","Spider Timing","Transition Heavy","Fast-Paced"],
     "date_added": "2020-10-10",
     "records": [
@@ -635,7 +635,7 @@
     "duration": "1:03",
     "objects": 10259,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard1",
     "tags": ["Biyo","Long","Cube Timing","Balanced","Calm","Slow Paced","Gameplay Sync","Skill Based"],
     "date_added": "2020-10-01",
     "records": [
@@ -650,7 +650,7 @@
     "duration": "0:32",
     "objects": 3189,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard1",
     "tags": ["Bombardeen Renfe","Medium","Balanced","Calm","Chokepoints","Gameplay Sync","Wave Control","Structured","Sightreadable"],
     "date_added": "2023-08-11",
     "records": [
@@ -665,7 +665,7 @@
     "duration": "0:43",
     "objects": 1200,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Biyo","Medium","Cube Timing","Rough Gameplay","Jumpy","Precision","Wave Spam"],
     "date_added": "2020-10-01",
     "records": [
@@ -679,7 +679,7 @@
     "duration": "0:34",
     "objects": 946,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Biyo","Medium","Visual Sync","Gameplay Sync","Chokepoints","Consistency","Click Pattern","Flow","Sightreadable","Wave Control","High CPS"],
     "date_added": "2020-10-01",
     "records": [
@@ -694,7 +694,7 @@
     "duration": "0:48",
     "objects": 838,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard1",
     "tags": ["Biyo","Medium","Gameplay Sync","Calm","Chokepoints","Nerve Control","Ship Control","Spider Timing","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -709,7 +709,7 @@
     "duration": "0:30",
     "objects": 730,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Lebiyo","Medium","Jumpy","High CPS","Spam","Tight","Consistency","Sightreadable","Rough Gameplay","Wave Spam","Unforgiving"],
     "date_added": "2025-12-14",
     "records": [
@@ -724,7 +724,7 @@
     "duration": "0:??",
     "objects": 1136,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Biyole","Short","Wave Control","Ship Control","Chokepoints","Sightreadable"],
     "date_added": "2021-01-01",
     "records": [
@@ -739,7 +739,7 @@
     "duration": "1:37",
     "objects": 1957,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard1",
     "tags": ["Biyo","Long","Cube Timing","Ship Control","Balanced","Jumpy","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -754,7 +754,7 @@
     "duration": "0:25",
     "objects": 1055,
     "tier": "Hard",
-    "difficulty": "harder",
+    "difficulty": "hard",
     "tags": ["Lebiyo","Short","Balanced","Sightreadable","Skill Based","Structured"],
     "date_added": "2026-02-16",
     "records": [
@@ -772,7 +772,7 @@
     "duration": "0:34",
     "objects": 1815,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Lemarbiyo","Medium","Jumpy","Rough Gameplay","Learny","Structured"],
     "date_added": "2023-08-11",
     "records": [
@@ -786,7 +786,7 @@
     "duration": "0:47",
     "objects": 1721,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Biyo","Medium", "Balanced","Calm","Slow Paced","Structured","Gameplay Sync","Jumpy"],
     "date_added": "2020-10-01",
     "records": [
@@ -800,7 +800,7 @@
     "duration": "0:32",
     "objects": 784,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Biyo","Medium","Visual Sync","Balanced","Chokepoints","Fast-Paced","Nerve Control","Wave Control"],
     "date_added": "2020-10-01",
     "records": [
@@ -815,7 +815,7 @@
     "duration": "0:27",
     "objects": 831,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Lebi","Short","Balanced","Ball Timing","Chokepoints","Straight Fly","Technical"],
     "date_added": "2025-02-28",
     "records": [
@@ -829,7 +829,7 @@
     "duration": "0:43",
     "objects": 1526,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Biyo","Medium","Calm","Learny","Jumpy","Nerve Control","Visual Sync","Transition Heavy","Skill Based"],
     "date_added": "2020-10-01",
     "records": [
@@ -846,7 +846,7 @@
     "duration": "0:24",
     "objects": 1118,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Leyo","Short","Ship Control","Structured","Balanced"],
     "date_added": "2020-10-10",
     "records": [
@@ -860,7 +860,7 @@
     "duration": "0:36",
     "objects": 749,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Lemarbiyo","Medium","Sightreadable","Gameplay Sync","Balanced","Jumpy"],
     "date_added": "2023-08-11",
     "records": [
@@ -875,7 +875,7 @@
     "duration": "0:10",
     "objects": 7147,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Loloz","Short","Chokepoints","Skill Based","Fast-Paced","High CPS","Tight","Ship Control"],
     "date_added": "2020-10-01",
     "records": [
@@ -893,7 +893,7 @@
     "duration": "0:12",
     "objects": 747,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Fimosis","Short","Structured","Tight","Balanced","Ship Control","Skill Based","Dual Control","Chokepoints"],
     "date_added": "2020-10-01",
     "records": [
@@ -907,7 +907,7 @@
     "duration": "0:33",
     "objects": 1028,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Biyo","Medium","Balanced","Chokepoints","Calm","Structured","Cube Timing","Ball Timing","Visual Sync"],
     "date_added": "2020-10-01",
     "records": [
@@ -922,7 +922,7 @@
     "duration": "1:35",
     "objects": 2658,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Biyo","Long","Balanced","Chokepoints","Long Sections","Slow Paced","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -936,7 +936,7 @@
     "duration": "0:14",
     "objects": 864,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Loloz","Short","Flow","Chokepoints","Gameplay Sync","Visual Sync","Transition Heavy","Sightreadable","Skill Based"],
     "date_added": "2020-10-01",
     "records": [
@@ -951,7 +951,7 @@
     "duration": "0:54",
     "objects": 1721,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Biyo","Medium","Balanced","Fast-Paced","Nerve Control","Jumpy","Transition Heavy","Rough Gameplay"],
     "date_added": "2020-10-01",
     "records": [
@@ -966,7 +966,7 @@
     "duration": "0:12",
     "objects": 322,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Lebi","Chokepoints","Short","Ship Control","Structured","Frame Perfect","Cube Timing","Timings"],
     "date_added": "2024-11-30",
     "records": [
@@ -982,7 +982,7 @@
     "duration": "0:16",
     "objects": 460,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Lemarbiyo","Short","Balanced","Chokepoints","Rough Gameplay","Sightreadable","Structured","Transition Heavy"],
     "date_added": "2023-08-11",
     "records": [
@@ -998,7 +998,7 @@
     "duration": "0:19",
     "objects": 504,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Biyo","Short","Rough Gameplay","Chokepoints","Sightreadable"],
     "date_added": "2020-10-01",
     "records": [
@@ -1013,7 +1013,7 @@
     "duration": "0:26",
     "objects": 2314,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Biyo","Short","Rough Gameplay","Chokepoints","High CPS","Spam Control","Transition Heavy","Technical"],
     "date_added": "2020-10-01",
     "records": [
@@ -1027,7 +1027,7 @@
     "duration": "0:22",
     "objects": 2756,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual2",
     "tags": ["Biyo","Short","Dual Control","Cube Timing","Precision","Nerve Control","Visual Sync","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1042,7 +1042,7 @@
     "duration": "0:18",
     "objects": 609,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Leyo","Short","Balanced","Calm","Gameplay Sync","Ship Control","Structured"],
     "date_added": "2023-08-11",
     "records": [
@@ -1057,7 +1057,7 @@
     "duration": "0:31",
     "objects": 474,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Biyo","Medium","Rough Gameplay","Chokepoints","Sightreadable","Skill Based","Technical"],
     "date_added": "2020-10-01",
     "records": [
@@ -1072,7 +1072,7 @@
     "duration": "0:36",
     "objects": 1550,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Lemarbiyo","Medium","Balanced","Learny","Ship Control","Cube Timing","Jumpy","Technical"],
     "date_added": "2023-08-11",
     "records": [
@@ -1087,7 +1087,7 @@
     "duration": "0:25",
     "objects": 1294,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Lebi","Short","Calm","Balanced","Wave Control","Structured"],
     "date_added": "2025-04-01",
     "records": [
@@ -1101,7 +1101,7 @@
     "duration": "0:18",
     "objects": 500,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Biyo","Short","Balanced","Chokepoints","Cube Timing","Gameplay Sync","Jumpy","Precision","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1116,7 +1116,7 @@
     "duration": "0:24",
     "objects": 257,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Biyo","Short","Calm","Fast-Paced","Rough Gameplay","Sightreadable"],
     "date_added": "2020-10-01",
     "records": [
@@ -1130,7 +1130,7 @@
     "duration": "0:26",
     "objects": 630,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual2",
     "tags": ["Papanatas","Short","Learny","Cube Timing","Chokepoints","Visual Sync","Transition Heavy","Sightreadable"],
     "date_added": "2020-10-01",
     "records": [
@@ -1145,7 +1145,7 @@
     "duration": "0:15",
     "objects": 473,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Leyo","Short","Balanced","Precision","Rough Gameplay","Transition Heavy"],
     "date_added": "2024-12-22",
     "records": [
@@ -1160,7 +1160,7 @@
     "duration": "0:31",
     "objects": 1679,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Billy","Medium","Balanced","Cube Timing","Structured","Calm"],
     "date_added": "2020-10-01",
     "records": [
@@ -1175,7 +1175,7 @@
     "duration": "0:11",
     "objects": 147,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Fimosis","Short","Structured","Tight","Balanced","Precision","Ship Control","Skill Based"],
     "date_added": "2020-10-01",
     "records": [
@@ -1189,7 +1189,7 @@
     "duration": "0:??",
     "objects": 998,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual2",
     "tags": ["Onomatopeia","Short","Chokepoints","Click Pattern","High CPS","Visual Sync"],
     "date_added": "2020-10-01",
     "records": [
@@ -1204,7 +1204,7 @@
     "duration": "0:16",
     "objects": 270,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Lebiyo","Short","Tight","Fake Difficulty","Spam Control","Rough Gameplay","Wave Spam","Unforgiving"],
     "date_added": "2025-02-16",
     "records": [
@@ -1220,7 +1220,7 @@
     "duration": "0:14",
     "objects": 1000,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Loloz","Short","Gameplay Sync","Sightreadable"],
     "date_added": "2020-10-01",
     "records": [
@@ -1235,7 +1235,7 @@
     "duration": "0:23",
     "objects": 496,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Leyo","Short","Balanced","Consistency","Visual Sync","Structured"],
     "date_added": "2023-08-11",
     "records": [
@@ -1251,7 +1251,7 @@
     "duration": "0:36",
     "objects": 916,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Biyo","Medium","Balanced","Chokepoints","Cube Timing","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1265,7 +1265,7 @@
     "duration": "0:18",
     "objects": 2385,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual2",
     "tags": ["Biyo","Short","Cube Timing","Balanced","Calm","Chokepoints","Jumpy","Slow Paced","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1279,7 +1279,7 @@
     "duration": "0:16",
     "objects": 4270,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Onomatopeia","Short","Spam Control","Wave Spam","Ship Control","High CPS","Fast-Paced","Nerve Control"],
     "date_added": "2020-10-01",
     "records": [
@@ -1295,7 +1295,7 @@
     "duration": "0:20",
     "objects": 552,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Lebiyo","Short","Balanced","Wave Control"],
     "date_added": "2025-02-28",
     "records": [
@@ -1311,7 +1311,7 @@
     "duration": "0:40",
     "objects": 776,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Biyo","Medium","Balanced","Gameplay Sync","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1325,7 +1325,7 @@
     "duration": "0:19",
     "objects": 598,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Leyo","Short","Transition Heavy","Sightreadable","Ship Control"],
     "date_added": "2020-10-10",
     "records": [
@@ -1339,7 +1339,7 @@
     "duration": "0:21",
     "objects": 745,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Fimosis","Short","Structured","Tight","Balanced","Precision","Cube Timing","Jumpy","Chokepoints","Gameplay Sync"],
     "date_added": "2020-10-01",
     "records": [
@@ -1353,7 +1353,7 @@
     "duration": "0:22",
     "objects": 300,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Billy","Short","Balanced","Cube Timing","Calm","Gameplay Sync","Jumpy","Slow Paced"],
     "date_added": "2020-10-01",
     "records": [
@@ -1367,7 +1367,7 @@
     "duration": "0:??",
     "objects": 182,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Lebi","Short","Calm","Chokepoints","Cube Timing","Jumpy","Structured"],
     "date_added": "2025-01-26",
     "records": [
@@ -1383,7 +1383,7 @@
     "duration": "0:44",
     "objects": 844,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Biyo","Medium","Balanced","Chokepoints","Gameplay Sync","Jumpy","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1397,7 +1397,7 @@
     "duration": "0:21",
     "objects": 447,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Fimosis","Short","Structured","Balanced","Calm","Cube Timing","Gameplay Sync"],
     "date_added": "2020-10-01",
     "records": [
@@ -1412,7 +1412,7 @@
     "duration": "0:10",
     "objects": 336,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual2",
     "tags": ["Loloz","Short","Balanced","Cube Timing","Click Pattern","Gameplay Sync"],
     "date_added": "2020-10-01",
     "records": [
@@ -1427,7 +1427,7 @@
     "duration": "0:10",
     "objects": 928,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Onomatopeia","Short","Balanced","Calm","Cube Timing","Orb Heavy"],
     "date_added": "2020-10-01",
     "records": [
@@ -1443,7 +1443,7 @@
     "duration": "0:48",
     "objects": 520,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Biyo","Medium","Calm","Balanced","Gameplay Sync","Jumpy","Slow Paced"],
     "date_added": "2020-10-01",
     "records": [
@@ -1458,7 +1458,7 @@
     "duration": "0:10",
     "objects": 630,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual1",
     "tags": ["Papanatas","Short","Ball Timing","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1475,7 +1475,7 @@
     "duration": "0:17",
     "objects": 189,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Biyo","Short","Dual Control","Rough Gameplay","Technical"],
     "date_added": "2020-10-01",
     "records": [
@@ -1490,7 +1490,7 @@
     "duration": "0:09",
     "objects": 1126,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Biyole","Short","Balanced","Calm","Consistency","Jumpy","Precision","Spider Timing"],
     "date_added": "2021-01-01",
     "records": [
@@ -1505,7 +1505,7 @@
     "duration": "0:27",
     "objects": 2329,
     "tier": "Casual",
-    "difficulty": "harder",
+    "difficulty": "casual",
     "tags": ["Leyo","Short","Jumpy","Rough Gameplay","Technical","Start Heavy"],
     "date_added": "2020-10-10",
     "records": [
@@ -1519,8 +1519,8 @@
     "gd_id": "113355228",
     "duration": "0:52",
     "objects": 1064,
-    "tier": "Normal",
-    "difficulty": "harder",
+    "tier": "Normal"
+    "difficulty": "normal1",
     "tags": ["Biyo","Medium","Balanced","Chokepoints","Nerve Control","Skill Based","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1537,7 +1537,7 @@
     "duration": "0:23",
     "objects": 503,
     "tier": "Normal",
-    "difficulty": "harder",
+    "difficulty": "normal",
     "tags": ["Lebiyo","Short","Jumpy","Technical","Balanced"],
     "date_added": "2025-08-18",
     "records": [
@@ -1553,7 +1553,7 @@
     "duration": "0:10",
     "objects": 324,
     "tier": "Normal",
-    "difficulty": "harder",
+    "difficulty": "normal",
     "tags": ["Biyo","Short","Structured","Flow","Technical","Spider Timing","Rough Gameplay"],
     "date_added": "2020-10-01",
     "records": [
@@ -1569,7 +1569,7 @@
     "duration": "0:13",
     "objects": 219,
     "tier": "Normal",
-    "difficulty": "harder",
+    "difficulty": "normal",
     "tags": ["Lebiyo","Short","Jumpy","Precision","Technical","Rough Gameplay"],
     "date_added": "2025-02-16",
     "records": [
@@ -1585,7 +1585,7 @@
     "duration": "0:14",
     "objects": 173,
     "tier": "Normal",
-    "difficulty": "harder",
+    "difficulty": "normal",
     "tags": ["Fimosis","Short","Structured","Tight","Balanced","Calm","Cube Timing"],
     "date_added": "2020-10-01",
     "records": [
@@ -1600,7 +1600,7 @@
     "duration": "0:??",
     "objects": 408,
     "tier": "Normal",
-    "difficulty": "harder",
+    "difficulty": "normal",
     "tags": ["Lebi","Short","Calm","Structured","Balanced"],
     "date_added": "2025-02-01",
     "records": [
@@ -1614,7 +1614,7 @@
     "duration": "0:31",
     "objects": 418,
     "tier": "Easy",
-    "difficulty": "harder",
+    "difficulty": "easy",
     "tags": ["Biyo","Medium","Calm","Balanced","Gameplay Sync","Jumpy","Slow Paced","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1628,7 +1628,7 @@
     "duration": "0:20",
     "objects": 2863,
     "tier": "Easy",
-    "difficulty": "harder",
+    "difficulty": "easy1",
     "tags": ["Onomatopeia","Short","Balanced","Calm","Slow Paced","Spider Timing","Ball Timing","Precision"],
     "date_added": "2020-10-01",
     "records": [
@@ -1643,7 +1643,7 @@
     "duration": "0:14",
     "objects": 356,
     "tier": "Easy",
-    "difficulty": "harder",
+    "difficulty": "easy",
     "tags": ["Lebiyo","Short","Calm","Dash Heavy","Balanced","Technical"],
     "date_added": "2025-02-16",
     "records": [
@@ -1657,7 +1657,7 @@
     "duration": "0:22",
     "objects": 1927,
     "tier": "Easy",
-    "difficulty": "harder",
+    "difficulty": "easy1",
     "tags": ["Biyo","Short","Structured","Wave Control"],
     "date_added": "2020-10-01",
     "records": [
@@ -1671,7 +1671,7 @@
     "duration": "0:15",
     "objects": 291,
     "tier": "Easy",
-    "difficulty": "harder",
+    "difficulty": "easy",
     "tags": ["Biyo","Short","Balanced","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1685,7 +1685,7 @@
     "duration": "0:11",
     "objects": 619,
     "tier": "Easy",
-    "difficulty": "harder",
+    "difficulty": "easy",
     "tags": ["Biyo","Short","Calm","Balanced","Gameplay Sync","Jumpy","Slow Paced","Structured"],
     "date_added": "2020-10-01",
     "records": [
@@ -1701,7 +1701,7 @@
     "duration": "0:06",
     "objects": 146,
     "tier": "Easy",
-    "difficulty": "harder",
+    "difficulty": "easy",
     "tags": ["Lebi","Tiny","Structured","Learny","Technical","Rough Gameplay"],
     "date_added": "2024-12-22",
     "records": [
@@ -1716,7 +1716,7 @@
     "duration": "0:11",
     "objects": 174,
     "tier": "Easy",
-    "difficulty": "harder",
+    "difficulty": "easy1",
     "tags": ["Biyo","Short","Balanced","Calm","Slow Paced","Structured"],
     "date_added": "2020-10-01",
     "records": [

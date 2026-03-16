@@ -1,5 +1,20 @@
 [
     {
+    "id": "lebiyo13remastered",
+    "name": "Lebiyo 13 REMASTERED",
+    "creator": "Lelike",
+    "gd_id": "135183234",
+    "duration": "1:12",
+    "objects": 19258,
+    "tier": "Easy Demon",
+    "difficulty": "easydemon3",
+    "tags": ["Lebiyo","Long","Consistency","Nerve Control","Balanced","Skill Based","Long Sections","Wave Control","Structured","Visual Sync"],
+    "date_added": "2026-03-08",
+    "records": [
+
+    ]
+  },
+    {
     "id": "lebiyo14",
     "name": "Lebiyo 14",
     "creator": "Justi",
@@ -7,7 +22,7 @@
     "duration": "1:18",
     "objects": 20080,
     "tier": "Cruel",
-    "difficulty": "cruel",
+    "difficulty": "cruel1",
     "tags": ["Lebiyo","Long","Consistency","Nerve Control","Balanced","Skill Based","Long Sections","Wave Control","Structured","Visual Sync"],
     "date_added": "2026-03-08",
     "records": [
@@ -23,7 +38,7 @@
     "duration": "0:??",
     "objects": 1809,
     "tier": "Insane",
-    "difficulty": "insane",
+    "difficulty": "insane1",
     "tags": ["Lebi","Medium","Chokepoints","Consistency","End Heavy","Cube Timing","Long Sections","Precision","Ship Control","Nerve Control","Structured","Unforgiving","Slow Paced"],
     "date_added": "2025-02-06",
     "records": [
@@ -55,7 +70,7 @@
     "duration": "0:25",
     "objects": 5563,
     "tier": "Tough",
-    "difficulty": "tough",
+    "difficulty": "tough2",
     "tags": ["Lebiyo","Chokepoints","Timings","Short","Structured","Gameplay Sync","Spider Timing","End Heavy","Transition Heavy","Sightreadable","Consistency"],
     "date_added": "2026-02-28",
     "records": [
@@ -115,7 +130,7 @@
     "duration": "0:13",
     "objects": 304,
     "tier": "Tough",
-    "difficulty": "tough",
+    "difficulty": "tough1",
     "tags": ["Lebi","Chokepoints","Short","Timings","High CPS","Spam","Consistency","Spam Control","Wave Spam","Transition Heavy","Frame Perfect","Tight","End Heavy", "Start Heavy"],
     "date_added": "2023-07-30",
     "records": [
@@ -130,7 +145,7 @@
     "duration": "1:21",
     "objects": 2413,
     "tier": "Tough",
-    "difficulty": "tough",
+    "difficulty": "tough1",
     "tags": ["Lebi","Chokepoints","Long","Consistency","Ship Control","Straight Fly","Nerve Control","Structured"],
     "date_added": "2025-12-23",
     "records": [
@@ -191,7 +206,7 @@
     "duration": "0:24",
     "objects": 1121,
     "tier": "Harder",
-    "difficulty": "harder",
+    "difficulty": "harder1",
     "tags": ["Lebi","Short","Ship Control","Chokepoints","Precision","Skill Based","Balanced","Learny","Rough Gameplay","Sightreadable","Straight Fly","Tight"],
     "date_added": "2025-03-02",
     "records": [
@@ -207,7 +222,7 @@
     "duration": "0:41",
     "objects": 2385,
     "tier": "Harder",
-    "difficulty": "harder",
+    "difficulty": "harder1",
     "tags": ["Biyo","Medium","Cube Timing","Balanced","Skill Based","Chokepoints","Gameplay Sync","Learny","Nerve Control","Precision","Structured","Sightreadable","Ship Control"],
     "date_added": "2020-10-01",
     "records": [
@@ -222,7 +237,7 @@
     "duration": "0:36",
     "objects": 31096,
     "tier": "Harder",
-    "difficulty": "harder",
+    "difficulty": "harder2",
     "tags": ["Lebiyo","Chokepoints","Medium","Bossfight","Straight Fly","Skill Based","Learny","Dual Control","Structured"],
     "date_added": "2025-03-06",
     "records": [
@@ -238,7 +253,7 @@
     "duration": "1:02",
     "objects": 1815,
     "tier": "Harder",
-    "difficulty": "harder",
+    "difficulty": "harder1",
     "tags": ["Lemarbiyo","Long","Sightreadable","Learny","Unforgiving","End Heavy","Nerve Control","Rough Gameplay"],
     "date_added": "2023-08-11",
     "records": [
@@ -252,7 +267,7 @@
     "duration": "0:52",
     "objects": 1861,
     "tier": "Harder",
-    "difficulty": "harder",
+    "difficulty": "harder2",
     "tags": ["Biyo","Medium","Chokepoints","Balanced","Ball Timing","Spam Control","High CPS","Gameplay Sync","Visual Sync","Sightreadable"],
     "date_added": "2020-10-01",
     "records": [

@@ -1419,6 +1419,21 @@
     ]
   },
 
+                   {
+      "id": "loloz5",
+    "name": "LOLOZ 5",
+    "creator": "Lelike",
+    "gd_id": "136094624",
+    "duration": "0:24",
+    "objects": 3412,
+    "tier": "Casual",
+    "difficulty": "casual1",
+    "tags": ["Loloz","Short","Balanced","Click Pattern","Gameplay Sync","Calm"],
+    "date_added": "2020-10-01",
+    "records": [
+    ]
+  },
+
                {
       "id": "loloz3",
     "name": "LOLOZ 3",

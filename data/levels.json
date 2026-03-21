@@ -198,6 +198,21 @@
 
     ]
   },
+
+    {
+      "id": "biyo40",
+    "name": "BIYO 40",
+    "creator": "Lelike",
+    "gd_id": "136138529",
+    "duration": "1:15",
+    "objects": 28870,
+    "tier": "Harder",
+    "difficulty": "harder3",
+    "tags": ["Biyo","Long","Cube Timing","Balanced","Chokepoints","Gameplay Sync","Nerve Control","Sightreadable","Ship Control"],
+    "date_added": "2026-03-21",
+    "records": [
+    ]
+  },
         {
     "id": "lebi16",
     "name": "LEBI 16",

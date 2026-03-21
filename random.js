@@ -145,7 +145,7 @@
 
     // name, stats
     const nameParts = picks.slice(0,2).map(p => (p.tags && p.tags[0]) ? p.tags[0] : p.creator);
-    const flair = ['Hyper','Neon','Echo','Void','Pulse','Turbo','Drift','Flux','Nigger','Blaze','Nitro','Nova','Perulin','Quasar','Sigma','Byte','Acac','Alubia','Poya','Bizarro','Toyi','Ripollés','Prepucio'][Math.floor(rnd()*8)];
+    const flair = ['Hyper','Neon','Echo','Void','Pulse','Turbo','Drift','Flux','Nigger','Blaze','Nitro','Nova','Perulin','Quasar','Sigma','Byte','Acac','Alubia','Poya','Bizarro','Toyi','Ripollés','Prepucio'][Math.floor(rnd()*23)];
     const num = Math.floor(rnd()*9999);
     const generatedName = `${nameParts.join(' ')} ${flair} #${num}`;
 

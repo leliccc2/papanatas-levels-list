@@ -159,8 +159,8 @@
     "gd_id": "115198131",
     "duration": "0:05",
     "objects": 561,
-    "tier": "Harder",
-    "difficulty": "harder",
+    "tier": "Tough",
+    "difficulty": "tough",
     "tags": ["Biyole","Tiny","Rough Gameplay","Fast-Paced","Swing","Straight Fly","Cube Timing","Tight","Transition Heavy"],
     "date_added": "2021-01-01",
     "records": [
@@ -175,8 +175,8 @@
     "gd_id": "124118641",
     "duration": "0:12",
     "objects": 179,
-    "tier": "Harder",
-    "difficulty": "harder",
+    "tier": "Tough",
+    "difficulty": "tough1",
     "tags": ["Lebi","Chokepoints","Short","Timings","Consistency","Sightreadable","Frame Perfect","Ship Control","Cube Timing"],
     "date_added": "2025-08-04",
     "records": [
@@ -190,8 +190,8 @@
     "gd_id": "134225638",
     "duration": "0:11",
     "objects": 447,
-    "tier": "Harder",
-    "difficulty": "harder",
+    "tier": "Tough",
+    "difficulty": "tough",
     "tags": ["Leyo","Short","Ship Control","Straight Fly","Structured","Slow Paced","Consistency","Tight"],
     "date_added": "2020-10-10",
     "records": [
@@ -206,8 +206,8 @@
     "gd_id": "136138529",
     "duration": "1:15",
     "objects": 28870,
-    "tier": "Harder",
-    "difficulty": "harder3",
+    "tier": "Tough",
+    "difficulty": "tough3",
     "tags": ["Biyo","Long","Cube Timing","Balanced","Chokepoints","Gameplay Sync","Nerve Control","Sightreadable","Ship Control"],
     "date_added": "2026-03-21",
     "records": [
@@ -244,21 +244,21 @@
     ]
   },
 
-      {
-    "id": "lebiyo13",
-    "name": "LeBiYo 13",
-    "creator": "Justi",
-    "gd_id": "135001900",
-    "duration": "0:36",
-    "objects": 31096,
+               {
+      "id": "biyoxdash",
+    "name": "BIYO X DASH",
+    "creator": "Lelike",
+    "gd_id": "136291783",
+    "duration": "0:46",
+    "objects": 13797,
     "tier": "Harder",
     "difficulty": "harder2",
-    "tags": ["Lebiyo","Chokepoints","Medium","Bossfight","Straight Fly","Skill Based","Learny","Dual Control","Structured"],
-    "date_added": "2025-03-06",
+    "tags": ["Biyo","Medium","Skill Based","Chokepoints","Gameplay Sync","Learny","Nerve Control","Structured","Sightreadable","Ship Control","Flow","Transition Heavy"],
+    "date_added": "2020-10-01",
     "records": [
-
     ]
   },
+
 
                   {
     "id": "lemarbiyo6",
@@ -329,10 +329,26 @@
     "gd_id": "115041760",
     "duration": "0:25",
     "objects": 711,
-    "tier": "Harder",
-    "difficulty": "harder1",
+    "tier": "Hard",
+    "difficulty": "hard1",
     "tags": ["Lebi","Short","Chokepoints","Nerve Control","Ship Control","Sightreadable","Transition Heavy"],
     "date_added": "2025-02-11",
+    "records": [
+
+    ]
+  },
+
+        {
+    "id": "lebiyo13",
+    "name": "LeBiYo 13",
+    "creator": "Justi",
+    "gd_id": "135001900",
+    "duration": "0:36",
+    "objects": 31096,
+    "tier": "Hard",
+    "difficulty": "hard",
+    "tags": ["Lebiyo","Chokepoints","Bossfight","Medium","Straight Fly","Skill Based","Learny","Dual Control","Structured"],
+    "date_added": "2025-08-18",
     "records": [
 
     ]

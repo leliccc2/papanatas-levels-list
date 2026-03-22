@@ -346,7 +346,7 @@
     "duration": "0:36",
     "objects": 31096,
     "tier": "Hard",
-    "difficulty": "hard",
+    "difficulty": "hard2",
     "tags": ["Lebiyo","Chokepoints","Bossfight","Medium","Straight Fly","Skill Based","Learny","Dual Control","Structured"],
     "date_added": "2025-08-18",
     "records": [
@@ -361,8 +361,8 @@
     "gd_id": "115042112",
     "duration": "0:??",
     "objects": 683,
-    "tier": "Harder",
-    "difficulty": "harder",
+    "tier": "Hard",
+    "difficulty": "hard",
     "tags": ["Biyole","Short","Fast-Paced","Click Pattern","Ship Control"],
     "date_added": "2021-01-01",
     "records": [

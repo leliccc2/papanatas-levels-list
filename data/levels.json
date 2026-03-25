@@ -329,8 +329,8 @@
     "gd_id": "115041760",
     "duration": "0:25",
     "objects": 711,
-    "tier": "Hard",
-    "difficulty": "hard1",
+    "tier": "Harder",
+    "difficulty": "harder1",
     "tags": ["Lebi","Short","Chokepoints","Nerve Control","Ship Control","Sightreadable","Transition Heavy"],
     "date_added": "2025-02-11",
     "records": [
@@ -345,8 +345,8 @@
     "gd_id": "135001900",
     "duration": "0:36",
     "objects": 31096,
-    "tier": "Hard",
-    "difficulty": "hard2",
+    "tier": "Harder",
+    "difficulty": "harder2",
     "tags": ["Lebiyo","Chokepoints","Bossfight","Medium","Straight Fly","Skill Based","Learny","Dual Control","Structured"],
     "date_added": "2025-08-18",
     "records": [

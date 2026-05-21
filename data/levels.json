@@ -3,7 +3,7 @@
         {
     "id": "papanataslevelI",
     "name": "Papanatas Level I",
-    "creator": "Lelike, Justi & More",
+    "creator": "Lelike, Billy & More",
     "gd_id": "140480681",
     "duration": "2:10",
     "objects": 69936,
@@ -953,7 +953,7 @@
     "objects": 3501,
     "tier": "Casual",
     "difficulty": "casual2",
-    "tags": ["Biyo","Medium","Slow Paced","Unbalanced","Gameplay Sync","Wave Control"],
+    "tags": ["Biyo","Medium","Slow Paced","Unbalanced","Gameplay Sync","Wave Control","Start Heavy"],
     "date_added": "2026-05-21",
     "records": [
     ]
@@ -1185,6 +1185,21 @@
     "records": [
     ]
   },
+                       {
+      "id": "biyo43",
+    "name": "BIYO 43",
+    "creator": "Lelike",
+    "gd_id": "138377910",
+    "duration": "0:39",
+    "objects": 2963,
+    "tier": "Casual",
+    "difficulty": "casual2",
+    "tags": ["Biyo","Medium","Slow Paced","Balanced","Gameplay Sync","Visual Sync","Jumpy"],
+    "date_added": "2026-05-21",
+    "records": [
+    ]
+  },
+
        {
       "id": "biyo31",
     "name": "BIYO 31",

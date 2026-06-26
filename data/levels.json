@@ -655,6 +655,20 @@
     "records": [
     ]
   },
+        {
+      "id": "mabiyoca2",
+    "name": "MaBiYoCa 2",
+    "creator": "Lelike",
+    "gd_id": "142836048",
+    "duration": "0:57",
+    "objects": 3101,
+    "tier": "Hard",
+    "difficulty": "hard1",
+    "tags": ["Mabiyoca","Medium","Visual Sync","Slow Paced","Unbalanced","Unforgiving","Ship Control","Learny","Technical"],
+    "date_added": "2026-06-27",
+    "records": [
+    ]
+  },
 
       {
     "id": "lebiyo8",
@@ -941,6 +955,20 @@
     "difficulty": "casual1",
     "tags": ["Leyo","Short","Ship Control","Structured","Balanced"],
     "date_added": "2020-10-10",
+    "records": [
+    ]
+  },
+            {
+      "id": "biyo45",
+    "name": "BIYO 45",
+    "creator": "Lelike",
+    "gd_id": "143363586",
+    "duration": "0:26",
+    "objects": 5292,
+    "tier": "Casual",
+    "difficulty": "casual2",
+    "tags": ["Biyo","Short","Gameplay Sync","Sightreadable","Skill Based","Strcutured"],
+    "date_added": "2026-06-27",
     "records": [
     ]
   },
@@ -1521,6 +1549,20 @@
     "difficulty": "casual1",
     "tags": ["Fimosis","Short","Structured","Balanced","Calm","Cube Timing","Gameplay Sync"],
     "date_added": "2020-10-01",
+    "records": [
+    ]
+  },
+                {
+      "id": "biyo44",
+    "name": "BIYO 44",
+    "creator": "Lelike",
+    "gd_id": "142103446",
+    "duration": "0:16",
+    "objects": 1842,
+    "tier": "Casual",
+    "difficulty": "casual1",
+    "tags": ["Biyo","Short","Visual Sync","Slow Paced","Jumpy"],
+    "date_added": "2026-06-27",
     "records": [
     ]
   },

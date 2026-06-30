@@ -367,6 +367,20 @@
 
     ]
   },
+            {
+      "id": "biyo46",
+    "name": "BIYO 46",
+    "creator": "Lelike",
+    "gd_id": "???",
+    "duration": "1:01",
+    "objects": 6099,
+    "tier": "Harder",
+    "difficulty": "harder2",
+    "tags": ["Biyo","Long","Calm","Click Pattern","Gameplay Sync", "Long Sections",  "Ship Control", "Sightreadable", "Visual Sync", "Structured"],
+    "date_added": "2026-07-01",
+    "records": [
+    ]
+  },
 
 
         {
@@ -562,6 +576,20 @@
     "difficulty": "hard",
     "tags": ["Biyole","Short","Click Pattern","Jumpy","Cube Timing","Timings"],
     "date_added": "2021-01-01",
+    "records": [
+    ]
+  },
+  {
+      "id": "lemarbiyo7updated",
+    "name": "LeMarBiYo 7 updated",
+    "creator": "Carlos",
+    "gd_id": 136945965
+    "duration": "0:45",
+    "objects": 2554,
+    "tier": "Hard",
+    "difficulty": "hard",
+    "tags": ["Lemarbiyo","Medium","Chokepoints","Fake Difficulty","Learny", "Orb Heavy"],
+    "date_added": "2026-07-01",
     "records": [
     ]
   },
@@ -967,7 +995,7 @@
     "objects": 5292,
     "tier": "Casual",
     "difficulty": "casual2",
-    "tags": ["Biyo","Short","Gameplay Sync","Sightreadable","Skill Based","Strcutured"],
+    "tags": ["Biyo","Short","Gameplay Sync","Sightreadable","Skill Based","Structured"],
     "date_added": "2026-06-27",
     "records": [
     ]
